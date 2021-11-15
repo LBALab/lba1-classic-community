@@ -37,6 +37,24 @@ char	*ListIdentifier[] = {	"MidiBase" ,
 LONG	Midi_Base, Midi_IRQ, Midi_DMA ;
 
 
+typedef int HDRIVER;        /* handle to driver                          */
+typedef int HSEQUENCE;      /* handle to XMIDI sequence                  */
+
+typedef struct
+{
+   unsigned min_API_version;
+   unsigned drvr_type;
+   char data_suffix[4];
+   void far *dev_name_table;
+   int default_IO;
+   int default_IRQ;
+   int default_DMA;
+   int default_DRQ;
+   int service_rate;
+   unsigned display_size;
+}
+drvr_desc;
+
 HDRIVER hdriver ;
 HSEQUENCE hseq = -1 ;
 drvr_desc *desc;
@@ -152,78 +170,78 @@ void *load_global_timbre(unsigned short bank, unsigned short patch)
 
 LONG	InitMidiDLL( char *driverpathname )
 {
-	char	*str;
+	// char	*str;
 
-   //
-   // Load driver file
-   //
+ //   //
+ //   // Load driver file
+ //   //
 
-	dll = FILE_read( driverpathname, NULL);
-	if (dll==NULL)
-	{
-		printf("%s Could not load driver '%s'.\n", DriverError, driverpathname );
-		return FALSE ;
-	}
+	// dll = FILE_read( driverpathname, NULL);
+	// if (dll==NULL)
+	// {
+	// 	printf("%s Could not load driver '%s'.\n", DriverError, driverpathname );
+	// 	return FALSE ;
+	// }
 
-	drvr=DLL_load(dll,DLLMEM_ALLOC | DLLSRC_MEM,NULL);
-	if (drvr==NULL)
-	{
-		printf("%s Invalid DLL image.\n", DriverError );
-		return FALSE ;
-	}
+	// drvr=DLL_load(dll,DLLMEM_ALLOC | DLLSRC_MEM,NULL);
+	// if (drvr==NULL)
+	// {
+	// 	printf("%s Invalid DLL image.\n", DriverError );
+	// 	return FALSE ;
+	// }
 
-	Free(dll);
+	// Free(dll);
 
-   //
-   // Initialize API before calling any Library functions
-   //
+ //   //
+ //   // Initialize API before calling any Library functions
+ //   //
 
-	AIL_startup();
+	// AIL_startup();
 
-   //
-   // Register the driver with the API
-   //
+ //   //
+ //   // Register the driver with the API
+ //   //
 
-	hdriver = AIL_register_driver(drvr);
-	if (hdriver==-1)
-	{
-		printf("%s Driver %s not compatible with linked API version.\n",
-			DriverError, driverpathname );
-		AIL_shutdown(NULL);
-		return FALSE ;
-	}
+	// hdriver = AIL_register_driver(drvr);
+	// if (hdriver==-1)
+	// {
+	// 	printf("%s Driver %s not compatible with linked API version.\n",
+	// 		DriverError, driverpathname );
+	// 	AIL_shutdown(NULL);
+	// 	return FALSE ;
+	// }
 
-   //
-   // Get driver type and factory default I/O parameters; exit if
-   // driver is not capable of interpreting MIDI files
-   //
+ //   //
+ //   // Get driver type and factory default I/O parameters; exit if
+ //   // driver is not capable of interpreting MIDI files
+ //   //
 
-	desc = AIL_describe_driver(hdriver);
+	// desc = AIL_describe_driver(hdriver);
 
-	if (desc->drvr_type != XMIDI_DRVR)
-	{
-		printf("%s Driver %s not an XMIDI driver.\n", DriverError, driverpathname );
-		AIL_shutdown(NULL);
-		return FALSE ;
-	}
+	// if (desc->drvr_type != XMIDI_DRVR)
+	// {
+	// 	printf("%s Driver %s not an XMIDI driver.\n", DriverError, driverpathname );
+	// 	AIL_shutdown(NULL);
+	// 	return FALSE ;
+	// }
 
 
-   //
-   // Print Driver name and copyright notice
-   //
+ //   //
+ //   // Print Driver name and copyright notice
+ //   //
 
-	printf("AIL/32 midi driver for:\n");
+	// printf("AIL/32 midi driver for:\n");
 
-	str = desc->dev_name_table ;
-	while(*str != 0)
-	{
-		printf("%s\n", str);
-		while(*str != 0)
-			str++;
-		str++;
-	}
+	// str = desc->dev_name_table ;
+	// while(*str != 0)
+	// {
+	// 	printf("%s\n", str);
+	// 	while(*str != 0)
+	// 		str++;
+	// 	str++;
+	// }
 
-	printf("\nCopyright (C) 1991,1992 Miles Design, Inc.\n\n");
+	// printf("\nCopyright (C) 1991,1992 Miles Design, Inc.\n\n");
 
 	return TRUE ;
 }
@@ -232,65 +250,65 @@ LONG	InitMidiDLL( char *driverpathname )
 
 LONG	InitMidi()
 {
-	char	GTL_filename[_MAX_PATH];
+	// char	GTL_filename[_MAX_PATH];
 
-   // use if defined new parameters
+ //   // use if defined new parameters
 
-	if( Midi_Base != -1 )	desc->default_IO  = Midi_Base ;
-	if( Midi_IRQ  != -1 )	desc->default_IRQ = Midi_IRQ ;
-	if( Midi_DMA  != -1 )
-	{
-		desc->default_DMA = Midi_DMA ;
-		desc->default_DRQ = Midi_DMA ;
-	}
+	// if( Midi_Base != -1 )	desc->default_IO  = Midi_Base ;
+	// if( Midi_IRQ  != -1 )	desc->default_IRQ = Midi_IRQ ;
+	// if( Midi_DMA  != -1 )
+	// {
+	// 	desc->default_DMA = Midi_DMA ;
+	// 	desc->default_DRQ = Midi_DMA ;
+	// }
 
-   //
-   // Verify presence of driver's sound hardware and prepare
-   // driver/hardware for use
-   //
-	if (!AIL_detect_device(hdriver,desc->default_IO,desc->default_IRQ,
-		desc->default_DMA,desc->default_DRQ))
-	{
-		AIL_shutdown(NULL);
-		printf( "%s Sound Hardware not found.\n", DriverError ) ;
-		return FALSE ;
-	}
+ //   //
+ //   // Verify presence of driver's sound hardware and prepare
+ //   // driver/hardware for use
+ //   //
+	// if (!AIL_detect_device(hdriver,desc->default_IO,desc->default_IRQ,
+	// 	desc->default_DMA,desc->default_DRQ))
+	// {
+	// 	AIL_shutdown(NULL);
+	// 	printf( "%s Sound Hardware not found.\n", DriverError ) ;
+	// 	return FALSE ;
+	// }
 
 
-	Midi_Driver_Enable = TRUE ;
+	// Midi_Driver_Enable = TRUE ;
 
-	AIL_init_driver(hdriver,desc->default_IO,desc->default_IRQ,
-				desc->default_DMA,desc->default_DRQ);
+	// AIL_init_driver(hdriver,desc->default_IO,desc->default_IRQ,
+	// 			desc->default_DMA,desc->default_DRQ);
 
-	state_size = AIL_state_table_size(hdriver);
-   //
-   // Set up local timbre cache; open Global Timbre Library file
-   //
+	// state_size = AIL_state_table_size(hdriver);
+ //   //
+ //   // Set up local timbre cache; open Global Timbre Library file
+ //   //
 
-	tc_size = AIL_default_timbre_cache_size(hdriver);
+	// tc_size = AIL_default_timbre_cache_size(hdriver);
 
-	if (tc_size)
-	{
-		tc_addr = malloc((unsigned long) tc_size);
-		AIL_define_timbre_cache(hdriver,tc_addr,tc_size);
-	}
+	// if (tc_size)
+	// {
+	// 	tc_addr = malloc((unsigned long) tc_size);
+	// 	AIL_define_timbre_cache(hdriver,tc_addr,tc_size);
+	// }
 
-	state = malloc(state_size);
+	// state = malloc(state_size);
 
-   //
-   // Get name of Global Timbre Library file by appending suffix
-   // supplied by XMIDI driver to GTL filename prefix "SAMPLE."
-   //
-	strcpy(GTL_filename, MidiPath ) ;
-	strcat(GTL_filename,"SAMPLE.");
-	strcat(GTL_filename,desc->data_suffix);
+ //   //
+ //   // Get name of Global Timbre Library file by appending suffix
+ //   // supplied by XMIDI driver to GTL filename prefix "SAMPLE."
+ //   //
+	// strcpy(GTL_filename, MidiPath ) ;
+	// strcat(GTL_filename,"SAMPLE.");
+	// strcat(GTL_filename,desc->data_suffix);
 
-   // Load it into memory
+ //   // Load it into memory
 
-	if(!(ptrGTL = DosMalloc(FileSize(GTL_filename), NULL)))
-		return FALSE ;
+	// if(!(ptrGTL = DosMalloc(FileSize(GTL_filename), NULL)))
+	// 	return FALSE ;
 
-	Load( GTL_filename, ptrGTL );
+	// Load( GTL_filename, ptrGTL );
 
 	return TRUE ;
 }
@@ -312,8 +330,8 @@ void	ClearMidi()
 {
 	if( !Midi_Driver_Enable ) 	return ;
 
-	AIL_shutdown( "" );
-	hseq = -1 ;
+	// AIL_shutdown( "" );
+	// hseq = -1 ;
 }
 
 //████████████████████████████████████████████████████████████████████████████
@@ -322,66 +340,66 @@ void	PlayMidi( /*char *filename*/ UBYTE *ail_buffer )
 {
 	if( !Midi_Driver_Enable ) 	return ;
 
-   //
-   // Look up and register desired sequence in XMIDI file, loading
-   // timbres if needed
-   //
-	if( hseq != -1 )
-	{
-		AIL_stop_sequence(hdriver,hseq) ;
-		AIL_release_sequence_handle( hdriver, hseq ) ;
-	}
+//    //
+//    // Look up and register desired sequence in XMIDI file, loading
+//    // timbres if needed
+//    //
+// 	if( hseq != -1 )
+// 	{
+// 		AIL_stop_sequence(hdriver,hseq) ;
+// 		AIL_release_sequence_handle( hdriver, hseq ) ;
+// 	}
 
-	seqnum = 0 ;
+// 	seqnum = 0 ;
 
-	if ((hseq = AIL_register_sequence(	hdriver,
-						ail_buffer,
-						seqnum,
-						state,
-						NULL )
-		) == -1)
-	{
-//		printf("Sequence %u not present in XMIDI file \"%s\".\n",seqnum,argv[1]);
-		return ;
-	}
+// 	if ((hseq = AIL_register_sequence(	hdriver,
+// 						ail_buffer,
+// 						seqnum,
+// 						state,
+// 						NULL )
+// 		) == -1)
+// 	{
+// //		printf("Sequence %u not present in XMIDI file \"%s\".\n",seqnum,argv[1]);
+// 		return ;
+// 	}
 
-//	GTL = NULL ;
+// //	GTL = NULL ;
 
-	while ((treq=AIL_timbre_request(hdriver,hseq)) != 0xffff)
-	{
-//		if( GTL == NULL )
-//		{
-//			GTL = fopen(GTL_filename,"rb");	// sample.ad/.opl
-//		}
+// 	while ((treq=AIL_timbre_request(hdriver,hseq)) != 0xffff)
+// 	{
+// //		if( GTL == NULL )
+// //		{
+// //			GTL = fopen(GTL_filename,"rb");	// sample.ad/.opl
+// //		}
 
-		ail_bank = treq / 256; patch = treq % 256;
+// 		ail_bank = treq / 256; patch = treq % 256;
 
-//		timb = load_global_timbre(GTL,ail_bank,patch);
-		timb = load_global_timbre(ail_bank,patch);
+// //		timb = load_global_timbre(GTL,ail_bank,patch);
+// 		timb = load_global_timbre(ail_bank,patch);
 
-		if (timb != NULL)
-		{
-//			printf("Installed timbre bank %u, patch %u\n",bank,patch);
-			AIL_install_timbre(hdriver,ail_bank,patch,timb);
-//			free(timb);
-		}
-		else
-		{
-//			printf("Timbre bank %u, patch %u not found ",bank,patch);
-//			if (GTL != NULL) fclose(GTL);
-			return ;
-		}
-//			AIL_install_timbre(hdriver,ail_bank,patch,timb);
-	}
+// 		if (timb != NULL)
+// 		{
+// //			printf("Installed timbre bank %u, patch %u\n",bank,patch);
+// 			AIL_install_timbre(hdriver,ail_bank,patch,timb);
+// //			free(timb);
+// 		}
+// 		else
+// 		{
+// //			printf("Timbre bank %u, patch %u not found ",bank,patch);
+// //			if (GTL != NULL) fclose(GTL);
+// 			return ;
+// 		}
+// //			AIL_install_timbre(hdriver,ail_bank,patch,timb);
+// 	}
 
-   //
-   // Start music playback
-   //
+//    //
+//    // Start music playback
+//    //
 
-/*   printf("Playing sequence %u from XMIDI file \"%s\" ...\n\n",
-      seqnum,argv[1]);	*/
+// /*   printf("Playing sequence %u from XMIDI file \"%s\" ...\n\n",
+//       seqnum,argv[1]);	*/
 
-	AIL_start_sequence(hdriver,hseq) ;
+// 	AIL_start_sequence(hdriver,hseq) ;
 }
 
 //████████████████████████████████████████████████████████████████████████████
@@ -390,8 +408,8 @@ void	StopMidi()
 {
 	if( hseq != -1 )
 	{
-		AIL_stop_sequence(hdriver,hseq) ;
-		AIL_release_sequence_handle( hdriver, hseq ) ;
+		// AIL_stop_sequence(hdriver,hseq) ;
+		// AIL_release_sequence_handle( hdriver, hseq ) ;
 		hseq = -1 ;
 	}
 }
@@ -402,8 +420,8 @@ LONG	IsMidiPlaying()
 {
 	if( hseq != -1 )
 	{
-		if( AIL_sequence_status( hdriver, hseq ) == 1 )
-			return TRUE ;
+		// if( AIL_sequence_status( hdriver, hseq ) == 1 )
+			// return TRUE ;
 	}
 	return FALSE ;
 }
@@ -414,7 +432,7 @@ void	FadeMidiDown( WORD nbsec )
 {
 	if( hseq != -1 )
 	{
-		AIL_set_relative_volume(hdriver, 0, 0, 1000 * nbsec ) ;
+		// AIL_set_relative_volume(hdriver, 0, 0, 1000 * nbsec ) ;
 	}
 }
 
@@ -424,7 +442,7 @@ void	FadeMidiUp( WORD nbsec )
 {
 	if( hseq != -1 )
 	{
-		AIL_set_relative_volume(hdriver, 0, MaxVolume, 1000 * nbsec ) ;
+		// AIL_set_relative_volume(hdriver, 0, MaxVolume, 1000 * nbsec ) ;
 	}
 }
 //████████████████████████████████████████████████████████████████████████████
@@ -433,7 +451,7 @@ void	WaitFadeMidi()
 {
 	if( hseq != -1 )
 	{
-		while( AIL_relative_volume( hdriver, 0 ) != 0 ) ;
+		// while( AIL_relative_volume( hdriver, 0 ) != 0 ) ;
 	}
 }
 
@@ -443,7 +461,7 @@ void	VolumeMidi( WORD volume )
 {
 	if( hseq != -1 )
 	{
-		AIL_set_relative_volume(hdriver, 0, (volume*MaxVolume)/100, 0 ) ;
+		// AIL_set_relative_volume(hdriver, 0, (volume*MaxVolume)/100, 0 ) ;
 	}
 }
 
@@ -453,9 +471,9 @@ void	DoLoopMidi()
 {
 	// loop track
 
-	if( hseq != -1 )
-		if( AIL_sequence_status( hdriver, 0 ) == 2 ) // seg done
-			AIL_start_sequence(hdriver,hseq) ;
+	// if( hseq != -1 )
+		// if( AIL_sequence_status( hdriver, 0 ) == 2 ) // seg done
+			// AIL_start_sequence(hdriver,hseq) ;
 }
 
 //████████████████████████████████████████████████████████████████████████████
