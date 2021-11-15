@@ -6,12 +6,12 @@
  *══════════════════════════════════════════════════════════════════════════*/
 
 #ifdef	WATCOM9
-	#pragma	library	("f:\projet\lib386\lib_sys\lb9_sys.lib");
+	#pragma	library	("c:\lba\lib386\lib_sys\lb9_sys.lib");
 #else
-	#pragma	library	("f:\projet\lib386\lib_sys\lib_sys.lib");
+	#pragma	library	("c:\lba\lib386\lib_sys\lib_sys.lib");
 #endif
 
-#include	"f:\projet\lib386\lib_sys\dll.h"
+#include	"lib_sys\dll.h"
 
 extern	volatile	UWORD	Key	;	/* scan code keyboard */
 

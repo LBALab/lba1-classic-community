@@ -7,7 +7,7 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	\projet\lib386\lib_svga\svga.ash
+			include	lib_svga\svga.ash
 comment @
 		DWORD	TabOffset[]
 			Brick:

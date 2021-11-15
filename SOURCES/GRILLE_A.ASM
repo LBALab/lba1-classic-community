@@ -13,7 +13,7 @@
 			extrn	NoLanguage	XScreen	:DWORD
 			extrn	NoLanguage	YScreen	:DWORD
 
-			include	\projet\lib386\lib_svga\svga.ash
+			include	lib_svga\svga.ash
 
 			public	NoLanguage	CodeJeu
 
