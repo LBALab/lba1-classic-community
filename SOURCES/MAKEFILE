@@ -21,6 +21,9 @@ WL = f:\compil\watcom10\binb\wlib
 !endif
 !endif
 
+CC = wcc386
+CL = Wcl386
+WL = wlib
 ASM = ml
 
 !ifeq WATCOM9 yes
@@ -47,15 +50,7 @@ OBJETS6  = HoloMap.obj playfla.obj adfli_a.obj mcga.obj
 EXE      = LBA0
 
 $(EXE).exe: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6)
-	if exist tempo.obs del tempo.obs
-	if exist tempo.obj del tempo.obj
-	copy    /B *.obj tempo.obs
-	ren     tempo.obs tempo.obj
-	$(CL) $(LFLAGS) /fe=$(EXE).exe tempo.obj
-	del     tempo.obj
-	prntitre M "$(EXE) OK"
-#       wstrip $(EXE)
-	copy $(EXE).exe \projet\lba\game
+	echo "run LINK.bat under 4DOS"
 
 .c.obj :
 	PRNTITRE M "$*.C"
