@@ -1,5 +1,5 @@
 del tempo.obj
 del tempo.obs
-copy /b version.obj perso.obj object.obj global.obj flipbox.obj diskfunc.obj fiche.obj extra.obj incrust.obj grille.obj grille_a.obj func.obj cpymask.obj Message.obj ambiance.obj Balance.obj gamemenu.obj fire.obj geretrak.obj gerelife.obj HoloMap.obj playfla.obj adfli_a.obj mcga.obj tempo.obs
+copy /b *.obj tempo.obs
 ren tempo.obs tempo.obj
-wcl386 /l=dos4g /x /zq /4s /k7000 /fe=LBA0.exe tempo.obj
+wcl386 /l=dos4g /x /zq /4s /k7000 /fe=LBA0.exe -"LIBP %LIB386_PATH%\LIB_3D;%LIB386_PATH%\LIB_CD;%LIB386_PATH%\LIB_MENU;%LIB386_PATH%\LIB_MIDI;%LIB386_PATH%\LIB_MIX;%LIB386_PATH%\LIB_SAMP;%LIB386_PATH%\LIB_SVGA;%LIB386_PATH%\LIB_SYS" -"LIB LIB_3D.LIB,LIB_CD.LIB,LIB_MENU.LIB,LIB_MIDI.LIB,LIB_MIX.LIB,LIB_WAVE.LIB,LIB_SVGA.LIB,LIB_SYS.LIB" tempo.obj
