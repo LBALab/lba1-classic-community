@@ -40,8 +40,8 @@ struct  ffblk   {
 #define RIGHT_ARROW     333
 #define BACKSPACE         8
 
-void decoder(LONG fd, WORD linewidth);
-WORD next_code(LONG fd);
+void decoder(FILE* fd, WORD linewidth);
+WORD next_code(FILE* fd);
 
 //union REGS reg;
 
@@ -145,7 +145,7 @@ void	line_out_gif( char *pt, WORD size )
 //	fd pointe deja sur le debut du gif sur disk
 //	Faire le Close a plus haut niveau !
 
-void	Read_Gif( LONG fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers )
+void	Read_Gif( FILE* fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers )
 {
 	char 		color	;
 	char		dummy	;
@@ -245,7 +245,7 @@ void	Read_Gif( LONG fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers )
 
 void Load_Gif(char *filename, UBYTE *screen, UBYTE *tabcol)
 {
-	LONG	fd	;
+	FILE*	fd	;
 	UBYTE	*buffers ;
 
 	fd = OpenRead( filename )	;
@@ -267,7 +267,7 @@ void Load_Gif(char *filename, UBYTE *screen, UBYTE *tabcol)
   ╚═════════════════════════════════════════════════════════╝
 */
 
-void decoder( LONG fd, WORD width )
+void decoder( FILE* fd, WORD width )
 {
 	short int code, fc=0, old_code=0, counter;
 	short int ch, size=0, ret	;
@@ -359,7 +359,7 @@ void decoder( LONG fd, WORD width )
 	WORD	bits_left
 */
 
-WORD next_code( LONG fd )
+WORD next_code( FILE* fd )
 {
 	short int flag=0	;
 	unsigned long int code	;

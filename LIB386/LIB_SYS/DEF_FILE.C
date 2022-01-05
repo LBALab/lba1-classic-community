@@ -21,9 +21,9 @@
 
 UBYTE	DefString[256] ;
 UBYTE	DefValue[50] ;
-LONG	DefHandle ;
-//LONG	DefHandleC ;
-//LONG	DefModeCopy = FALSE ;
+FILE*	DefHandle ;
+FILE*	DefHandleC ;
+LONG	DefModeCopy = FALSE ;
 UBYTE	*PtrDef ;
 UBYTE	*OrgPtrDef ;
 UBYTE	*EndPtrDef ;
@@ -44,7 +44,6 @@ void	NextLine()
 }
 #endif
 /*══════════════════════════════════════════════════════════════════════════*/
-/*
 LONG	ReadWord()
 {
 	UBYTE	*ptr ;
@@ -73,7 +72,6 @@ LONG	ReadWord()
 
 	return	TRUE ;
 }
-*/
 
 LONG	PtrDefReadWord()
 {
@@ -133,7 +131,6 @@ LONG	PtrDefReadIdent()
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-/*
 LONG	ReadString()
 {
 	UBYTE	*ptr ;
@@ -159,7 +156,7 @@ LONG	ReadString()
 
 	return	TRUE ;
 }
-*/
+
 void	PtrDefReadString()
 {
 	UBYTE	*ptr ;
@@ -194,7 +191,6 @@ void	PtrDefReadString()
 	*(ptr+1) = 0 ;
 }
 /*══════════════════════════════════════════════════════════════════════════*/
-/*
 LONG	ReadThisString()
 {
 	UBYTE	*ptr ;
@@ -227,7 +223,6 @@ LONG	ReadThisString()
 
 	return	TRUE ;
 }
-*/
 
 LONG	PtrDefReadThisString()
 {
@@ -262,7 +257,6 @@ LONG	PtrDefReadThisString()
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-/*
 LONG	SearchIdentificator( UBYTE *identificateur )
 {
 	while( ReadWord() )
@@ -280,7 +274,6 @@ LONG	SearchIdentificator( UBYTE *identificateur )
 	}
 	return FALSE ;
 }
-*/
 
 LONG	PtrDefSearchIdentificator( UBYTE *identificateur )
 {
@@ -301,7 +294,6 @@ LONG	PtrDefSearchIdentificator( UBYTE *identificateur )
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-/*
 UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
 {
 	DefHandle = OpenRead( deffic ) ;
@@ -318,26 +310,24 @@ UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
 	Close( DefHandle ) ;
 	return 0L ;
 }
-*/
 
-UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
-{
-	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
-	if( !PtrDef )	return 0 ;
-	EndPtrDef = PtrDef + LoadMallocFileSize ;
+// UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
+// {
+// 	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
+// 	if( !PtrDef )	return 0 ;
+// 	EndPtrDef = PtrDef + LoadMallocFileSize ;
 
-	if( PtrDefSearchIdentificator( identificateur ) )
-	{
-		PtrDefReadString() ;
-		Free( OrgPtrDef ) ;
-		return DefString ;
-	}
-	Free( OrgPtrDef ) ;
-	return 0 ;
-}
+// 	if( PtrDefSearchIdentificator( identificateur ) )
+// 	{
+// 		PtrDefReadString() ;
+// 		Free( OrgPtrDef ) ;
+// 		return DefString ;
+// 	}
+// 	Free( OrgPtrDef ) ;
+// 	return 0 ;
+// }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-/*
 LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
 {
 	LONG	i ;
@@ -378,50 +368,48 @@ LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
 	Close( DefHandle ) ;
 	return -1L ;
 }
-*/
 
-LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
-{
-	LONG	i ;
-	LONG	value ;
-	UBYTE	c ;
+// LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
+// {
+// 	LONG	i ;
+// 	LONG	value ;
+// 	UBYTE	c ;
 
-	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
-	if( !PtrDef )	return -1 ;
-	EndPtrDef = PtrDef + LoadMallocFileSize ;
+// 	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
+// 	if( !PtrDef )	return -1 ;
+// 	EndPtrDef = PtrDef + LoadMallocFileSize ;
 
-	if( PtrDefSearchIdentificator( identificateur ) )
-	{
-		if( PtrDefReadWord() )
-		{
-			Free( OrgPtrDef ) ;
-			c =DefString[strlen(DefString)-1]&~32 ;
-			if( c == 'H' )
-			{
-				// hexa
-				value = 0 ;
-				for( i=0; i<strlen(DefString)-1; i++ )
-				{
-					c = DefString[i] ;
-					if( c <= '9' )	c -= '0' ;
-					else		c = (c&~32) - 'A' + 10 ;
-					value = value*16 + c ;
-				}
-				return value ;
-			}
-			else
-			{
-				// deci
-				return atoi( DefString ) ;
-			}
-		}
-	}
-	Free( OrgPtrDef ) ;
-	return -1 ;
-}
+// 	if( PtrDefSearchIdentificator( identificateur ) )
+// 	{
+// 		if( PtrDefReadWord() )
+// 		{
+// 			Free( OrgPtrDef ) ;
+// 			c =DefString[strlen(DefString)-1]&~32 ;
+// 			if( c == 'H' )
+// 			{
+// 				// hexa
+// 				value = 0 ;
+// 				for( i=0; i<strlen(DefString)-1; i++ )
+// 				{
+// 					c = DefString[i] ;
+// 					if( c <= '9' )	c -= '0' ;
+// 					else		c = (c&~32) - 'A' + 10 ;
+// 					value = value*16 + c ;
+// 				}
+// 				return value ;
+// 			}
+// 			else
+// 			{
+// 				// deci
+// 				return atoi( DefString ) ;
+// 			}
+// 		}
+// 	}
+// 	Free( OrgPtrDef ) ;
+// 	return -1 ;
+// }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-/*
 LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
 {
 	LONG	i ;
@@ -464,55 +452,53 @@ LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
 	Close( DefHandle ) ;
 	return FALSE;
 }
-*/
 
-LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
-{
-	LONG	i ;
-	LONG	value ;
-	UBYTE	c ;
+// LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
+// {
+// 	LONG	i ;
+// 	LONG	value ;
+// 	UBYTE	c ;
 
-	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
-	if( !PtrDef )	return FALSE ;
-	EndPtrDef = PtrDef + LoadMallocFileSize ;
+// 	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
+// 	if( !PtrDef )	return FALSE ;
+// 	EndPtrDef = PtrDef + LoadMallocFileSize ;
 
-	if( PtrDefSearchIdentificator( identificateur ) )
-	{
-		if( PtrDefReadWord() )
-		{
-			Free( OrgPtrDef ) ;
+// 	if( PtrDefSearchIdentificator( identificateur ) )
+// 	{
+// 		if( PtrDefReadWord() )
+// 		{
+// 			Free( OrgPtrDef ) ;
 
-			c =DefString[strlen(DefString)-1]&~32 ;
-			if( c == 'H' )
-			{
-				// hexa
-				value = 0 ;
-				for( i=0; i<strlen(DefString)-1; i++ )
-				{
-					c = DefString[i] ;
-					if( c <= '9' )	c -= '0' ;
-					else		c = (c&~32) - 'A' + 10 ;
-					value = value*16 + c ;
-				}
-				*result = value;
-				return TRUE;
-			}
-			else
-			{
-				// deci
-				*result = atoi( DefString ) ;
-				return TRUE;
-			}
-		}
-	}
-	Free( OrgPtrDef ) ;
-	return FALSE ;
-}
+// 			c =DefString[strlen(DefString)-1]&~32 ;
+// 			if( c == 'H' )
+// 			{
+// 				// hexa
+// 				value = 0 ;
+// 				for( i=0; i<strlen(DefString)-1; i++ )
+// 				{
+// 					c = DefString[i] ;
+// 					if( c <= '9' )	c -= '0' ;
+// 					else		c = (c&~32) - 'A' + 10 ;
+// 					value = value*16 + c ;
+// 				}
+// 				*result = value;
+// 				return TRUE;
+// 			}
+// 			else
+// 			{
+// 				// deci
+// 				*result = atoi( DefString ) ;
+// 				return TRUE;
+// 			}
+// 		}
+// 	}
+// 	Free( OrgPtrDef ) ;
+// 	return FALSE ;
+// }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-/*
 LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 {
 	UBYTE	crlf[] = { 13, 10, 0 } ;
@@ -566,65 +552,64 @@ LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 	DefModeCopy = FALSE ;
 	return TRUE ;
 }
-*/
 
-LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
-{
-	WORD	crlf = 0x0A0D ;
+// LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
+// {
+// 	WORD	crlf = 0x0A0D ;
 
-	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
+// 	OrgPtrDef = PtrDef = LoadMalloc( deffic ) ;
 
-	if( PtrDef )	// fichier existe
-	{
-		EndPtrDef = PtrDef + LoadMallocFileSize ;
+// 	if( PtrDef )	// fichier existe
+// 	{
+// 		EndPtrDef = PtrDef + LoadMallocFileSize ;
 
-		DefHandle = OpenWrite( deffic ) ;
-		if( !DefHandle ) return FALSE ;
+// 		DefHandle = OpenWrite( deffic ) ;
+// 		if( !DefHandle ) return FALSE ;
 
-		if( PtrDefSearchIdentificator( identificateur ) )
-		{
-			// ecrit début fichier
-			Write( DefHandle, OrgPtrDef, PtrDef-OrgPtrDef ) ;
+// 		if( PtrDefSearchIdentificator( identificateur ) )
+// 		{
+// 			// ecrit début fichier
+// 			Write( DefHandle, OrgPtrDef, PtrDef-OrgPtrDef ) ;
 
-			// ecrit parametre
-			Write( DefHandle, " ", 1 ) ;
-			Write( DefHandle, string, strlen( string ) ) ;
-			Write( DefHandle, &crlf, 2 ) ;
+// 			// ecrit parametre
+// 			Write( DefHandle, " ", 1 ) ;
+// 			Write( DefHandle, string, strlen( string ) ) ;
+// 			Write( DefHandle, &crlf, 2 ) ;
 
-			PtrDefReadThisString() ;	// lit ancien parametre
+// 			PtrDefReadThisString() ;	// lit ancien parametre
 
-			// fin du fichier
-			Write( DefHandle, PtrDef, EndPtrDef-PtrDef ) ;
-			Close( DefHandle ) ;
-			Free( OrgPtrDef ) ;
+// 			// fin du fichier
+// 			Write( DefHandle, PtrDef, EndPtrDef-PtrDef ) ;
+// 			Close( DefHandle ) ;
+// 			Free( OrgPtrDef ) ;
 
-			return TRUE ;
-		}
+// 			return TRUE ;
+// 		}
 
-		//identificateur pas trouvé
+// 		//identificateur pas trouvé
 
-		// ecrit tout fichier
-		Write( DefHandle, OrgPtrDef, LoadMallocFileSize ) ;
+// 		// ecrit tout fichier
+// 		Write( DefHandle, OrgPtrDef, LoadMallocFileSize ) ;
 
-		Free( OrgPtrDef ) ;
-	}
-	else	// fichier n'existe pas
-	{
-		DefHandle = OpenWrite( deffic ) ;
-		if( !DefHandle )	return FALSE ;
-	}
+// 		Free( OrgPtrDef ) ;
+// 	}
+// 	else	// fichier n'existe pas
+// 	{
+// 		DefHandle = OpenWrite( deffic ) ;
+// 		if( !DefHandle )	return FALSE ;
+// 	}
 
-	// ecrit identificateur
-	Write( DefHandle, identificateur, strlen(identificateur) ) ;
-	Write( DefHandle, ": ", 2 ) ;
-	// ecrit parametre string
-	Write( DefHandle, string, strlen( string ) ) ;
-	Write( DefHandle, &crlf, 2 ) ;
+// 	// ecrit identificateur
+// 	Write( DefHandle, identificateur, strlen(identificateur) ) ;
+// 	Write( DefHandle, ": ", 2 ) ;
+// 	// ecrit parametre string
+// 	Write( DefHandle, string, strlen( string ) ) ;
+// 	Write( DefHandle, &crlf, 2 ) ;
 
-	Close( DefHandle ) ;
+// 	Close( DefHandle ) ;
 
-	return TRUE ;
-}
+// 	return TRUE ;
+// }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 

@@ -22,7 +22,7 @@ ULONG	LoadMallocFileSize ;
 /*──────────────────────────────────────────────────────────────────────────*/
 void	*LoadMalloc( char *name )
 {
-	LONG	handle	;
+	FILE*	handle	;
 	ULONG	sizer	;
 	void	*pt	;
 

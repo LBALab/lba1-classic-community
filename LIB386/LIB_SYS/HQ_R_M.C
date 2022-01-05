@@ -21,7 +21,7 @@ void	Expand( void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile ) ;
 
 LONG	HQRM_Load( UBYTE *name, UWORD index, void **ptrptr )
 {
-	LONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;

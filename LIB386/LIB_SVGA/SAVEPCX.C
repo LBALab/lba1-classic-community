@@ -46,7 +46,7 @@ void PcxSave( UBYTE *filename, UBYTE *screen, UBYTE *ptrpalette )
 {
 	short int index = 0, i,k,number,num_out	;
 	unsigned char ch, old_ch, file_buf[640*2];
-	ULONG handle ;
+	FILE* handle ;
 	UBYTE c ;
 
 	pcx_header.password = 0x0A;

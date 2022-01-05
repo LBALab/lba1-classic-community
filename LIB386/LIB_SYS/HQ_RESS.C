@@ -36,7 +36,7 @@ void	Expand( void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile ) ;
 
 void	*LoadMalloc_HQR( UBYTE *name, UWORD index )
 {
-	LONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;
@@ -97,7 +97,7 @@ void	*LoadMalloc_HQR( UBYTE *name, UWORD index )
 
 ULONG	Load_HQR( UBYTE *name, void *ptrdest, UWORD index )
 {
-	LONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;
@@ -148,7 +148,7 @@ ULONG	Load_HQR( UBYTE *name, void *ptrdest, UWORD index )
 
 ULONG	Size_HQR( char *name, UWORD index )
 {
-	ULONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;
@@ -310,7 +310,7 @@ void	*HQR_Get( T_HQR_HEADER *header, WORD index )
 	ULONG		offset ;
 
 	// ressources
-	ULONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;
@@ -497,7 +497,7 @@ void	*HQR_GetSample( T_HQR_HEADER *header, WORD index )
 	ULONG		offset ;
 
 	// ressources
-	ULONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;

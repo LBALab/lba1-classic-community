@@ -111,7 +111,7 @@ LONG	LoadUsedBrick( ULONG size )
 	ULONG	brick	;
 	ULONG	offseek	;
 	ULONG	*ptseek	;
-	ULONG	handle	;
+	FILE*	handle	;
 	ULONG	nbentity;
 	UWORD	*tabflag;
 	UWORD	*ptflag	;

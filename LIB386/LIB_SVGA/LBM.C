@@ -22,7 +22,7 @@ WORD	Lbm_Width = 640 ;
 
 #define	BUFLIGNEMAX	720
 
-static	WORD	Handle ;
+static	FILE*	Handle ;
 static	ULONG 	rejet ;
 static	ULONG 	len ;
 static	BYTE    head[] = "BMHD" ;

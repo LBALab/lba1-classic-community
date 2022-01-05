@@ -174,7 +174,7 @@ extern long Save_Lbm(char *,unsigned char *,unsigned char *);
 /*                      PCX.c	640*480					*/
 
 extern void line_out(unsigned char *);
-extern unsigned char next_char(unsigned long ,unsigned char *);
+extern unsigned char next_char(FILE* ,unsigned char *);
 extern void Load_Pcx(char *,unsigned char *,unsigned char *);
 extern void Save_Pcx(char *,unsigned char *,unsigned char *);
 

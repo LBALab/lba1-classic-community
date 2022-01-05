@@ -5,6 +5,7 @@
 		▀▀  ▀ ▀▀▀▀▀ ▀▀    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 #include	"lib_sys\dll.h"
+#include "stdio.h"
 
 extern	volatile	UWORD	Key	;	/* scan code keyboard */
 
@@ -193,13 +194,13 @@ extern	UWORD	AsciiMode ;	/* TRUE/FALSE gestion buffer keyboard */
 /*──────────────────────────────────────────────────────────────────────────*/
 /*				FILES.C					    */
 void	AddExt( char *name, char *ext )				;
-LONG	OpenRead( char *name )					;
-LONG	OpenWrite( char *name )					;
-LONG	OpenReadWrite( char *name )				;
-ULONG	Read( LONG handle, void *buffer, ULONG lenread  )	;
-ULONG	Write( LONG handle, void *buffer, ULONG lenwrite  )	;
-void	Close( LONG handle )					;
-LONG	Seek( LONG handle, LONG position,LONG mode )		;
+FILE*	OpenRead( char *name )					;
+FILE*	OpenWrite( char *name )					;
+FILE*	OpenReadWrite( char *name )				;
+ULONG	Read( FILE* handle, void *buffer, ULONG lenread  )	;
+ULONG	Write( FILE* handle, void *buffer, ULONG lenwrite  )	;
+void	Close( FILE* handle )					;
+LONG	Seek( FILE* handle, LONG position,LONG mode )		;
 LONG	Delete( char *name )					;
 ULONG	FileSize( char *name )					;
 /*──────────────────────────────────────────────────────────────────────────*/
