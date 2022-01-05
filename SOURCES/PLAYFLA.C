@@ -608,7 +608,7 @@ void	PlayDiskFla( UBYTE *name_anim )
 	LONG	size,n, nb, timer ;
 	UBYTE	listindex[20] ;
 
-	size = HQRM_Load( PATH_RESSOURCE"ress.hqr", RESS_FLA_PCX, &ptrtxt ) ;
+	size = HQRM_Load( PATH_RESSOURCE"ress.hqr", RESS_FLA_PCX, (void**)&ptrtxt ) ;
 	CHECK_MEMORY
 	if( !ptrtxt )
 	{
