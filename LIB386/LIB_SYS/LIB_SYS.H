@@ -297,8 +297,8 @@ LONG		HQR_Change_Ressource( T_HQR_HEADER *header, char *newhqrname ) ;
 void		HQR_Reset_Ressource( T_HQR_HEADER *header ) ;
 void    	HQR_Free_Ressource( T_HQR_HEADER *header ) ;
 
-void		*HQR_Get( T_HQR_HEADER *header, UWORD index ) ;
-void		*HQR_GetSample( T_HQR_HEADER *header, UWORD index ) ;
+void		*HQR_Get( T_HQR_HEADER *header, WORD index ) ;
+void		*HQR_GetSample( T_HQR_HEADER *header, WORD index ) ;
 
 UWORD		HQR_Del_Bloc( T_HQR_HEADER *header, WORD index ) ;
 UWORD		HQR_Del_Bloc_Sample( T_HQR_HEADER *header, WORD index ) ;
