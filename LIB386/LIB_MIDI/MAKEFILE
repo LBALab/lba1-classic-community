@@ -17,6 +17,8 @@ WL = f:\compil\watcom10\binb\wlib
 !endif
 !endif
 
+CC = wcc386
+WL = wlib
 ASM = ml
 
 !ifeq WATCOM9 yes
@@ -29,7 +31,7 @@ LFLAGS = -b -n -c -q
 AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=;
 
 
-OBJETS1  = midi.obj ail32.obj
+OBJETS1  = midi.obj # ail32.obj
 OBJETS2  =
 OBJETS3  =
 OBJETS4  =

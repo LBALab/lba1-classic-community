@@ -1489,7 +1489,7 @@ Proj_ISO	proc		; eax:X ebx:Y ebp:Z
 		lea	edx, [ebp*4]		; *4
 		lea	ebp, [edx+ebp*8]	; *12
 
-		lea	ecx, [ebx+ebx]		; =*2
+		lea	ecx, [ebx+ebx*1]	; =*2
 		shl	ebx, 5			; 32
 		sub	ebx, ecx		; y*30
 

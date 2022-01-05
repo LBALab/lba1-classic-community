@@ -1,7 +1,7 @@
 #ifdef	WATCOM9
-#pragma	library	("f:\projet\lib386\lib_samp\lb9_wave.lib");
+#pragma	library	("c:\lba\lib386\lib_samp\lb9_wave.lib");
 #else
-#pragma	library	("f:\projet\lib386\lib_samp\lib_wave.lib");
+#pragma	library	("c:\lba\lib386\lib_samp\lib_wave.lib");
 #endif
 
 typedef	struct

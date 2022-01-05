@@ -17,6 +17,8 @@ WL = f:\compil\watcom10\binb\wlib
 !endif
 !endif
 
+CC = wcc386
+WL = wlib
 ASM = ml
 
 !ifeq WATCOM9 yes

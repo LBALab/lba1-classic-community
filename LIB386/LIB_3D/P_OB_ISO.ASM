@@ -1284,7 +1284,7 @@ nosxmax:
 ; essai de correction tri par influence du y
 		sub	bp, bx
 
-		lea	ecx, [ebx+ebx]		; *2
+		lea	ecx, [ebx+ebx*1]	; *2
 		shl	ebx, 5			; 32
 		sub	ecx, ebx		; - y*30
 

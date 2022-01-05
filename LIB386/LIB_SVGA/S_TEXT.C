@@ -1,8 +1,8 @@
 
-#include	"\projet\lib386\lib_sys\adeline.h"
-#include	"\projet\lib386\lib_sys\lib_sys.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
 
-#include	"\projet\lib386\lib_svga\lib_svga.h"
+#include "lib_svga\lib_svga.h"
 
 #include	<string.h>
 #include	<stdlib.h>
