@@ -1,15 +1,6 @@
 /*-----------------------------------------------------------------------------
 ;                       Extern lib_svga 386
 ;-----------------------------------------------------------------------------*/
-
-#ifdef	WATCOM9
-#pragma library ( "c:\lba\lib386\lib_svga\lb9_svga.lib" );
-#else
-#pragma library ( "c:\lba\lib386\lib_svga\lib_svga.lib" );
-#endif
-
-/*-----------------------------------------------------------------------------*/
-
 #define SVGA_VESA               0	/* VESA compliant board at Adress 0xA0000 */
 #define SVGA_TRIDENT            1	/* Trident 8800 & 8900 */
 #define SVGA_ATI                2	/* ATI Chipset */

@@ -4,13 +4,6 @@
 		██▀▄  ██▀▀  ██▀   ██▀▀█ ██  █ ██▀▀█ ██▀█▀ ██  █
 		▀▀  ▀ ▀▀▀▀▀ ▀▀    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
-
-#ifdef	WATCOM9
-	#pragma	library	("c:\lba\lib386\lib_sys\lb9_sys.lib");
-#else
-	#pragma	library	("c:\lba\lib386\lib_sys\lib_sys.lib");
-#endif
-
 #include	"lib_sys\dll.h"
 
 extern	volatile	UWORD	Key	;	/* scan code keyboard */
