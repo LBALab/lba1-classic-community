@@ -85,7 +85,7 @@ typedef struct	{	WORD	WindowX1 ;
 /*══════════════════════════════════════════════════════════════════════════*/
 /* asm_sort.asm */
 
-extern	int MySortCompFunc( char**, char** ) ;
+extern	int MySortCompFunc(void const*,void const* ) ;
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /* menu.c */
