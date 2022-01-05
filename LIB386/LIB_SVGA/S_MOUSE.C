@@ -194,7 +194,7 @@ void 	InitMouse()
 	int installed = 0		;
 	int orig_mode = 0		;
 	int far *ptr			;
-	int (far *function_ptr)()	;
+	void (far *function_ptr)(int,int,int)	;
 
 	segread(&sregs)	;
 
