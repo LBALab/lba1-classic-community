@@ -1,6 +1,7 @@
-// TODO
-// #include "lib_midi\ail32.h"      // Audio Interface Library API function header
-// #include "ail.h"      // Audio Interface Library API function header
+#ifdef USE_AIL32
+#include "lib_midi\ail32.h"      // Audio Interface Library API function header
+#include "ail.h"      // Audio Interface Library API function header
+#endif
 
 extern	char	Midi_Driver[_MAX_PATH] ;
 extern  char	Midi_Driver_Name[80] ;
