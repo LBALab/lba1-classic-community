@@ -1772,13 +1772,17 @@ if( APtObj->Flags & CHECK_BRICK_COL )
 		if( (X0 >= 0) AND (Y0 >= 0) AND (X0 <= 63*SIZE_BRICK_XZ) AND (Y0 <= 63*SIZE_BRICK_XZ)
 		AND (WorldColBrick( X0, Nyw+256, Y0 ) != 0) )
 		{
-			InitSpecial(	APtObj->PosObjX,
-					APtObj->PosObjY+1000,
-					APtObj->PosObjZ,
-					0 ) ;
-			InitAnim( GEN_ANIM_CHOC, ANIM_ALL_THEN, GEN_ANIM_RIEN, AnimNumObj ) ;
-			if( AnimNumObj == NUM_PERSO )		LastJoyFlag = TRUE ;
-			APtObj->LifePoint -= 1 ;
+			// If wall collision damage flag is set to enabled, execute code for animating a collision and decreasing life. If disabled, ignore.
+			if (WallColDamageEnabled != 0) 
+			{
+				InitSpecial(	APtObj->PosObjX,
+						APtObj->PosObjY+1000,
+						APtObj->PosObjZ,
+						0 ) ;
+				InitAnim( GEN_ANIM_CHOC, ANIM_ALL_THEN, GEN_ANIM_RIEN, AnimNumObj ) ;
+				if( AnimNumObj == NUM_PERSO )		LastJoyFlag = TRUE ;
+				APtObj->LifePoint -= 1 ;
+			}
 		}
 	}
 	}

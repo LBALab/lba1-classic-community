@@ -269,6 +269,8 @@ extern	WORD	SaveChapitre ;
 extern	WORD	SaveNbCloverBox ;
 extern	WORD	SaveNbFourLeafClover ;
 
+extern  WORD	WallColDamageEnabled ;	// 0: disabled, 1: enabled
+
 /*--------- Extra objs ----------------------------*/
 
 extern	T_EXTRA	ListExtra[] ;

@@ -202,6 +202,8 @@ WORD	SaveBeta = 0 ;
 
 //UBYTE	SaveListFlagGame[MAX_FLAGS_GAME] ;
 
+WORD	WallColDamageEnabled = 0 ;		// 0: disabled, 1: enabled
+
 /*--------- Extra objs ----------------------------*/
 
 T_EXTRA	ListExtra[MAX_EXTRAS] ;

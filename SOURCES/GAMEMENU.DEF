@@ -27,6 +27,7 @@ extern void DrawAllLetters(void);
 extern short InputPlayerName(short );
 extern short ChoosePlayerName(short );
 extern void DrawOneChoice(short ,short ,short ,short ,short );
+extern void InfoWallCollisionDamage();
 extern void DrawGameMenu(unsigned short *,short );
 extern void SetVolumes(long ,long ,long ,long ,long );
 extern short DoGameMenu(unsigned short *);

@@ -710,6 +710,20 @@ startloop:
 				while( Key ) ;
 			}
 		}
+		
+		// Toggle wall collision damage on/off by pressing F12.
+		if ( MyKey == K_F12 )
+		{
+			// WallColDamageEnabled set to values 0 or 1 (disabled and enabled)
+			SaveTimer() ;
+			TestRestoreModeSVGA( TRUE ) ;			
+			WallColDamageEnabled = (WallColDamageEnabled + 1) % 2 ;
+			InfoWallCollisionDamage();
+			while ( Key ) ;
+			RestoreTimer() ;
+			AffScene(TRUE) ;
+
+		}
 /*
 		if( MyKey == K_B )
 		{

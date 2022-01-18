@@ -1542,6 +1542,28 @@ char    *GetMultiText( LONG text, char *dst )
 
 	return(dst)     ;
 }
+
+// Function to get text not defined in TEXT.HQR. 
+// TODO: Ideally a new file should be created for custom community text instead of having it in code, or have this text included in TEXT.HQR
+char	*GetCustomizedText(WORD num)
+{
+	char* customStr;
+	
+	switch (num) 
+	{
+		case 34:
+			customStr = "Wall Collision Damage Off";
+			break;
+		case 234:
+			customStr = "Wall Collision Damage On";
+			break;
+		default:
+			customStr = "";
+			break;
+	}
+	
+	return customStr;
+}
 /*-------------------------------------------------------------------------*/
 #ifdef	LBA_EDITOR
 void    CleanMessage( UBYTE *string, LONG flag )

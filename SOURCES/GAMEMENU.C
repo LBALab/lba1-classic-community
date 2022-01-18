@@ -51,7 +51,7 @@ UWORD	GameOptionMenu[] = {
 
 UWORD	GameAdvancedMenu[] = {
 			0,	// selected
-			5,	// nb entries
+			6,	// nb entries
 			0,	// y from top.
 			0,	// .dia num
 
@@ -59,7 +59,8 @@ UWORD	GameAdvancedMenu[] = {
 			0, 4,	// agressif auto/manuel
 			6, 31,	// niveau details
 			7, 32,	// ombres on/off
-			8, 33	// zoom on/off
+			8, 33,	// zoom on/off
+			9, 34	// wall damage on/off
 				} ;
 
 UWORD	GameVolumeMenu[] = {
@@ -1820,6 +1821,7 @@ WORD	ChoosePlayerName( WORD mess )
 
 void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 {
+	char* 	multiTextPtr;
 	WORD	x2, x0,y0,x1,y1 ;
 	UBYTE	string[256] ;
 	ULONG	volleft, volright ;
@@ -1898,13 +1900,29 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 	// text
 
 	CoulFont( COUL_TEXT_MENU ) ;
-	GetMultiText( num, string ) ;
+	multiTextPtr = GetMultiText( num, string ) ;
 
+	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
+	if(!multiTextPtr)
+	{
+		char *customTextPtr = GetCustomizedText( num );
+		strcpy(string, customTextPtr);
+	}
+	
 	Font( x - SizeFont( string )/2, y-18, string ) ;
 
 	// flip
 
 	CopyBlockPhys( x0,y0, x1,y1 ) ;
+}
+
+// Display a line of text indicating whether wall collision damage is turned on or off
+void	InfoWallCollisionDamage()
+{
+	WORD 	num = WallColDamageEnabled ? 234 : 34 ;
+	char* 	infoText = GetCustomizedText(num); 
+	
+	DrawSingleString(250, 50, infoText);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -2386,6 +2404,9 @@ void	AdvancedOptions()
 	WORD flag = 0 ;
 
 	CopyScreen( Log, Screen ) ;
+	
+	// Setting initial value of Wall Damage Collision on the menu (this is to avoid inconsistency if the player toggles damage collision using F12 and opens the menu afterwards).
+	GameAdvancedMenu[15] = WallColDamageEnabled ? 234 : 34;
 
 	while( !flag )
 	{
@@ -2440,6 +2461,14 @@ void	AdvancedOptions()
 			case 233: // pas zoom
 				GameAdvancedMenu[13] = 33 ;
 				SceZoom = 1 ;
+				break ;
+			case 34: // wall collision damage on
+				GameAdvancedMenu[15] = 234 ;
+				WallColDamageEnabled = 1;
+				break ;
+			case 234: // wall collision damage off
+				GameAdvancedMenu[15] = 34;
+				WallColDamageEnabled = 0;
 				break ;
 
 /*			case 233: // zoom soft
