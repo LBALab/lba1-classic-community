@@ -201,7 +201,7 @@ WORD	ExtraSearch(	WORD owner, WORD x, WORD y, WORD z, WORD num,
 		if( ptrextra->Sprite != -1 )	continue ;
 		/* slot libre */
 
-		/* TimeOut: num obj throw
+		/* TimeOut: num obj throw */
 		/* WORD Timer: num obj search */
 		/* &OrgX = RealValue
 			(OrgY, OrgZ, Vx, Vy */
@@ -256,7 +256,7 @@ WORD	ExtraSearchKey(	WORD owner, WORD x, WORD y, WORD z,
 		if( ptrextra->Sprite != -1 )	continue ;
 		/* slot libre */
 
-		/* TimeOut: num obj throw
+		/* TimeOut: num obj throw */
 		/* WORD Timer: num obj search */
 		/* &OrgX = RealValue
 			(OrgY, OrgZ, Vx, Vy */

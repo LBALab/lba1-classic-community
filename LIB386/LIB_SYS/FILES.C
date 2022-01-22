@@ -26,59 +26,53 @@
 
 
 /*--------------------------------------------------------------------------*/
-LONG	OpenRead( char *name )
+FILE*	OpenRead( char *name )
 {
-	int	handle	;
-
-	if ( _dos_open( name, O_RDONLY, &handle ))	handle = 0	;
-	return(handle)	;
-
+	FILE* fp;
+    fp = fopen (name, "rb");
+	return fp;
 }
 /*--------------------------------------------------------------------------*/
-LONG	OpenWrite( char *name )
+FILE*	OpenWrite( char *name )
 {
-	int	handle	;
-
-	if ( _dos_creat( name, _A_NORMAL, &handle ))	handle = 0	;
-	return(handle)	;
-
+	FILE* fp;
+    fp = fopen (name, "wb");
+	return fp;
 }
 /*--------------------------------------------------------------------------*/
-LONG	OpenReadWrite( char *name )
+FILE*	OpenReadWrite( char *name )
 {
-	int	handle	;
-
-	if ( _dos_open( name, O_RDWR, &handle ))	handle = 0	;
-	return(handle)	;
-
+	FILE* fp;
+    fp = fopen (name, "rb+");
+	return fp;
 }
 /*--------------------------------------------------------------------------*/
-ULONG	Read( LONG handle, void *buffer, ULONG lenread  )
+ULONG	Read( FILE* handle, void *buffer, ULONG lenread  )
 {
 	ULONG	howmuch	;
 
 	if ( lenread == 0xFFFFFFFFL )	/*	-1L	*/
 		lenread = 16000000L	;/* Ca Accelere !! 	*/
-	_dos_read( handle, buffer, lenread, (unsigned int *)&howmuch )	;
+	howmuch = fread(buffer, lenread, 1, handle);
 	return( howmuch )	;
 }
 /*--------------------------------------------------------------------------*/
-ULONG	Write( LONG handle, void *buffer, ULONG lenwrite )
+ULONG	Write( FILE* handle, void *buffer, ULONG lenwrite )
 {
 	ULONG	howmuch	;
-
-	_dos_write( handle, buffer, lenwrite, (unsigned int *)&howmuch )	;
+	howmuch = fwrite(buffer, lenwrite, 1, handle);
 	return( howmuch )	;
 }
 /*--------------------------------------------------------------------------*/
-void	Close( LONG handle )
+void	Close( FILE* handle )
 {
-	_dos_close( handle )	;
+	fclose(handle);
 }
 /*--------------------------------------------------------------------------*/
-LONG	Seek( LONG handle, LONG position, LONG mode )
+LONG	Seek( FILE* handle, LONG position, LONG mode )
 {
-	return(lseek( handle, position, mode ))	;
+	return(fseek(handle, position, mode));
+	
 }
 /*--------------------------------------------------------------------------*/
 LONG	Delete( char *name )
@@ -89,13 +83,14 @@ LONG	Delete( char *name )
 /*--------------------------------------------------------------------------*/
 ULONG	FileSize( char *name )
 {
-	int	handle	;
+	FILE*	handle	;
 	ULONG	fsize	;
 
 	handle = OpenRead( name )	;
 	if ( handle == 0 ) return(0)	;
 
-	fsize = Seek( handle, 0, SEEK_END );
+	fseek(handle, 0L, SEEK_END);
+	fsize = ftell(handle);
 
 	Close( handle )	;
 	return( fsize )	;
@@ -136,8 +131,8 @@ void	AddExt( char *path, char *ext )
 LONG	Copy( UBYTE *sname, UBYTE *dname )
 {
 	ULONG	n, size ;
-	LONG	shandle ;
-	LONG	dhandle ;
+	FILE*	shandle ;
+	FILE*	dhandle ;
 	UBYTE	c ;
 
 	size = FileSize( sname ) ;

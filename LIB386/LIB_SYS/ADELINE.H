@@ -11,6 +11,8 @@
 #define	WORD	signed short int
 #define	UBYTE	unsigned char
 #define	BYTE	signed char
+#define UINT	unsigned int
+#define INT		signed int
 
 /*──────────────────────────────────────────────────────────────────────────*/
 

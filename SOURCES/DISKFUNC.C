@@ -25,7 +25,7 @@ void	GetDiskEnv( UBYTE *progpath )
 
 void	RestoreDiskEnv()
 {
-	ULONG	total ;
+	UINT	total ;
 
 	_dos_setdrive( OrgDrive, &total ) ;
 	chdir( OrgDir ) ;
@@ -49,7 +49,7 @@ WORD	LoadScene( WORD numscene )
 
 //	PtrScene = PtrSce = LoadMalloc_HQR( PATH_RESSOURCE"scene.hqr", numscene ) ;
 
-	HQRM_Load( PATH_RESSOURCE"scene.hqr", numscene, &PtrScene ) ;
+	HQRM_Load( PATH_RESSOURCE"scene.hqr", numscene, (void**)&PtrScene ) ;
 	CHECK_MEMORY
 
 	PtrSce = PtrScene ;
@@ -129,7 +129,7 @@ WORD	LoadScene( WORD numscene )
 			if( !(ptrobj->Flags & SPRITE_3D) )
 			{
 
-	HQRM_Load( PATH_RESSOURCE"File3D.hqr", indexfile3d, &ptrobj->PtrFile3D ) ;
+	HQRM_Load( PATH_RESSOURCE"File3D.hqr", indexfile3d, (void**)&ptrobj->PtrFile3D ) ;
 	CHECK_MEMORY
 
 /*				ptrobj->PtrFile3D =

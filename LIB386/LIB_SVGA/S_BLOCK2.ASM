@@ -12,7 +12,7 @@ EVEN
 CptPixl		dw	0
 CptLine		dw	0
 
-			include	f:\projet\lib386\lib_svga\svga.ash
+			include	lib_svga\svga.ash
 
 
 ;----------------------------------------------------------------------------

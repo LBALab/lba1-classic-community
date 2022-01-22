@@ -157,7 +157,7 @@ T_FLA_BALANCE			HeaderBalanceFlaNew;
 T_FLA_SAMPLE_STOP		HeaderSampleStopFlaNew;
 T_FLA_INFO			HeaderInfo ;
 
-LONG	HandleFla	;
+FILE*	HandleFla	;
 LONG	DeltaX, DeltaY	;
 LONG	MaxPass		;
 LONG	MaxFrame	;
@@ -608,7 +608,7 @@ void	PlayDiskFla( UBYTE *name_anim )
 	LONG	size,n, nb, timer ;
 	UBYTE	listindex[20] ;
 
-	size = HQRM_Load( PATH_RESSOURCE"ress.hqr", RESS_FLA_PCX, &ptrtxt ) ;
+	size = HQRM_Load( PATH_RESSOURCE"ress.hqr", RESS_FLA_PCX, (void**)&ptrtxt ) ;
 	CHECK_MEMORY
 	if( !ptrtxt )
 	{
@@ -653,7 +653,7 @@ void	PlayDiskFla( UBYTE *name_anim )
 			Load_HQR( PATH_RESSOURCE"fla_pcx.hqr", PalettePcx, listindex[n] ) ;
 */
 			{
-				LONG		handle ;
+				FILE*		handle ;
 				UWORD		nbbloc ;
 				ULONG		buffer ;
 				ULONG		seekindex ;

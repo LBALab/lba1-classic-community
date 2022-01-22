@@ -19,12 +19,12 @@
 /*-------------------------------------------------------------------------*/
 
 #ifdef  LORAN
-#include "f:\projet\lib386\lib_sys\adeline.h"
-#include "f:\projet\lib386\lib_sys\lib_sys.h"
-#include "f:\projet\lib386\lib_svga\lib_svga.h"
-#include "f:\projet\lib386\lib_menu\lib_menu.h"
-#include "f:\projet\lib386\lib_cd\lib_cd.h"
-#include "f:\projet\lib386\lib_3d\lib_3d.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
+#include "lib_svga\lib_svga.h"
+#include "lib_menu\lib_menu.h"
+#include "lib_cd\lib_cd.h"
+#include "lib_3d\lib_3d.h"
 
 #include        <stdlib.h>
 #include        <string.h>
@@ -193,8 +193,8 @@ static	LONG	FlagKeepVoice=0		;
 	LONG	FlagDisplayText=1	;//	ON par default
 static  LONG    FlagNextVoc=FALSE	;
 ULONG   *BufMemoSeek=0  		;
-static  ULONG   FdNar=0         	;
-static	ULONG	FdCd=0			;
+static  FILE*   FdNar=0         	;
+static	FILE*	FdCd=0			;
 typedef	struct
 {
 	char	NameHD[13+sizeof(PATH_NAR_HD)]	;
@@ -457,7 +457,7 @@ void	DeleteOlderFileHD()
 //	Copy File CD On HD ( filename for CD must don't contain drive !!!)
 LONG	CopyFileCD_HD( char *filecd, char *filehd )
 {
-	ULONG	fd	;
+	FILE*	fd	;
 	LONG	size, wr;
 	LONG	i, sect	;
 	char	fname[256];

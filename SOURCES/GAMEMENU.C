@@ -1146,7 +1146,7 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname )
 	UBYTE	wbyte ;
 	UBYTE	pathname[_MAX_PATH] ;
 	WORD	nb = 0 ;
-	ULONG	handle ;
+	FILE*	handle ;
 
 	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
 
@@ -1187,7 +1187,7 @@ WORD	FindPlayerFile()
 	UBYTE	pathname[_MAX_PATH] ;
 	UBYTE	playername[MAX_SIZE_PLAYER_NAME+1] ;
 	UBYTE	*ptr ;
-	ULONG	handle ;
+	FILE*	handle ;
 	UBYTE	wbyte ;
 
 	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
@@ -1228,7 +1228,7 @@ WORD	FindPlayerFile()
 
 void	SaveGame()
 {
-	WORD	handle ;
+	FILE*	handle ;
 	WORD	wword ;
 	UBYTE	wbyte ;
 
@@ -1294,7 +1294,7 @@ void	SaveGame()
 
 void	LoadGame()
 {
-	WORD	handle ;
+	FILE*	handle ;
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
@@ -2316,7 +2316,7 @@ void	SavedGameManagement()
 					LONG	size ;
 					UBYTE	num ;
 					UBYTE	n,c ;
-					LONG	handle ;
+					FILE*	handle ;
 
 					ptrs = ptr = LoadMalloc( GamePathname ) ;
 					size = FileSize( GamePathname ) ;

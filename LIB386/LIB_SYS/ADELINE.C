@@ -2,22 +2,22 @@
 #include <string.h>
 #include <process.h>
 
-#include "f:\projet\lib386\lib_sys\adeline.h"
-#include "f:\projet\lib386\lib_sys\lib_sys.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
 
-#include "f:\projet\lib386\lib_midi\lib_midi.h"
-#include "f:\projet\lib386\lib_samp\lib_wave.h"
-#include "f:\projet\lib386\lib_mix\lib_mix.h"
-#include "f:\projet\lib386\lib_svga\lib_svga.h"
+#include "lib_midi\lib_midi.h"
+#include "lib_samp\lib_wave.h"
+#include "lib_mix\lib_mix.h"
+#include "lib_svga\lib_svga.h"
 
 
 char	Driver[_MAX_PATH] ;
 
 // timer proc for ail_lib
 
-HTIMER	HandleTimer ;
+// HTIMER	HandleTimer ;
 
-void	NewProc08() ; // dans timer.asm
+// void	NewProc08() ; // dans timer.asm
 
 extern	UBYTE	VESA_Error ;
 
@@ -302,9 +302,9 @@ void	InitAdelineSystem( char *name, LONG inits )
 
 	if( Midi_Driver_Enable )
 	{
-		HandleTimer = AIL_register_timer( NewProc08 ) ;
-		AIL_set_timer_frequency( HandleTimer, 50 ) ;
-		AIL_start_timer( HandleTimer ) ;
+		// HandleTimer = AIL_register_timer( NewProc08 ) ;
+		// AIL_set_timer_frequency( HandleTimer, 50 ) ;
+		// AIL_start_timer( HandleTimer ) ;
 	}
 	else
 	{

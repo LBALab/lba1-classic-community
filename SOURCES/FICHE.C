@@ -612,7 +612,7 @@ WORD	SearchBody( UBYTE numbody, WORD numobj )
 				{
 
 //Text( 10,120, "%FSearchBody new %d", hqrbody ) ;
-		HQRM_Load( PATH_RESSOURCE"body.hqr", hqrbody, &PtrBody[NbBodys] ) ;
+		HQRM_Load( PATH_RESSOURCE"body.hqr", hqrbody, (void**)&PtrBody[NbBodys] ) ;
 		CHECK_MEMORY
 
 /*					PtrBody[NbBodys]

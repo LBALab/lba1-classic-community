@@ -1,9 +1,3 @@
-#ifdef	WATCOM9
-#pragma	library ("f:\projet\lib386\lib_menu\lb9_menu.lib");
-#else
-#pragma	library ("f:\projet\lib386\lib_menu\lib_menu.lib");
-#endif
-
 #define	SELECT_NO_FLAG		0
 #define SELECT_SHOW_EXT		1
 #define	SELECT_TEST_EXIST	2
@@ -91,7 +85,7 @@ typedef struct	{	WORD	WindowX1 ;
 /*══════════════════════════════════════════════════════════════════════════*/
 /* asm_sort.asm */
 
-extern	int MySortCompFunc( char**, char** ) ;
+extern	int MySortCompFunc(void const*,void const* ) ;
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /* menu.c */

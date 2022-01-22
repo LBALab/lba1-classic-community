@@ -20,7 +20,7 @@
 /*──────────────────────────────────────────────────────────────────────────*/
 ULONG	Load( char *name, void *buffer )
 {
-	LONG	handle	;
+	FILE*	handle	;
 	ULONG	size	;
 
 	size = FileSize( name )		;
@@ -39,7 +39,7 @@ ULONG	Load( char *name, void *buffer )
 
 ULONG	Save( char *name, void *buffer, ULONG size )
 {
-	LONG	handle ;
+	FILE*	handle ;
 	ULONG	nbwrote ;
 
 	handle = OpenWrite( name ) ;
