@@ -7,8 +7,8 @@
 
 		.data
 
-		include	\projet\lib386\lib_svga\svga.ash
-		include	\projet\lib386\lib_sys\lib_sys.ash
+		include	lib_svga\svga.ash
+		include	lib_sys\lib_sys.ash
 
 		public	NoLanguage      Imagen
 

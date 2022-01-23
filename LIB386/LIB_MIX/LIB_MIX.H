@@ -1,9 +1,3 @@
-#ifdef WATCOM9
-#pragma	library	("f:\projet\lib386\lib_mix\lb9_mix.lib");
-#else
-#pragma	library	("f:\projet\lib386\lib_mix\lib_mix.lib");
-#endif
-
 extern	LONG	Mixer_Driver_Enable;
 
 /*----------------------------------------------------------------------*/

@@ -4,14 +4,8 @@
 		██▀▄  ██▀▀  ██▀   ██▀▀█ ██  █ ██▀▀█ ██▀█▀ ██  █
 		▀▀  ▀ ▀▀▀▀▀ ▀▀    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
-
-#ifdef	WATCOM9
-	#pragma	library	("f:\projet\lib386\lib_sys\lb9_sys.lib");
-#else
-	#pragma	library	("f:\projet\lib386\lib_sys\lib_sys.lib");
-#endif
-
-#include	"f:\projet\lib386\lib_sys\dll.h"
+#include	"lib_sys\dll.h"
+#include "stdio.h"
 
 extern	volatile	UWORD	Key	;	/* scan code keyboard */
 
@@ -200,13 +194,13 @@ extern	UWORD	AsciiMode ;	/* TRUE/FALSE gestion buffer keyboard */
 /*──────────────────────────────────────────────────────────────────────────*/
 /*				FILES.C					    */
 void	AddExt( char *name, char *ext )				;
-LONG	OpenRead( char *name )					;
-LONG	OpenWrite( char *name )					;
-LONG	OpenReadWrite( char *name )				;
-ULONG	Read( LONG handle, void *buffer, ULONG lenread  )	;
-ULONG	Write( LONG handle, void *buffer, ULONG lenwrite  )	;
-void	Close( LONG handle )					;
-LONG	Seek( LONG handle, LONG position,LONG mode )		;
+FILE*	OpenRead( char *name )					;
+FILE*	OpenWrite( char *name )					;
+FILE*	OpenReadWrite( char *name )				;
+ULONG	Read( FILE* handle, void *buffer, ULONG lenread  )	;
+ULONG	Write( FILE* handle, void *buffer, ULONG lenwrite  )	;
+void	Close( FILE* handle )					;
+LONG	Seek( FILE* handle, LONG position,LONG mode )		;
 LONG	Delete( char *name )					;
 ULONG	FileSize( char *name )					;
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -303,8 +297,8 @@ LONG		HQR_Change_Ressource( T_HQR_HEADER *header, char *newhqrname ) ;
 void		HQR_Reset_Ressource( T_HQR_HEADER *header ) ;
 void    	HQR_Free_Ressource( T_HQR_HEADER *header ) ;
 
-void		*HQR_Get( T_HQR_HEADER *header, UWORD index ) ;
-void		*HQR_GetSample( T_HQR_HEADER *header, UWORD index ) ;
+void		*HQR_Get( T_HQR_HEADER *header, WORD index ) ;
+void		*HQR_GetSample( T_HQR_HEADER *header, WORD index ) ;
 
 UWORD		HQR_Del_Bloc( T_HQR_HEADER *header, WORD index ) ;
 UWORD		HQR_Del_Bloc_Sample( T_HQR_HEADER *header, WORD index ) ;

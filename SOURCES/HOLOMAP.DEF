@@ -1,6 +1,6 @@
 extern void ComputeCoorMapping(void);
 extern void ComputeCoorGlobe(void);
-extern int z_sort(short *,short *);
+extern int z_sort(void const *, void const *);
 extern void ComputeGlobeProj(void);
 extern void DrawHoloMap(short ,short ,short );
 extern void DrawListPos(short ,short ,short ,short );

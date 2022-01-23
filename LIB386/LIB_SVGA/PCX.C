@@ -1,6 +1,6 @@
-#include "\projet\lib386\lib_sys\adeline.h"
-#include "\projet\lib386\lib_sys\lib_sys.h"
-#include "\projet\lib386\lib_svga\lib_svga.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
+#include "lib_svga\lib_svga.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -83,7 +83,7 @@ void	line_out( UBYTE	*pts )
 
 }
 /*--------------------------------------------------------------------------*/
-UBYTE	next_char( ULONG fd, UBYTE *pt)
+UBYTE	next_char( FILE* fd, UBYTE *pt)
 {
 	if ( index == SIZE_BUF )
 	{
@@ -103,7 +103,7 @@ UBYTE	next_char( ULONG fd, UBYTE *pt)
 
 void	Load_Pcx(char *file_name, UBYTE *screen, UBYTE *tabcol)
 {
-	ULONG	fd	;
+	FILE*	fd	;
 	FILE *fsave	;
 	unsigned char ch,color,buffer[650],file_buf[SIZE_BUF]	;
 	short int i,j,k,m,pass,col,row,plane			;
@@ -156,7 +156,7 @@ void Save_Pcx( char *filename, UBYTE *screen, UBYTE *ptrpalette )
 {
 	short int index = 0, i,k,number,num_out	;
 	unsigned char ch, old_ch, file_buf[640*2];
-	ULONG handle ;
+	FILE* handle ;
 	UBYTE c ;
 
 	pcx_header.password = 0x0A;

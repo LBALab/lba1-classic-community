@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#include "\projet\lib386\lib_sys\adeline.h"
-#include "\projet\lib386\lib_sys\lib_sys.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
 
 #define	RECOVER_AREA	500
 
@@ -21,7 +21,7 @@ void	Expand( void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile ) ;
 
 LONG	HQRM_Load( UBYTE *name, UWORD index, void **ptrptr )
 {
-	LONG		handle ;
+	FILE*		handle ;
 	UWORD		nbbloc ;
 	ULONG		buffer ;
 	ULONG		seekindex ;

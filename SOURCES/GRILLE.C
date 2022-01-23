@@ -111,7 +111,7 @@ LONG	LoadUsedBrick( ULONG size )
 	ULONG	brick	;
 	ULONG	offseek	;
 	ULONG	*ptseek	;
-	ULONG	handle	;
+	FILE*	handle	;
 	ULONG	nbentity;
 	UWORD	*tabflag;
 	UWORD	*ptflag	;
@@ -252,7 +252,7 @@ LONG	InitGrille( UWORD numcube )
 //	if ( BufCube == 0L )	return(0L)		;
 
 	sizegri = Size_HQR( NameHqrGri, numcube )	;/*	GRI	*/
-	HQM_Alloc( sizegri, &BufMap ) ;
+	HQM_Alloc( sizegri, (void**)&BufMap ) ;
 	CHECK_MEMORY
 //	BufMap = Malloc( sizegri+500 ) 			;
 	if ( BufMap == 0L )	return(0L)		;
@@ -260,7 +260,7 @@ LONG	InitGrille( UWORD numcube )
 //	Mshrink( BufMap, sizegri )			;
 
 	sizebll = Size_HQR( NameHqrBll, numcube )	;/*	BLL	*/
-	HQM_Alloc( sizebll, &TabBlock ) ;
+	HQM_Alloc( sizebll, (void**)&TabBlock ) ;
 	CHECK_MEMORY
 //	TabBlock = Malloc( sizebll+500 )		;	bordel !
 	if ( TabBlock == 0L )	return(0L)		;
@@ -276,7 +276,7 @@ LONG	InitGrille( UWORD numcube )
 /*	Message("     End Loading Brick       ", FALSE );*/
 /*----------------------------------------------*/
 
-	HQM_Alloc( size, &BufferMaskBrick ) ;
+	HQM_Alloc( size, (void**)&BufferMaskBrick ) ;
 	size = CreateMaskGph( BufferBrick, BufferMaskBrick ) ;
 	HQM_Shrink_Last( BufferMaskBrick, size ) ;
 	CHECK_MEMORY

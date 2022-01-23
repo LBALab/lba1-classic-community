@@ -1,15 +1,6 @@
 /*-----------------------------------------------------------------------------
 ;                       Extern lib_svga 386
 ;-----------------------------------------------------------------------------*/
-
-#ifdef	WATCOM9
-#pragma library ( "f:\projet\lib386\lib_svga\lb9_svga.lib" );
-#else
-#pragma library ( "f:\projet\lib386\lib_svga\lib_svga.lib" );
-#endif
-
-/*-----------------------------------------------------------------------------*/
-
 #define SVGA_VESA               0	/* VESA compliant board at Adress 0xA0000 */
 #define SVGA_TRIDENT            1	/* Trident 8800 & 8900 */
 #define SVGA_ATI                2	/* ATI Chipset */
@@ -183,7 +174,7 @@ extern long Save_Lbm(char *,unsigned char *,unsigned char *);
 /*                      PCX.c	640*480					*/
 
 extern void line_out(unsigned char *);
-extern unsigned char next_char(unsigned long ,unsigned char *);
+extern unsigned char next_char(FILE* ,unsigned char *);
 extern void Load_Pcx(char *,unsigned char *,unsigned char *);
 extern void Save_Pcx(char *,unsigned char *,unsigned char *);
 

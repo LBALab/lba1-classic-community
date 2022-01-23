@@ -1,7 +1,7 @@
 
-#include "\projet\lib386\lib_sys\adeline.h"
-#include "\projet\lib386\lib_sys\lib_sys.h"
-#include "\projet\lib386\lib_svga\lib_svga.h"
+#include "lib_sys\adeline.h"
+#include "lib_sys\lib_sys.h"
+#include "lib_svga\lib_svga.h"
 
 #include <stdio.h>
 #include <dos.h>
@@ -194,7 +194,7 @@ void 	InitMouse()
 	int installed = 0		;
 	int orig_mode = 0		;
 	int far *ptr			;
-	int (far *function_ptr)()	;
+	void (far *function_ptr)(int,int,int)	;
 
 	segread(&sregs)	;
 

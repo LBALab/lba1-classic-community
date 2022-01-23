@@ -108,7 +108,7 @@ extern	char	PleaseWait[] ;
 extern	UBYTE	ProgDrive[] ;
 extern	UBYTE	ProgDir[] ;
 
-extern	ULONG	OrgDrive ;
+extern	UINT	OrgDrive ;
 extern	UBYTE	OrgDir[] ;
 
 extern	UBYTE	Drive[] ;

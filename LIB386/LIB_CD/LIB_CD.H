@@ -1,10 +1,5 @@
 
 //----------------------------------------------------------------------------
-
-
-#pragma library ("f:\projet\lib386\lib_cd\lib_cd.lib");
-
-
 extern  WORD    BufferData[]    ;
 extern  WORD    DriveCDR        ;//     Lettre drive 0=A 1=B etc. apres InitCDR
 extern  ULONG   LeadOut         ;

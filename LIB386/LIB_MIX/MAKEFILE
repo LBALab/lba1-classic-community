@@ -17,16 +17,18 @@ WL = f:\compil\watcom10\binb\wlib
 !endif
 !endif
 
+CC = wcc386
+WL = wlib
 ASM = ml
 
 !ifeq WATCOM9 yes
 CFLAGS = /oeaxt /zp2 /4s /zq /s /DWATCOM9
 !else
-CFLAGS = /oeaxt /zp2 /5s /zq /s
+CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
 !endif
 LFLAGS = /c /q /b /n
 #AFLAGS  = /m2 /mx /z /zi /t /jMASM51 /jQUIRKS
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=;
+AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=; /omf
 
 OBJETS1  = mixer.obj mixer_i.obj
 OBJETS2  =

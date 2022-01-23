@@ -1,10 +1,7 @@
-#ifdef	WATCOM9
-#pragma	library ("f:\projet\lib386\lib_midi\lb9_midi.lib");
-#else
-#pragma	library ("f:\projet\lib386\lib_midi\lib_midi.lib");
+#ifdef USE_AIL32
+#include "lib_midi\ail32.h"      // Audio Interface Library API function header
+#include "ail.h"      // Audio Interface Library API function header
 #endif
-
-#include "f:\projet\lib386\lib_midi\ail32.h"      // Audio Interface Library API function header
 
 extern	char	Midi_Driver[_MAX_PATH] ;
 extern  char	Midi_Driver_Name[80] ;
