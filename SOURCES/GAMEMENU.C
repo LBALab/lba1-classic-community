@@ -1905,8 +1905,10 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
 	if(!multiTextPtr)
 	{
-		char *customTextPtr = GetCustomizedText( num );
-		strcpy(string, customTextPtr);
+		char *customTextPtr = GetCustomizedMultiText( num );
+
+		if (customTextPtr)
+			strcpy(string, customTextPtr);
 	}
 	
 	Font( x - SizeFont( string )/2, y-18, string ) ;
@@ -1920,7 +1922,7 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 void	InfoWallCollisionDamage()
 {
 	WORD 	num = WallColDamageEnabled ? 234 : 34 ;
-	char* 	infoText = GetCustomizedText(num); 
+	char* 	infoText = GetCustomizedMultiText( num );
 	
 	DrawSingleString(250, 50, infoText);
 }
@@ -2404,7 +2406,7 @@ void	AdvancedOptions()
 	WORD flag = 0 ;
 
 	CopyScreen( Log, Screen ) ;
-	
+
 	// Setting initial value of Wall Damage Collision on the menu (this is to avoid inconsistency if the player toggles damage collision using F12 and opens the menu afterwards).
 	GameAdvancedMenu[15] = WallColDamageEnabled ? 234 : 34;
 
