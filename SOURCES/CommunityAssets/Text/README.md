@@ -105,9 +105,9 @@ The key integer value should be something you choose to identify the text you ad
 
 <br/>
 
-If you're adding these to a column in a spreadsheet editor, they should be in the correct format when you have saved the file.
+If you're adding these to a column in a spreadsheet editor, once you save the file, they should be converted automatically to the correct format.
 
-If you're writing in raw text, the column of the text must be wrapped in quotation marks (e.g. "text". Any commas will be considered as part of the text itself and not a CSV delimitator. If you want to add quotation marks as part of the text itself, these have to be double-quoted.
+If you're writing in raw text, the column of the text must be wrapped in quotation marks (e.g. "text1, text2"). Any commas will be considered as part of the text itself and not as a CSV delimitator. If you want to add quotation marks as part of the text itself, these have to be double-quoted.
 
 Example of a text with quotes:
 
