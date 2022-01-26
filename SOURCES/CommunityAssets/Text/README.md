@@ -2,7 +2,7 @@
 
 The files in this folder are intended to be used for adding localized text into Little Big Adventure's code that does not exist in the original assets of the game. 
 
-Each language has a different file that can be identified by it's prefix (EN_ for English, FR_ for French, DE for German, SP for Spanish and IT for Italian). By default, the text language is named as ___'LANGPREFIX_ctxt.csv'___, although this can be changed through code. So, for English, we would have a file named ___'EN_ctxt.csv'___, and for French ___'FR_ctxt.csv'___.
+Each language has a different file that can be identified by it's prefix (EN_ for English, FR_ for French, DE_ for German, SP_ for Spanish and IT_ for Italian). By default, the text language is named as ___'LANGPREFIX_ctxt.csv'___, although this can be changed through code. So, for English, we would have a file named ___'EN_ctxt.csv'___, for French ___'FR_ctxt.csv'___ and so on.
 
 Each file follows the CSV (Comma-Separated Values) format, where essentially a table is represented with columns separated by field delimitators (in this case a comma ___','___ ). and text inside a column can be placed under quotes to allow special characters (in this case, the quote delimitator is ___"___ ). These delimitators can be customized to be anything else in the code, but ideally we should follow the standard CSV format.
 
@@ -66,10 +66,13 @@ It is also mandatory that whenever you open or save a CSV file, the correct enco
   <p>Img. 2: LibreOffice Text Import Dialog
 </div>
 
+<br/>
+<br/>
+
 # Guidelines
 
- <br/>
- <br/>
+<br/>
+<br/>
 
 > ### **Adding a new text in the CSV for your mod** ###
 
