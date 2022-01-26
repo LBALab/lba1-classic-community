@@ -25,22 +25,32 @@
 
 FILE* _customMultiTextFile; 
 
+// struct returned upon calling readInt function
 struct csvIntValue
 {
     int lastLineIndex; // helper variable to indicate the index of the line where an integer column ended
     int value;
 };
 
+// struct returned upon calling readText function
 struct csvTextValue
 {
     int lastLineIndex; // helper variable to indicate the index of the line where a text column ended
     char* value;
 };
 
+// struct returned upon calling treatSingleLine function
 struct treatSingleLineResult
 {
-    int lastLineIndex;
+    int lastLineIndex; // helper variable to indicate the index of the line where a text column ended (taking into consideration a multi-line column case)
     int treatedColLength;
+};
+
+// struct returned upon calling CheckIfLineHasEndingQuote function
+struct endingQuoteResult
+{
+    int lastLineIndex; // helper variable to indicate the index of the line where a multi-line quote ended
+    short result;
 };
 
 /* 
@@ -156,6 +166,7 @@ struct treatSingleLineResult treatSingleLine(char* line, int index, char* treate
     return nextLineResult;
 }
 
+// Function that parses a text column
 struct csvTextValue readText(char* line, int index)
 {
     // Set initial values to invalid incase the parsing fails
@@ -178,6 +189,7 @@ struct csvTextValue readText(char* line, int index)
     return returnValue;
 }
 
+// Function that parses an integer column
 struct csvIntValue readInt(char* line, int index)
 {
     // Set initial values to invalid incase the parsing fails
@@ -224,6 +236,92 @@ struct csvIntValue readInt(char* line, int index)
     return returnValue;
 }
 
+// Function that checks if a line has a csv quotation mark that is unended (indicating that next lines in the file are to be treated as part of the column)
+// Returns 1 if there is an unended quote, 0 if not.
+short CheckIfLineHasUnendedQuote(char* line, int index)
+{
+    short hasUnendedQuote = 0;
+    int i = index;
+    int nextI, prevI;
+
+    nextI = i + 1;
+
+    if (i == 0 && nextI < CSV_BUFFER_SIZE && line[i] == CSV_QUOTATION && line[nextI] != CSV_QUOTATION)
+    {
+        hasUnendedQuote = 1;
+        ++index;
+    }
+
+    while(i < CSV_BUFFER_SIZE)
+    {
+        if (line[i] == '\n')
+        {
+            break;
+        }
+
+        if (line[i] != CSV_QUOTATION)
+        {
+            ++i;
+            continue;
+        }
+
+        nextI = i + 1;
+        prevI = i - 1;
+
+        if(hasUnendedQuote)
+        {
+            if (line[nextI] != CSV_QUOTATION)
+                hasUnendedQuote = 0;
+        }
+        else if (prevI >= 0 && nextI < CSV_BUFFER_SIZE)
+        {
+            if(line[prevI] == CSV_DELIMITATOR && line[nextI] != CSV_QUOTATION)
+            {
+                hasUnendedQuote = 1;
+            }
+        }
+
+        ++i;
+    }
+
+    return hasUnendedQuote;
+}
+
+// Function to be called under an unended quote state (multi-line text column detected)
+// Returns a struct with a 'result' boolean indicating if the ending quote was found, and 'lastLineIndex' indicating the index on the line where it was found.
+struct endingQuoteResult CheckIfLineHasEndingQuote(char* line)
+{
+    struct endingQuoteResult hasEndingQuote;
+    int i;
+
+    hasEndingQuote.lastLineIndex = 0;
+    hasEndingQuote.result = line[0] == CSV_QUOTATION && line[1] != CSV_QUOTATION;
+
+    if (hasEndingQuote.result)
+        return hasEndingQuote;
+
+    i = 1;
+    while(i < CSV_BUFFER_SIZE)
+    {
+        int nextI = i + 1;
+
+        if (line[i] == '\n')
+            break;
+
+        if (line[i] == CSV_QUOTATION && line[nextI] != CSV_QUOTATION)
+        {
+            hasEndingQuote.lastLineIndex = i;
+            hasEndingQuote.result = 1;
+            break;
+        }
+
+        ++i;
+    }
+
+    return hasEndingQuote;
+}
+
+// Function that calls fopen in the desired filepath and initializes the FILE* in context
 void InitializeCustomMessageFile()
 {
     int pathLen = strlen(CSV_FILE_PATH) + strlen(CSV_FILE_NAME);
@@ -235,6 +333,7 @@ void InitializeCustomMessageFile()
     _customMultiTextFile = fopen(filePath, "r");
 }
 
+//Function that calls fclose on the opened FILE* in context
 void CloseCustomMessageFile()
 {
     if (_customMultiTextFile)
@@ -244,7 +343,6 @@ void CloseCustomMessageFile()
     }
 }
 
-
 // Function to get text not defined in TEXT.HQR
 char* GetCustomizedMultiText(int numParam)
 {
@@ -252,6 +350,7 @@ char* GetCustomizedMultiText(int numParam)
     char* systemLang;
     char line[CSV_BUFFER_SIZE];
     short hasFoundLangInFile = 0;
+    short inUnendedQuoteState = 0;
 
     InitializeCustomMessageFile();
 
@@ -270,6 +369,21 @@ char* GetCustomizedMultiText(int numParam)
         struct csvTextValue text;
         struct csvTextValue langColumnInFile;
         short isCurrentLineLangToken;
+        
+        // On the off-chance a line is part of a multi-line text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow. 
+        // Without this check, text under multi-line columns could be confused as values to be fetched and displayed by the program.
+        // Multi-line text columns are already parsed in the treatSingleLine function, in case a valid num is found.
+        if (inUnendedQuoteState)
+        {
+            struct endingQuoteResult hasEndingQuote = CheckIfLineHasEndingQuote(line);
+
+            if (hasEndingQuote.result)
+                inUnendedQuoteState = CheckIfLineHasUnendedQuote(line, hasEndingQuote.lastLineIndex + 1);
+            
+            continue;
+        }
+
+        inUnendedQuoteState = CheckIfLineHasUnendedQuote(line, 0);
 
         langColumnInFile = readText(line, 0);
         langTokenInFile = strtok(langColumnInFile.value, CSV_LANG_DELIMITATOR);
