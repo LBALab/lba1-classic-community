@@ -10,9 +10,7 @@
 #define CSV_FILE_PATH "CommunityAssets\\Text\\"
 #endif
 
-#define CSV_FILE_NAME "cust_txt.csv"
-#define CSV_LANG_TOKEN "lang"
-#define CSV_LANG_DELIMITATOR ":"
+#define CSV_FILE_NAME "ctxt.csv"
 #define CSV_DELIMITATOR ','
 #define CSV_QUOTATION '"'
 #define CSV_BUFFER_SIZE 1024
@@ -324,10 +322,11 @@ struct endingQuoteResult CheckIfLineHasEndingQuote(char* line)
 // Function that calls fopen in the desired filepath and initializes the FILE* in context
 void InitializeCustomMessageFile()
 {
-    int pathLen = strlen(CSV_FILE_PATH) + strlen(CSV_FILE_NAME);
-    char *filePath = malloc(pathLen * sizeof(char));
+    char filePath[256];
+    char* systemLang = GetCurrentListLanguage();
 
     strcpy(filePath, CSV_FILE_PATH);
+    strcat(filePath, systemLang);
     strcat(filePath, CSV_FILE_NAME);
 
     _customMultiTextFile = fopen(filePath, "r");
@@ -347,9 +346,7 @@ void CloseCustomMessageFile()
 char* GetCustomizedMultiText(int numParam)
 {
     char* returnValue = "";
-    char* systemLang;
     char line[CSV_BUFFER_SIZE];
-    short hasFoundLangInFile = 0;
     short inUnendedQuoteState = 0;
 
     InitializeCustomMessageFile();
@@ -357,18 +354,12 @@ char* GetCustomizedMultiText(int numParam)
     if (!_customMultiTextFile)
         return "";
 
-    systemLang = GetCurrentListLanguage();
-
     // Iterate every single line of the file
     while (fgets(line, CSV_BUFFER_SIZE, _customMultiTextFile))
     {
-        int index;
-        char* langTokenInFile;
+        int index = 0;
         struct csvIntValue num;
-        struct csvIntValue size;
         struct csvTextValue text;
-        struct csvTextValue langColumnInFile;
-        short isCurrentLineLangToken;
         
         // On the off-chance a line is part of a multi-line text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow. 
         // Without this check, text under multi-line columns could be confused as values to be fetched and displayed by the program.
@@ -384,47 +375,6 @@ char* GetCustomizedMultiText(int numParam)
         }
 
         inUnendedQuoteState = CheckIfLineHasUnendedQuote(line, 0);
-
-        langColumnInFile = readText(line, 0);
-        langTokenInFile = strtok(langColumnInFile.value, CSV_LANG_DELIMITATOR);
-
-        isCurrentLineLangToken = langTokenInFile && strcmp(langTokenInFile, CSV_LANG_TOKEN) == 0;
-
-        // If the current line represents a language token
-        if (isCurrentLineLangToken)
-        {
-            //If we haven't found the system language in the file yet, check if current token represents it
-            if (!hasFoundLangInFile)
-            {   
-                langTokenInFile = strtok(NULL, CSV_LANG_DELIMITATOR);
-
-                if (langTokenInFile)
-                {
-                    if (strcmp(langTokenInFile, systemLang) != 0)
-                    {
-                        hasFoundLangInFile = 0;
-                    }
-                    else 
-                    {
-                        hasFoundLangInFile = 1;
-                    }
-                }
-                
-                //Continue the loop until the language of the system is found
-                continue;
-            }
-            //If we have found the system language previously, but reach another language token, break the loop (the num we were looking for was not found for the system language)
-            else
-            {
-                break;
-            }
-        }
-
-        // Do not look for a num until the language has been found
-        if (!hasFoundLangInFile)
-            continue;
-
-        index = 0;
         
         num = readInt(line, index);
         // skip line until a valid num is found
