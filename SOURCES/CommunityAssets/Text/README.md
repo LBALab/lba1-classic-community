@@ -51,7 +51,7 @@ It is also mandatory that whenever you open or save a CSV file, the correct enco
 
 - in ___LibreOffice Calc___
     - On open CSV: a *Text Import* dialog (Img. 1) should appear. Under *'Import'*, set the *'Character Set:'* value to  ___Western Europe (DOS/OS2-437/US)___, and *'Language'* to ___'English (USA)'___.  Under *'Separator Options'*, verify that the *'Separated By'* radio button is selected, and of all the checkboxes beneath only *'Comma'* is selected. The *'String Delimiter'* value should be set to: ___"___ . 
-    - On save CSV: choose *Save As* option and select the file type *Text CSV (*.csv)*. Check *Edit Filter Settings* and press *Save*. A *Confirm File Format* aialog may appear, select *Use Text CSV Format*. Then a *Export Text File* dialog (Img. 2) should appear. Under *Field Options*, set the *'Character Set:'* value to  ___Western Europe (DOS/OS2-437/US)___. Verify if the field and string delimiters are correct then press *OK*. Quick saves should use this format after this.
+    - On save CSV: choose *Save As* option and select the file type *Text CSV (*.csv)*. Check *Edit Filter Settings* and press *Save*. A *Confirm File Format* dialog may appear, select *Use Text CSV Format*. Then a *Export Text File* dialog (Img. 2) should appear. Under *Field Options*, set the *'Character Set:'* value to  ___Western Europe (DOS/OS2-437/US)___. Verify if the field and string delimiters are correct then press *OK*. Quick saves should use this format after this.
 
 
 <br/>
