@@ -1921,10 +1921,31 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 // Display a line of text indicating whether wall collision damage is turned on or off
 void	InfoWallCollisionDamage()
 {
+	WORD x, y, x0, y0, x1, y1;
+	WORD sf;
+
 	WORD 	num = WallColDamageEnabled ? 234 : 34 ;
 	char* 	infoText = GetCustomizedMultiText( num );
 	
-	DrawSingleString(250, 50, infoText);
+	x = 25;
+	y = 50;
+
+	sf = SizeFont( infoText ) ;
+
+	x0 = x;
+	x1 = x + sf;
+
+	y0 = y - HAUTEUR_STANDARD/2 ;
+	y1 = y + HAUTEUR_STANDARD/2 ;
+
+	// text
+	CoulFont( 0 ) ;
+	Font( x0 + 4, y-18 + 4, infoText ) ;
+	CoulFont( COUL_TEXT_MENU ) ;
+	Font( x0, y-18, infoText ) ;
+
+	// flip
+	CopyBlockPhys( x0,y0, x1,y1 ) ;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
