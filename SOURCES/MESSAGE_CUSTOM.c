@@ -203,7 +203,7 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
             if (!line)
                 break;
 
-            // Recursively call this function to treat the next line, and keep appending characters to treatedColumn on current treatedColIndex and onwards
+            // Recursively call this function to treat the next line
             nextLineResult = treatSingleColumnWithQuotes(line, strlen(line), 0);
 
             if (!nextLineResult || 
@@ -212,7 +212,6 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
                 nextLineResult->value == CSV_INVALID_TEXT_VALUE)
                 break;
 
-            // Add the length of the new treated line to treatedColIndex
             if (nextLineResult->value)
             {
                 int tempIndex = treatedColIndex + nextLineResult->treatedColLength + strlen(LBA_ENGINE_LINE_BREAK);
@@ -226,6 +225,7 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
                     //concatenate the next line to result->value
                     strcat(result->value, nextLineResult->value);
 
+                    // Add the length of the new treated line to treatedColIndex
                     treatedColIndex = tempIndex;
                 }
             }
@@ -320,11 +320,11 @@ struct csvIntValue readInt(char* line, int lineLength, int index)
     //If we have a valid number with a length
     if (columnLen > 0)
     {
-        // copy the part of the line that corresponds to the integer
         column = calloc(columnLen + 1, sizeof(char));
 
         if (column)
         {
+            // copy the part of the line that corresponds to the integer
             strncpy(column, line, columnLen);
 
             returnValue.lastLineIndex = i;
@@ -508,12 +508,12 @@ char* fgets_dynamic(char **line, size_t *bufferSize, FILE *file)
     return *line;
 }
 
-/* Function to get text not defined in TEXT.HQR
-
-Return Value: A string with the result for the given numParam. This string should be freed from memory by the caller after being used, by calling free(char*).
-
-Parameters:
-    numParam: the int key code to identify the string that needs to be fetched
+/* 
+* Function to get text not defined in original assets
+* Return Value: A string with the result for the given numParam. This string should be freed from memory by the caller after being used, by calling the <stdlib.h> function 'void free(void *ptr)'.
+*
+* Parameters:
+*    numParam: the int key code to identify the string that needs to be fetched
 */
 char* GetCustomizedMultiText(int numParam)
 {
@@ -538,8 +538,8 @@ char* GetCustomizedMultiText(int numParam)
         struct csvIntValue num;
         struct csvTextValue text;
         
-        // On the off-chance a line is part of a multi-line text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow. 
-        // Without this check, text under multi-line columns could be confused as values to be fetched and displayed by the program.
+        // On the off-chance a line is part of a multi-lined text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow. 
+        // Without this check, text under multi-lined columns could be confused as values to be fetched and displayed by the program.
         // Multi-line text columns are already parsed in the treatSingleColumn function, in case a valid num is found.
         if (inUnendedQuoteState)
         {

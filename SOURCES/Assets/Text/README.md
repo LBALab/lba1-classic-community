@@ -20,7 +20,7 @@ This represents a table with two rows separated by two columns: the first column
 
 # Getting Started
 
-To use these localization files, copy them to the same folder where you have built *'LBA0.exe'*. By default, the *ONE_GAME_DIRECTORY* flag is set to *true* in the code. If the flag is set to *false*, copy the localization files to *'..\CommunityAssets\Text'*, on the folder where the built *'LBA0.exe'* executable is located. 
+To use these localization files, copy them to the same folder where you have built *'LBA0.exe'*. By default, the *ONE_GAME_DIRECTORY* flag is set to *true* in the code. If the flag is set to *false*, copy the localization files to *'..\Assets\Text'*, on the folder where the built *'LBA0.exe'* executable is located. 
 
 
 <br/>
@@ -78,7 +78,7 @@ It is also mandatory that whenever you open or save a CSV file, the correct enco
 
 <br/>
 
-Create a new line in the CSV with two columns (the first for an integer to be used as a key parameter in the code, the second for the actual text). If the key is not an integer (e.g. contains characters not in 0 and 9 range), this will be ignored by the code.
+Create a new line in the CSV with two columns (the first for an integer to be used as a key parameter in the code, the second for the actual text). If the key is not an integer (e.g. contains characters not in 0 and 9 range), the line will be ignored by the code.
 
 The end result of your added line, in raw text form, should look like this:
 
@@ -94,7 +94,28 @@ In the code, it is possible to fetch the text of this line by calling the follow
 
 Where if in this example you passed *123* as the numParam, the function would return the string *"Example Text"*.
 
-The key integer value should be something you choose to identify the text you add, and it should be unique in the CSV (no repeating integers). Furthermore, it is also a good idea not to use values that are being used for texts already existing in LBA (a search for the number in 2point21's repository can share good results on whether this value is being used or not).
+The key integer value should be something you choose to identify the text you add, and it should be unique in the CSV (no repeating integers to identify text). Furthermore, it is also a good idea not to use int values that are being used for texts already existing in LBA (a search for the number in 2point21's repository can share good results on whether this value is being used or not).
+
+As a good practice, whenever you call the *'GetCustomizedMultiText(int numParam)'* function, you should free the allocated memory of the return value, after you have used it for your purposes. You can do so by calling the 'free(void*)' function from standard C library *'<stdlib.h>'*. So, for instance, if you were to use this function, code should look like this:
+
+::
+
+    #include <stdlib.h>
+
+    ...
+
+    void func()
+    {
+        char* text = GetCustomizedMultiText(123);
+
+        //
+        // ...
+        // Whatever code you need to perform that uses *text
+        // ...
+        //
+
+        free(text);
+    }
 
  <br/>
  <br/>
@@ -130,7 +151,7 @@ Example of a text with commas:
 
 <br/>
 
-If you're using a spreadsheet editor, you can add a paragraph by editing the column itself. This is usually accomplished by entering a combination of keys, such as ALT+ENTER or CTRL+ENTER.
+If you're using a spreadsheet editor, you can add a paragraph by editing the column field itself. This is usually accomplished by entering a combination of keys, such as ALT+ENTER or CTRL+ENTER.
 
 In raw text format, paragraphs should look like the following:
 
@@ -151,7 +172,7 @@ The result string of the function in code would be: "Example text\nwith paragrap
 
 <br/>
 
-This usually happens when you add a character with accents on it (e.g. é, è, ê, ñ, â, à, ó, ...) or a greek letter or something of the sort. Some of these characters are supported, check if they exist and conform to the standard in the [ASCII Table](https://www.lookuptables.com/text/alt-codes). If they do exist but still appear funny, try using [ALT Codes](https://www.lookuptables.com/text/alt-codes) or, if you are using Windows, the Character Map app to insert these characters. 
+This usually happens when you add a character with accents on it (e.g. é, è, ê, ñ, â, à, ó, ...) or a greek letter or something of the sort. Some of these characters are supported, check if they exist and conform to the standard in the [ASCII Table](https://www.asciitable.com/). If they do exist but still appear funny, try using [ALT Codes](https://www.lookuptables.com/text/alt-codes) or, if you are using Windows, the Character Map app to insert these characters. 
 
 Ultimately, the editor you are using could not be conforming to this standard. Try finding one that does. As a personal recommendation, [LibreOffice Calc](https://www.libreoffice.org/) offers good support for editing these files. Follow the instructions in the *Encoding* section of this file to have it working.
 
