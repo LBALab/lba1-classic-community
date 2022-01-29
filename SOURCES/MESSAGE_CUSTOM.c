@@ -8,7 +8,7 @@
 #ifdef ONE_GAME_DIRECTORY
 #define CSV_FILE_PATH ""
 #else
-#define CSV_FILE_PATH "CommunityAssets\\Text\\"
+#define CSV_FILE_PATH "Assets\\Text\\"
 #endif
 
 #define CSV_FILE_NAME "ctxt.csv"
