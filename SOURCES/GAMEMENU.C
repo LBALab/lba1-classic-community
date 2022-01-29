@@ -1909,6 +1909,8 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 
 		if (customTextPtr)
 			strcpy(string, customTextPtr);
+
+		free(customTextPtr);
 	}
 	
 	Font( x - SizeFont( string )/2, y-18, string ) ;
@@ -1946,6 +1948,8 @@ void	InfoWallCollisionDamage()
 
 	// flip
 	CopyBlockPhys( x0,y0, x1,y1 ) ;
+
+	free(infoText);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/

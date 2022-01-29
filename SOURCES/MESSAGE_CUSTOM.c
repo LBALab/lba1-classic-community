@@ -127,8 +127,6 @@ struct treatSingleColumnResult* treatSingleColumnWithoutQuotes(char* line, int l
         ++i;
     }
 
-    result->value[treatedColIndex++] = '\0';
-
     result->lastLineIndex = i;
     result->treatedColLength = treatedColIndex;
 
@@ -194,7 +192,6 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
 
             // Add a new line '\n' to treatedColumn
             result->value[treatedColIndex++] = '\n';
-            result->value[treatedColIndex] = '\0';
 
             if (!_customMultiTextFile)
                 break;
@@ -229,6 +226,7 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
                     strcat(result->value, nextLineResult->value);
                 }
             }
+
             break;
         }
         //If the character doesn't match the previous conditions, simply append it to treatedColumn (including delimitators)
@@ -242,6 +240,12 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
     result->lastLineIndex = nextLineResult && nextLineResult->lastLineIndex != CSV_INVALID_INT_VALUE ? nextLineResult->lastLineIndex : i;
     result->treatedColLength = treatedColIndex;
     //result->value = realloc(result->value, treatedColIndex);
+
+    if(nextLineResult)
+    {
+        free(nextLineResult->value);
+        free(nextLineResult);
+    }
 
     return result;
 }
@@ -264,7 +268,16 @@ struct csvTextValue readText(char* line, int lineLength, int index)
     if (treatedTextResult)
     {
         returnValue.lastLineIndex = treatedTextResult->lastLineIndex;
-        returnValue.value = treatedTextResult->value;
+        
+        if(treatedTextResult->value)
+        {
+            returnValue.value = calloc(strlen(treatedTextResult->value) + 1, sizeof(char));
+            
+            strcpy(returnValue.value, treatedTextResult->value);
+        }
+
+        free(treatedTextResult->value);
+        free(treatedTextResult);
     }
 
     return returnValue;
@@ -310,7 +323,6 @@ struct csvIntValue readInt(char* line, int lineLength, int index)
         if (column)
         {
             strncpy(column, line, columnLen);
-            column[columnLen] = '\0';
 
             returnValue.lastLineIndex = i;
             //Convert ascii to integer
@@ -321,6 +333,8 @@ struct csvIntValue readInt(char* line, int lineLength, int index)
             returnValue.lastLineIndex = i;
             returnValue.value = CSV_INVALID_INT_VALUE;
         }
+
+        free(column);
     }
 
     return returnValue;
@@ -448,6 +462,8 @@ void InitializeCustomMessageFile()
     strcat(filePath, CSV_FILE_NAME);
 
     _customMultiTextFile = fopen(filePath, "r");
+
+    free(filePath);
 }
 
 //Function that calls fclose on the opened FILE* in context
@@ -475,7 +491,7 @@ char* fgets_dynamic(char **line, size_t *bufferSize, FILE *file)
     while(strchr(*line, '\n') == NULL) 
     {
         *bufferSize += initialBufferSize;
-        *line = realloc(*line, *bufferSize);
+        *line = realloc(*line, *bufferSize * sizeof(char));
 
         if (!line)
             break;
@@ -489,7 +505,13 @@ char* fgets_dynamic(char **line, size_t *bufferSize, FILE *file)
     return *line;
 }
 
-// Function to get text not defined in TEXT.HQR
+/* Function to get text not defined in TEXT.HQR
+
+Return Value: A string with the result for the given numParam. This string should be freed from memory by the caller after being used, by calling free(char*).
+
+Parameters:
+    numParam: the int key code to identify the string that needs to be fetched
+*/
 char* GetCustomizedMultiText(int numParam)
 {
     char* returnValue = "";
@@ -553,6 +575,8 @@ char* GetCustomizedMultiText(int numParam)
     }
 
     CloseCustomMessageFile();
+
+    free(line);
 
     return returnValue;
 }
