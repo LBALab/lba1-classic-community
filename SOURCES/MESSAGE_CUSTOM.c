@@ -18,6 +18,8 @@
 #define CSV_INVALID_INT_VALUE -1
 #define CSV_INVALID_TEXT_VALUE ""
 
+#define LBA_ENGINE_LINE_BREAK " @ " // used to replace a '\n' in a multi-line column with the string value that the engine interprets as a line break (found in dialogs).
+
 #define ASCII_MIN_INT 48
 #define ASCII_MAX_INT 57
 
@@ -189,10 +191,6 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
             size_t bufferSize = CSV_BUFFER_SIZE;
             char* tempValue;
 
-
-            // Add a new line '\n' to treatedColumn
-            result->value[treatedColIndex++] = '\n';
-
             if (!_customMultiTextFile)
                 break;
 
@@ -217,13 +215,18 @@ struct treatSingleColumnResult* treatSingleColumnWithQuotes(char* line, int line
             // Add the length of the new treated line to treatedColIndex
             if (nextLineResult->value)
             {
-                treatedColIndex += nextLineResult->treatedColLength;
-                tempValue = realloc(result->value, (treatedColIndex + 1) * sizeof(char));
+                int tempIndex = treatedColIndex + nextLineResult->treatedColLength + strlen(LBA_ENGINE_LINE_BREAK);
+                tempValue = realloc(result->value, (tempIndex + 1) * sizeof(char));
                 
                 if (tempValue)
                 {
                     result->value = tempValue;
+                    //concatenate a new line indication to the treated string, using LBA's engine specific line break (used in game dialogs)
+                    strcat(result->value, LBA_ENGINE_LINE_BREAK);
+                    //concatenate the next line to result->value
                     strcat(result->value, nextLineResult->value);
+
+                    treatedColIndex = tempIndex;
                 }
             }
 
