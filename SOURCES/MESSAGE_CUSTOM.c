@@ -29,11 +29,11 @@ FILE* _customMultiTextFile;
 
 char* fgets_dynamic(char **line, size_t *bufferSize, FILE *file);
 
-// struct returned upon calling readInt function
-struct csvIntValue
+// struct returned upon calling readLong function
+struct csvLongValue
 {
     int lastLineIndex; // helper variable to indicate the index of the line where an integer column ended
-    int value;
+    LONG value;
 };
 
 // struct returned upon calling readText function
@@ -287,10 +287,10 @@ struct csvTextValue readText(char* line, int lineLength, int index)
 }
 
 // Function that parses an integer column
-struct csvIntValue readInt(char* line, int lineLength, int index)
+struct csvLongValue readLong(char* line, int lineLength, int index)
 {
     // Set initial values to invalid incase the parsing fails
-    struct csvIntValue returnValue = { CSV_INVALID_INT_VALUE, CSV_INVALID_INT_VALUE };
+    struct csvLongValue returnValue = { CSV_INVALID_INT_VALUE, CSV_INVALID_INT_VALUE };
     
     char* column;
     int columnLen = 0;
@@ -328,8 +328,8 @@ struct csvIntValue readInt(char* line, int lineLength, int index)
             strncpy(column, line, columnLen);
 
             returnValue.lastLineIndex = i;
-            //Convert ascii to integer
-            returnValue.value = atoi(column);
+            //Convert ascii to long
+            returnValue.value = atol(column);
         }
         else
         {
@@ -515,7 +515,7 @@ char* fgets_dynamic(char **line, size_t *bufferSize, FILE *file)
 * Parameters:
 *    numParam: the int key code to identify the string that needs to be fetched
 */
-char* GetCustomizedMultiText(int numParam)
+char* GetCustomizedMultiText(LONG numParam)
 {
     char* returnValue = "";
     bool inUnendedQuoteState = false;
@@ -535,7 +535,7 @@ char* GetCustomizedMultiText(int numParam)
     {
         int index = 0;
         int lineLength = strlen(line);
-        struct csvIntValue num;
+        struct csvLongValue num;
         struct csvTextValue text;
         
         // On the off-chance a line is part of a multi-lined text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow. 
@@ -555,7 +555,7 @@ char* GetCustomizedMultiText(int numParam)
 
         inUnendedQuoteState = CheckIfLineHasUnendedQuote(line, lineLength, 0);
         
-        num = readInt(line, lineLength, index);
+        num = readLong(line, lineLength, index);
         // skip line until a valid num is found
         if (num.value == CSV_INVALID_INT_VALUE || num.value != numParam)
             continue;

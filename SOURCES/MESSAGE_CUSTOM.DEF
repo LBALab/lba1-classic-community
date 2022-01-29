@@ -1,2 +1,2 @@
-extern char* GetCustomizedMultiText(int numParam);
+extern char* GetCustomizedMultiText(LONG numParam);
 
