@@ -356,7 +356,7 @@ bool CheckIfLineHasUnendedQuote(char* line, int lineLength, int index)
     if (i == 0 && nextI < lineLength && line[i] == CSV_QUOTATION && line[nextI] != CSV_QUOTATION)
     {
         hasUnendedQuote = true;
-        ++index;
+        ++i;
     }
 
     while(i < lineLength)
