@@ -90,13 +90,13 @@ In the code, it is possible to fetch the text of this line by calling the follow
 
 ::
 
-    char* GetCustomizedMultiText(int numParam);
+    char* GetCustomizedMultiText(LONG numParam);
 
 Where if in this example you passed *123* as the numParam, the function would return the string *"Example Text"*.
 
 The key integer value should be something you choose to identify the text you add, and it should be unique in the CSV (no repeating integers to identify text). Furthermore, it is also a good idea not to use int values that are being used for texts already existing in LBA (a search for the number in 2point21's repository can share good results on whether this value is being used or not).
 
-As a good practice, whenever you call the *'GetCustomizedMultiText(int numParam)'* function, you should free the allocated memory of the return value, after you have used it for your purposes. You can do so by calling the 'free(void*)' function from standard C library *'<stdlib.h>'*. So, for instance, if you were to use this function, code should look like this:
+As a good practice, whenever you call the *'GetCustomizedMultiText(LONG numParam)'* function, you should free the allocated memory of the return value, after you have used it for your purposes. You can do so by calling the 'free(void*)' function from standard C library *'<stdlib.h>'*. So, for instance, if you were to use this function, code should look like this:
 
 ::
 
