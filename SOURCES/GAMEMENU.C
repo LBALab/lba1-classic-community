@@ -30,10 +30,13 @@ UWORD	GameMainMenu[] = {
 
 UWORD	GameQuitMenu[] = {
 			0,	// selected
-			2,	// nb entries
+			5,	// nb entries
 			240,	// y center
 			0,	// .dia num
 			0, 28,	// continuer jeu
+			0, 21,	// load game
+			0, 950,	// new save
+			0, 951,	// gestion saved game
 			0, 27	// abandonner partie
 				} ;
 
@@ -1227,13 +1230,33 @@ WORD	FindPlayerFile()
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	SaveGame()
+void SaveGame()
+{
+	SaveGameWithName("AUTO");
+}
+
+void SaveGameWithName(char* fileName)
 {
 	FILE*	handle ;
 	WORD	wword ;
 	UBYTE	wbyte ;
 
-	handle = OpenWrite( GamePathname ) ;
+	if (fileName)
+	{
+		char savePath[1024];
+		
+		strcpy(savePath, PATH_RESSOURCE);
+		strcat(savePath, fileName);
+		strcat(savePath, ".LBA");
+
+		handle = OpenWrite(savePath);
+	}
+	else
+	{
+		Message("Invalid file name", TRUE);
+		return;
+	}
+
 	if( !handle )
 	{
 		Message( "Error Writing Saved Game", TRUE ) ;
@@ -1244,7 +1267,7 @@ void	SaveGame()
 
 	Write( handle, &NumVersion, 1 ) ;
 
-	Write( handle, PlayerName, strlen(PlayerName)+1 ) ;
+	Write( handle, fileName, strlen(fileName)+1 ) ;
 
 // list flag game
 	wbyte = MAX_FLAGS_GAME ;
@@ -1743,6 +1766,7 @@ WORD	ChoosePlayerName( WORD mess )
 
 	while( Key != K_ESC )
 	{
+
 		if( flag == 1 )
 		{
 			for( n=0; n<6; n++ )
@@ -2599,7 +2623,7 @@ LONG	MainGameMenu()
 				if( !ChoosePlayerName( 21 ) ) break ;
 
 				InitGame( -1, 0 ) ;
-				Introduction() ;
+				//Introduction() ;
 				if( MainLoop() )
 				{
 #ifdef	DEMO
@@ -2635,13 +2659,14 @@ LONG	MainGameMenu()
 
 LONG	QuitMenu()
 {
+	LONG retValue = -999;
 	WORD select ;
 	LONG memoflagspeak ;
 
 	CopyScreen( Log, Screen ) ;
 	HQ_StopSample() ;
 
-	while( TRUE )
+	while( retValue == -999 )
 	{
 		memoflagspeak = FlagSpeak ;
 		FlagSpeak = FALSE ;
@@ -2654,13 +2679,68 @@ LONG	QuitMenu()
 
 		switch( select )	// num mess
 		{
-			case 28: // continue
-				return FALSE ;
+			case 21: // load
+				if (!ChoosePlayerName(21)) break;
+
+				InitGame(-1, 0);
+
+				if (MainLoop())
+				{
+	#ifdef	DEMO
+					PlayMidiFile(6);
+					Credits();
+					TheEnd(PROGRAM_OK, "* End of Demo version.");
+	#else
+					Credits();
+					PlayAnimFla("The_End");
+					Cls();
+					Flip();
+					Palette(PtrPal);
+	#endif
+				}
+				CopyScreen(Log, Screen);
+				while (Key OR Fire); // provisoire
+				
+				retValue = FALSE;
+				break;
 
 			case 27: // abandonner
-				return TRUE ;
+				retValue = TRUE;
+				break;
+
+			case 28: // continue
+				retValue = FALSE;
+				break;
+
+			case 950:
+				if (InputPlayerName(44))
+				{
+					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
+					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
+					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
+
+					SaveGameWithName(PlayerName);
+				}
+
+				retValue = FALSE;
+				break;
+
+			case 951:
+				if (ChoosePlayerName(41))
+				{
+					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
+					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
+					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
+
+					SaveGameWithName(PlayerName);
+				}
+
+				retValue = FALSE;
+				break;
 		}
 	}
+
+	return retValue;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
