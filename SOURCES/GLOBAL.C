@@ -171,6 +171,8 @@ WORD	Chapitre = 0 ;
 WORD	NbFourLeafClover = 2 ;
 WORD	NbCloverBox = 2 ;
 
+WORD	HasLoadedKeysOnSave = 0;
+
 WORD	Island = 0	;
 WORD	Fuel = 0 ;
 WORD	NumPingouin = -1 ;

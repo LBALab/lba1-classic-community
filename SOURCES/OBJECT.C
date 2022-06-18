@@ -478,7 +478,7 @@ void	ChangeCube()
 
 	StartInitAllObjs() ;
 
-	NbLittleKeys = 0 ;
+	NbLittleKeys = HasLoadedKeysOnSave ? NbLittleKeys : 0 ;
 	MagicBall = -1 ;
 	LastJoyFlag = TRUE ;
 	ZoneGrm = -1 ;
@@ -493,6 +493,8 @@ void	ChangeCube()
 
 	SamplePlayed = 2+4+8 ;	// joue le premier sample en 1er
 	TimerNextAmbiance = 0 ;
+
+	HasLoadedKeysOnSave = 0;
 
 	StartXCube = ((ListObjet[NumObjFollow].PosObjX+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
 	StartYCube = ((ListObjet[NumObjFollow].PosObjY+SIZE_BRICK_Y)/SIZE_BRICK_Y) ;

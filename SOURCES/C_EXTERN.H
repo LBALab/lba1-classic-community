@@ -242,6 +242,8 @@ extern	UBYTE	Island 	;
 extern	WORD	Fuel ;
 extern	WORD	NumPingouin ;
 
+extern	WORD	HasLoadedKeysOnSave ;
+
 extern	WORD	NbFourLeafClover ;
 extern	WORD	NbCloverBox ;
 

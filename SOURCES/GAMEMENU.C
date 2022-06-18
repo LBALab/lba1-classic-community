@@ -1310,6 +1310,7 @@ void SaveGameWithName(char* fileName)
 // others
 	Write( handle, &NbFourLeafClover, 1 ) ;
 	Write( handle, &Weapon, 2 ) ;
+	Write( handle, &NbLittleKeys, 1 );
 
 	Close( handle ) ;
 }
@@ -1376,6 +1377,9 @@ void	LoadGame()
 // others
 	Read( handle, &NbFourLeafClover, 1 ) ;
 	Read( handle, &Weapon, 2 ) ;
+	Read( handle, &NbLittleKeys, 1 );
+
+	HasLoadedKeysOnSave = NbLittleKeys && NbLittleKeys > 0;
 
 	Close( handle ) ;
 
