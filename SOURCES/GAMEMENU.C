@@ -1377,7 +1377,6 @@ void	LoadGame()
 	Read( handle, &NbFourLeafClover, 1 ) ;
 	Read( handle, &Weapon, 2 ) ;
 
-
 	Close( handle ) ;
 
 	NumCube = -1 ;
@@ -2684,7 +2683,7 @@ LONG	QuitMenu()
 
 				InitGame(-1, 0);
 
-				if (MainLoop())
+/*				if (MainLoop())
 				{
 	#ifdef	DEMO
 					PlayMidiFile(6);
@@ -2697,7 +2696,7 @@ LONG	QuitMenu()
 					Flip();
 					Palette(PtrPal);
 	#endif
-				}
+				}*/
 				CopyScreen(Log, Screen);
 				while (Key OR Fire); // provisoire
 				
@@ -2715,6 +2714,9 @@ LONG	QuitMenu()
 			case 950:
 				if (InputPlayerName(44))
 				{
+					SaveComportement = Comportement;
+					SaveBeta = ListObjet[NUM_PERSO].Beta;
+
 					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
 					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
 					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
@@ -2728,6 +2730,9 @@ LONG	QuitMenu()
 			case 951:
 				if (ChoosePlayerName(41))
 				{
+					SaveComportement = Comportement;
+					SaveBeta = ListObjet[NUM_PERSO].Beta;
+
 					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
 					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
 					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;

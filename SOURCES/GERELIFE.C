@@ -755,7 +755,10 @@ void	DoLife( WORD numobj )
 
 			case LM_SET_FLAG_GAME:
 				num = *PtrPrg++ ;
-				ListFlagGame[num] = *PtrPrg++ ;
+
+				//If ListFlagName[num] is already populated, do nothing (this appears to allow to keep inventory when loading a save in the middle of a scene)
+				if (!ListFlagGame[num])
+					ListFlagGame[num] = *PtrPrg++ ;
 
 //Text( 0,100, "%Fset ListFlagGame %d = %d",num,ListFlagGame[num] ) ;
 
