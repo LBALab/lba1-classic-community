@@ -1379,9 +1379,11 @@ void	LoadGame()
 	Read( handle, &Weapon, 2 ) ;
 	Read( handle, &NbLittleKeys, 1 );
 
-	HasLoadedKeysOnSave = NbLittleKeys && NbLittleKeys > 0;
-
 	Close( handle ) ;
+
+	HasLoadedSave = 1;
+	HasLoadedKeysOnSave = NbLittleKeys && NbLittleKeys > 0;
+	HasLoadedInventoryOnSave = 1;
 
 	NumCube = -1 ;
 	FlagChgCube = 3 ;

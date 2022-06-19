@@ -757,8 +757,12 @@ void	DoLife( WORD numobj )
 				num = *PtrPrg++ ;
 
 				//If ListFlagName[num] is already populated, do nothing (this appears to allow to keep inventory when loading a save in the middle of a scene)
-				if (!ListFlagGame[num])
+				// TODO: Fix this to predict cases where inventory is lost (when going to jail)
+				if (HasLoadedInventoryOnSave && !ListFlagGame[num])
 					ListFlagGame[num] = *PtrPrg++ ;
+
+				if (!HasLoadedInventoryOnSave)
+					ListFlagGame[num] = *PtrPrg++;
 
 //Text( 0,100, "%Fset ListFlagGame %d = %d",num,ListFlagGame[num] ) ;
 
@@ -1280,4 +1284,7 @@ void	DoLife( WORD numobj )
 				break ;
 		}
 	}
+
+
+	HasLoadedInventoryOnSave = 0;
 }
