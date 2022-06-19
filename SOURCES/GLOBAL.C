@@ -172,6 +172,7 @@ WORD	NbFourLeafClover = 2 ;
 WORD	NbCloverBox = 2 ;
 
 WORD	HasLoadedSave = 0;
+WORD	HasLoadedListObjetsOnSave = 0;
 WORD	HasLoadedKeysOnSave = 0;
 WORD	HasLoadedInventoryOnSave = 0;
 

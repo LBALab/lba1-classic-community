@@ -37,6 +37,136 @@ void	RestoreDiskEnv()
 	  ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀     ▀▀   ▀▀▀▀▀ ▀▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
+void	LoadObjetFromScene(WORD n, T_OBJET *ptrobj, WORD sizetoload)
+{
+	WORD indexfile3d;
+
+	InitObject(n);
+
+	ptrobj->Flags = GET_WORD;
+
+	indexfile3d = GET_WORD;
+
+	if (!(ptrobj->Flags & SPRITE_3D))
+	{
+
+		HQRM_Load(PATH_RESSOURCE"File3D.hqr", indexfile3d, (void**)&ptrobj->PtrFile3D);
+		CHECK_MEMORY
+
+			/*				ptrobj->PtrFile3D =
+								LoadMalloc_HQR(
+									PATH_RESSOURCE"File3D.hqr",
+									indexfile3d ) ;
+			*/
+
+	}
+
+	ptrobj->GenBody = GET_BYTE;
+	ptrobj->GenAnim = GET_BYTE;
+	/*
+	if( n==5 )
+	{
+		CoulText( 15,0 ) ;
+		Text( 10, 300, "obj 5 org anim: %d", ptrobj->GenAnim ) ;
+	}
+	*/
+
+	ptrobj->Sprite = GET_WORD;
+
+	ptrobj->OldPosX = ptrobj->PosObjX = GET_WORD;
+	ptrobj->OldPosY = ptrobj->PosObjY = GET_WORD;
+	ptrobj->OldPosZ = ptrobj->PosObjZ = GET_WORD;
+	ptrobj->HitForce = GET_BYTE;
+	ptrobj->OptionFlags = GET_WORD;
+	ptrobj->OptionFlags &= ~EXTRA_GIVE_NOTHING;
+	ptrobj->Beta = GET_WORD;
+	ptrobj->SRot = GET_WORD;
+	ptrobj->Move = GET_WORD;
+
+	ptrobj->Info = GET_WORD;
+	ptrobj->Info1 = GET_WORD;
+	ptrobj->Info2 = GET_WORD;
+	ptrobj->Info3 = GET_WORD;
+
+	ptrobj->NbBonus = GET_BYTE;
+	ptrobj->CoulObj = GET_BYTE;
+	ptrobj->Armure = GET_BYTE;
+	ptrobj->LifePoint = GET_BYTE;
+
+	sizetoload = GET_WORD;
+	ptrobj->PtrTrack = PtrSce;
+	PtrSce = PtrSce + sizetoload;
+
+	sizetoload = GET_WORD;
+	ptrobj->PtrLife = PtrSce;
+	PtrSce = PtrSce + sizetoload;
+}
+
+void LoadObjetFromSave(WORD n, T_OBJET* ptrobj, WORD sizetoload)
+{
+	WORD indexfile3d;
+
+	ptrobj->Flags = GET_WORD;
+	indexfile3d = GET_WORD;
+
+	if (!(ptrobj->Flags & SPRITE_3D))
+	{
+
+		HQRM_Load(PATH_RESSOURCE"File3D.hqr", indexfile3d, (void**)&ptrobj->PtrFile3D);
+		CHECK_MEMORY
+
+			/*				ptrobj->PtrFile3D =
+								LoadMalloc_HQR(
+									PATH_RESSOURCE"File3D.hqr",
+									indexfile3d ) ;
+			*/
+
+	}
+
+	if (ptrobj->LifePoint > 0)
+		ptrobj->GenBody = GET_BYTE;
+	else
+	{
+		GET_BYTE;
+		ptrobj->GenBody = NO_BODY;
+	}
+
+	ptrobj->GenAnim = GET_BYTE;
+
+	ptrobj->Sprite = GET_WORD;
+
+	GET_WORD;
+	GET_WORD;
+	GET_WORD;
+
+	ptrobj->HitForce = GET_BYTE;
+	ptrobj->OptionFlags = GET_WORD;
+	ptrobj->OptionFlags &= ~EXTRA_GIVE_NOTHING;
+	ptrobj->Beta = GET_WORD;
+	ptrobj->SRot = GET_WORD;
+	ptrobj->Move = GET_WORD;
+
+	ptrobj->Info = GET_WORD;
+	ptrobj->Info1 = GET_WORD;
+	ptrobj->Info2 = GET_WORD;
+	ptrobj->Info3 = GET_WORD;
+
+	ptrobj->NbBonus = GET_BYTE;
+	ptrobj->CoulObj = GET_BYTE;
+	ptrobj->Armure = GET_BYTE;
+
+	//ptrobj->LifePoint = GET_BYTE;
+	GET_BYTE;
+
+	sizetoload = GET_WORD;
+	ptrobj->PtrTrack = PtrSce;
+	PtrSce = PtrSce + sizetoload;
+
+	sizetoload = GET_WORD;
+	ptrobj->PtrLife = PtrSce;
+	PtrSce = PtrSce + sizetoload;
+}
+
 
 WORD	LoadScene( WORD numscene )
 {
@@ -45,7 +175,6 @@ WORD	LoadScene( WORD numscene )
 	UBYTE	string[256] ;
 	UBYTE	mess[256] ;
 	WORD	sizetoload ;
-	WORD	indexfile3d ;
 
 //	PtrScene = PtrSce = LoadMalloc_HQR( PATH_RESSOURCE"scene.hqr", numscene ) ;
 
@@ -118,69 +247,19 @@ WORD	LoadScene( WORD numscene )
 // objets: OBJECT
 
 		NbObjets = GET_WORD ;
-		for( n=1; n<NbObjets; n++, ptrobj++ )
+
+		for (n = 1; n < NbObjets; n++, ptrobj++)
 		{
-			InitObject( n ) ;
-
-			ptrobj->Flags = GET_WORD ;
-
-			indexfile3d = GET_WORD ;
-
-			if( !(ptrobj->Flags & SPRITE_3D) )
+			if (HasLoadedListObjetsOnSave)
 			{
-
-	HQRM_Load( PATH_RESSOURCE"File3D.hqr", indexfile3d, (void**)&ptrobj->PtrFile3D ) ;
-	CHECK_MEMORY
-
-/*				ptrobj->PtrFile3D =
-					LoadMalloc_HQR(
-						PATH_RESSOURCE"File3D.hqr",
-						indexfile3d ) ;
-*/
-
+				LoadObjetFromSave(n, ptrobj, sizetoload);
 			}
-
-			ptrobj->GenBody = GET_BYTE ;
-			ptrobj->GenAnim = GET_BYTE ;
-/*
-if( n==5 )
-{
-	CoulText( 15,0 ) ;
-	Text( 10, 300, "obj 5 org anim: %d", ptrobj->GenAnim ) ;
-}
-*/
-
-			ptrobj->Sprite = GET_WORD ;
-
-			ptrobj->OldPosX = ptrobj->PosObjX = GET_WORD ;
-			ptrobj->OldPosY = ptrobj->PosObjY = GET_WORD ;
-			ptrobj->OldPosZ = ptrobj->PosObjZ = GET_WORD ;
-			ptrobj->HitForce = GET_BYTE ;
-			ptrobj->OptionFlags = GET_WORD ;
-			ptrobj->OptionFlags &= ~EXTRA_GIVE_NOTHING ;
-			ptrobj->Beta = GET_WORD ;
-			ptrobj->SRot = GET_WORD ;
-			ptrobj->Move = GET_WORD ;
-
-			ptrobj->Info  = GET_WORD ;
-			ptrobj->Info1 = GET_WORD ;
-			ptrobj->Info2 = GET_WORD ;
-			ptrobj->Info3 = GET_WORD ;
-
-			ptrobj->NbBonus = GET_BYTE ;
-			ptrobj->CoulObj = GET_BYTE ;
-			ptrobj->Armure = GET_BYTE ;
-			ptrobj->LifePoint = GET_BYTE ;
-
-			sizetoload = GET_WORD ;
-			ptrobj->PtrTrack = PtrSce ;
-			PtrSce = PtrSce + sizetoload ;
-
-			sizetoload = GET_WORD ;
-			ptrobj->PtrLife = PtrSce ;
-			PtrSce = PtrSce + sizetoload ;
+			else
+			{
+				LoadObjetFromScene(n, ptrobj, sizetoload);
+			}
 		}
-
+		
 // zone declechement: ZONE
 
 		NbZones = GET_WORD ;

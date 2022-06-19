@@ -46,7 +46,7 @@ void	InitObject( WORD numobj )
 
 	ptrobj = &ListObjet[numobj] ;
 
-        ptrobj->GenBody = GEN_BODY_NORMAL ;
+    ptrobj->GenBody = GEN_BODY_NORMAL ;
 	ptrobj->GenAnim = GEN_ANIM_RIEN ;
 
 	ptrobj->PosObjX = 0 ;
@@ -478,7 +478,9 @@ void	ChangeCube()
 
 	RestartPerso() ;
 
-	StartInitAllObjs() ;
+	StartInitAllObjs();
+
+	HasLoadedListObjetsOnSave = 0;
 
 	NbLittleKeys = HasLoadedKeysOnSave ? NbLittleKeys : 0 ;
 	MagicBall = -1 ;

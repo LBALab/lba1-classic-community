@@ -507,7 +507,7 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_KILL_OBJ:
-				num = *PtrPrg++	;
+				num = *PtrPrg++;
                                 CheckCarrier( num ) ;
 				ListObjet[num].WorkFlags |= OBJ_DEAD	;
 				ListObjet[num].Body = -1		;
@@ -756,13 +756,18 @@ void	DoLife( WORD numobj )
 			case LM_SET_FLAG_GAME:
 				num = *PtrPrg++ ;
 
-				//If ListFlagName[num] is already populated, do nothing (this appears to allow to keep inventory when loading a save in the middle of a scene)
-				// TODO: Fix this to predict cases where inventory is lost (when going to jail)
-				if (HasLoadedInventoryOnSave && !ListFlagGame[num])
-					ListFlagGame[num] = *PtrPrg++ ;
-
-				if (!HasLoadedInventoryOnSave)
-					ListFlagGame[num] = *PtrPrg++;
+				//If ListFlagName[num] is already populated for inventory, do nothing (this appears to allow to keep inventory when loading a save in the middle of a scene)
+				if (HasLoadedInventoryOnSave)
+				{
+					if (num < MAX_INVENTORY)
+					{
+						if (!ListFlagGame[num])
+							ListFlagGame[num] = *PtrPrg++;
+						else *PtrPrg++;
+					}
+					else ListFlagGame[num] = *PtrPrg++;
+				}
+				else ListFlagGame[num] = *PtrPrg++;
 
 //Text( 0,100, "%Fset ListFlagGame %d = %d",num,ListFlagGame[num] ) ;
 
@@ -1284,7 +1289,4 @@ void	DoLife( WORD numobj )
 				break ;
 		}
 	}
-
-
-	HasLoadedInventoryOnSave = 0;
 }

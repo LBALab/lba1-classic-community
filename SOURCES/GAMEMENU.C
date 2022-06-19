@@ -1311,6 +1311,7 @@ void SaveGameWithName(char* fileName)
 	Write( handle, &NbFourLeafClover, 1 ) ;
 	Write( handle, &Weapon, 2 ) ;
 	Write( handle, &NbLittleKeys, 1 );
+	Write (handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
 
 	Close( handle ) ;
 }
@@ -1323,6 +1324,7 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
+	int successKeys, successListObjets ;
 
 	handle = OpenRead( GamePathname ) ;
 
@@ -1377,12 +1379,15 @@ void	LoadGame()
 // others
 	Read( handle, &NbFourLeafClover, 1 ) ;
 	Read( handle, &Weapon, 2 ) ;
-	Read( handle, &NbLittleKeys, 1 );
+
+	successKeys = Read( handle, &NbLittleKeys, 1 );
+	successListObjets = Read(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
 
 	Close( handle ) ;
 
 	HasLoadedSave = 1;
-	HasLoadedKeysOnSave = NbLittleKeys && NbLittleKeys > 0;
+	HasLoadedListObjetsOnSave = successListObjets;
+	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
 	HasLoadedInventoryOnSave = 1;
 
 	NumCube = -1 ;

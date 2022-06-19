@@ -957,6 +957,8 @@ startloop:
 			}
 		}
 
+	if (NbObjets > 0)
+		HasLoadedInventoryOnSave = 0;
 /*
 ptrobj = &ListObjet[ 4 ] ;
 CoulText( 15, 0 ) ;

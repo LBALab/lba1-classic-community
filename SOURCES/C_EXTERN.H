@@ -243,6 +243,7 @@ extern	WORD	Fuel ;
 extern	WORD	NumPingouin ;
 
 extern	WORD	HasLoadedSave ;
+extern	WORD	HasLoadedListObjetsOnSave;
 extern	WORD	HasLoadedKeysOnSave ;
 extern	WORD	HasLoadedInventoryOnSave;
 
