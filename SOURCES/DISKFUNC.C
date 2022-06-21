@@ -213,19 +213,20 @@ WORD	LoadScene( WORD numscene )
 				free(savedPtrObj);
 			}
 		}
-		
-		HasLoadedListObjetsOnSave = 0;
 
 // zone declechement: ZONE
-
 		NbZones = GET_WORD ;
-		ListZone = (T_ZONE*)PtrSce ;
+		if (!HasLoadedListZoneOnSave) //add flag for zones
+			ListZone = (T_ZONE*)PtrSce ;
 		PtrSce += NbZones * 12 * 2 ;
 
 // point track: TRACK
 
 		NbBrickTrack = GET_WORD ;
 		ListBrickTrack = (T_TRACK*)PtrSce ;
+
+		HasLoadedListObjetsOnSave = 0;
+		HasLoadedListZoneOnSave = 0;
 
 		return TRUE ;
 }

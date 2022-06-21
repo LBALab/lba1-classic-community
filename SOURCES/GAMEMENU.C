@@ -1258,6 +1258,7 @@ void SaveGameWithName(char* fileName)
 	FILE*	handle ;
 	WORD	wword ;
 	UBYTE	wbyte ;
+	int i;
 
 	if (fileName)
 	{
@@ -1329,7 +1330,15 @@ void SaveGameWithName(char* fileName)
 	Write( handle, &NbFourLeafClover, 1 ) ;
 	Write( handle, &Weapon, 2 ) ;
 	Write( handle, &NbLittleKeys, 1 );
-	Write (handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
+	Write( handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS );
+	Write( handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS );
+	Write( handle, &NbZones, 2 );
+
+	//Iterating for ListZone because it has a different data type
+	for (i = 0; i < NbZones; i++)
+	{
+		Write(handle, &ListZone[i], sizeof(T_ZONE));
+	}
 
 	Close( handle ) ;
 }
@@ -1342,7 +1351,9 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
-	int successKeys, successListObjets ;
+	int successInventory, successKeys, successListObjets, successNbZones;
+	int successListZones = 1;
+	int i;
 
 	handle = OpenRead( GamePathname ) ;
 
@@ -1358,7 +1369,8 @@ void	LoadGame()
 
 // list flag game
 	Read( handle, &wbyte, 1 ) ;	// nb octets
-	Read( handle, ListFlagGame, wbyte ) ;
+	
+	successInventory = Read( handle, ListFlagGame, wbyte ) ;
 
 	NewCube = 0 ;
 	Read( handle, &NewCube, 1 ) ;
@@ -1400,13 +1412,25 @@ void	LoadGame()
 
 	successKeys = Read( handle, &NbLittleKeys, 1 );
 	successListObjets = Read(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
+	Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
+	successNbZones = Read(handle, &NbZones, 2);
+
+	ListZone = malloc(sizeof(T_ZONE) * NbZones);
+
+	//Iterating for ListZone because it has a different data type
+	for (i = 0; i < NbZones; i++)
+	{
+		successListZones &= Read(handle, &ListZone[i], sizeof(T_ZONE));
+	}
 
 	Close( handle ) ;
 
+	//These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
 	HasLoadedSave = 1;
+	HasLoadedInventoryOnSave = successInventory;
 	HasLoadedListObjetsOnSave = successListObjets;
+	HasLoadedListZoneOnSave = successNbZones && NbZones > 0 && successListZones;
 	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
-	HasLoadedInventoryOnSave = 1;
 
 	NumCube = -1 ;
 	FlagChgCube = 3 ;
