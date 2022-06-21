@@ -206,6 +206,24 @@ void	WaitReleaseSpace()
 	RestoreTimer() ;
 }
 
+char*	GetMenuMultiTextAux(WORD num, char* dst)
+{
+	char* multiTextPtr = GetMultiText(num, dst);
+
+	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
+	if (!multiTextPtr)
+	{
+		char* customTextPtr = GetCustomizedMultiText(num);
+
+		if (customTextPtr)
+			strcpy(dst, customTextPtr);
+
+		free(customTextPtr);
+	}
+
+	return dst;
+}
+
 /*══════════════════════════════════════════════════════════════════════════*
 	     █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▄ ▄█ █▀▀▀▀ ██▄ █ █   █
 	     ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██▀ █ ██▀▀  ██▀██ ██  █
@@ -1587,7 +1605,7 @@ try_again:
 
 	InitDial( 0 ) ;
 
-	GetMultiText( nummess, string ) ;
+	GetMenuMultiTextAux( nummess, string ) ;
 	CoulFont( COUL_LETTER_INPUT ) ;
 	Font( 320 - SizeFont(string)/2, 20, string ) ;
 	CopyBlockPhys( 0,0,639,99 ) ;
@@ -1772,7 +1790,7 @@ WORD	ChoosePlayerName( WORD mess )
 
 	InitDial( 0 ) ;
 
-	DrawSingleString( 320, 40, (UBYTE*)GetMultiText( mess,string ) ) ;
+	DrawSingleString( 320, 40, (UBYTE*)GetMenuMultiTextAux( mess,string ) ) ;
 
 	while( Key != K_ESC )
 	{
@@ -1855,7 +1873,6 @@ WORD	ChoosePlayerName( WORD mess )
 
 void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 {
-	char* 	multiTextPtr;
 	WORD	x2, x0,y0,x1,y1 ;
 	UBYTE	string[256] ;
 	ULONG	volleft, volright ;
@@ -1934,18 +1951,7 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 	// text
 
 	CoulFont( COUL_TEXT_MENU ) ;
-	multiTextPtr = GetMultiText( num, string ) ;
-
-	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
-	if(!multiTextPtr)
-	{
-		char *customTextPtr = GetCustomizedMultiText( num );
-
-		if (customTextPtr)
-			strcpy(string, customTextPtr);
-
-		free(customTextPtr);
-	}
+	GetMenuMultiTextAux( num, string ) ;
 	
 	Font( x - SizeFont( string )/2, y-18, string ) ;
 
@@ -2723,7 +2729,7 @@ LONG	QuitMenu()
 				break;
 
 			case 950:
-				if (InputPlayerName(44))
+				if (InputPlayerName(950))
 				{
 					SaveComportement = Comportement;
 					SaveBeta = ListObjet[NUM_PERSO].Beta;
@@ -2739,7 +2745,7 @@ LONG	QuitMenu()
 				break;
 
 			case 951:
-				if (ChoosePlayerName(41))
+				if (ChoosePlayerName(951))
 				{
 					SaveComportement = Comportement;
 					SaveBeta = ListObjet[NUM_PERSO].Beta;
