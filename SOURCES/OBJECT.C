@@ -480,8 +480,6 @@ void	ChangeCube()
 
 	StartInitAllObjs();
 
-	HasLoadedListObjetsOnSave = 0;
-
 	NbLittleKeys = HasLoadedKeysOnSave ? NbLittleKeys : 0 ;
 	MagicBall = -1 ;
 	LastJoyFlag = TRUE ;
