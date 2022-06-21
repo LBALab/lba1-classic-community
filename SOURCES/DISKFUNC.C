@@ -121,7 +121,15 @@ WORD	LoadScene( WORD numscene )
 
 		for (n = 1; n < NbObjets; n++, ptrobj++)
 		{
-			WORD savedLifePoint = ptrobj->LifePoint;
+			T_OBJET* savedPtrObj;
+			
+			if (HasLoadedListObjetsOnSave)
+			{
+				savedPtrObj = malloc(sizeof(T_OBJET));
+
+				if (savedPtrObj)
+					*savedPtrObj = *ptrobj;
+			}
 
 			InitObject(n);
 
@@ -183,15 +191,26 @@ WORD	LoadScene( WORD numscene )
 			ptrobj->PtrLife = PtrSce;
 			PtrSce = PtrSce + sizetoload;
 
-			//Do not render object if it's marked as dead on save
-			if (HasLoadedListObjetsOnSave && savedLifePoint <= 0)
+			//If loading from a save, replace content with the saved one (but keep the SCENE.HQR file reading flow from LoadScene for other necessary readings afterwards) 
+			if (HasLoadedListObjetsOnSave && savedPtrObj)
 			{
-				ptrobj->GenBody = NO_BODY;
-				ptrobj->WorkFlags |= OBJ_DEAD;
-				ptrobj->Sprite = -1;
-				ptrobj->Body = -1;
-				ptrobj->ZoneSce = -1;
-				ptrobj->LifePoint = 0;
+				//Starting animation will still be the one from SCENE.HQR file (this is to avoid a glitch when a NPC is in the middle of an animation when a save is made, other than the default one like getting hit)
+				savedPtrObj->GenAnim = ptrobj->GenAnim;
+
+				//This will retain NPC and object position and other states when loading a save
+				*ptrobj = *savedPtrObj;
+
+				//Do not render object if it's marked as dead on save
+				if (savedPtrObj->LifePoint <= 0)
+				{
+					ptrobj->GenBody = NO_BODY;
+					ptrobj->WorkFlags |= OBJ_DEAD;
+					ptrobj->Sprite = -1;
+					ptrobj->Body = -1;
+					ptrobj->ZoneSce = -1;
+				}
+
+				free(savedPtrObj);
 			}
 		}
 		
