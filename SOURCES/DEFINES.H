@@ -150,6 +150,8 @@ extern	ULONG	UsedHQMemory ;
 #define	GEN_ANIM_SABRE		23
 #define	GEN_ANIM_DEGAINE	24
 
+#define MAIN_LOOP_LOAD_GAME 3
+
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 typedef	struct

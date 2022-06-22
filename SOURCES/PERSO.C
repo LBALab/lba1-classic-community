@@ -406,19 +406,30 @@ startloop:
 		AND (!(ListObjet[NUM_PERSO].Flags&INVISIBLE))
 		)
 		{
+			int retQuitMenu;
+
 			// confirmation sortie
 			TestRestoreModeSVGA( TRUE ) ;
 			SaveTimer() ;
 
-			if( QuitMenu() )
+			retQuitMenu = QuitMenu();
+			if( retQuitMenu == 2)
 			{
 				RestoreTimer() ;
 				AffScene( TRUE ) ;
 
-				SaveTimer() ;
-				SaveGame() ;
-				RestoreTimer() ;
-				break ;
+				return MAIN_LOOP_LOAD_GAME;
+			}
+			else if (retQuitMenu == 1)
+			{
+				RestoreTimer();
+				AffScene(TRUE);
+
+				//SaveTimer() ;
+				//SaveGame() ;
+				//RestoreTimer() ;
+
+				break;
 			}
 			else
 			{

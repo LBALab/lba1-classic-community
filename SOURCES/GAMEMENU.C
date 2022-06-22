@@ -175,6 +175,39 @@ extern	WORD	IndexGrm ;
 /*══════════════════════════════════════════════════════════════════════════*
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
+void MenuInitGame(int argc, UBYTE* argv[], WORD showIntroduction)
+{
+	int retMainLoop;
+
+	InitGame(argc, argv);
+
+	if (showIntroduction)
+		Introduction();
+
+	if (retMainLoop = MainLoop())
+	{
+#ifdef	DEMO
+		PlayMidiFile(6);
+		Credits();
+		TheEnd(PROGRAM_OK, "* End of Demo version.");
+#else
+		if (retMainLoop == MAIN_LOOP_LOAD_GAME)
+		{
+			MenuInitGame(-1, 0, 0);
+		}
+		else
+		{
+			Credits();
+			PlayAnimFla("The_End");
+			Cls();
+			Flip();
+			Palette(PtrPal);
+		}
+#endif
+	}
+	CopyScreen(Log, Screen);
+}
+
 
 void	Init3DGame()
 {
@@ -2638,48 +2671,15 @@ LONG	MainGameMenu()
 				}
 				while( FileSize( GamePathname ) != 0 ) ;
 
-				InitGame( 1, 0 ) ;
-				Introduction() ;
-				if( MainLoop() )
-				{
-#ifdef	DEMO
-					PlayMidiFile( 6 ) ;
-					Credits() ;
-					TheEnd( PROGRAM_OK, "* End of Demo version." ) ;
-#else
-					Credits() ;
-					PlayAnimFla( "The_End" ) ;
-					Cls() ;
-					Flip() ;
-					Palette( PtrPal ) ;
-#endif
-				}
-
-				CopyScreen( Log, Screen ) ;
+				MenuInitGame(1,0,1);
 				while( Key OR Fire ) ; // provisoire
 				break ;
 
 			case 21: // load
 
 				if( !ChoosePlayerName( 21 ) ) break ;
-
-				InitGame( -1, 0 ) ;
-				//Introduction() ;
-				if( MainLoop() )
-				{
-#ifdef	DEMO
-					PlayMidiFile( 6 ) ;
-					Credits() ;
-					TheEnd( PROGRAM_OK, "* End of Demo version." ) ;
-#else
-					Credits() ;
-					PlayAnimFla( "The_End" ) ;
-					Cls() ;
-					Flip() ;
-					Palette( PtrPal ) ;
-#endif
-				}
-				CopyScreen( Log, Screen ) ;
+				
+				MenuInitGame(-1,0,0);
 				while( Key OR Fire ) ; // provisoire
 				break ;
 
@@ -2723,35 +2723,18 @@ LONG	QuitMenu()
 			case 21: // load
 				if (!ChoosePlayerName(21)) break;
 
-				InitGame(-1, 0);
-
-				if (MainLoop())
-				{
-	#ifdef	DEMO
-					PlayMidiFile(6);
-					Credits();
-					TheEnd(PROGRAM_OK, "* End of Demo version.");
-	#else
-					Credits();
-					PlayAnimFla("The_End");
-					Cls();
-					Flip();
-					Palette(PtrPal);
-	#endif
-				}
-				CopyScreen(Log, Screen);
 				while (Key OR Fire); // provisoire
 				
 				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
-				retValue = TRUE;
+				retValue = 2;
 				break;
 
 			case 27: // abandonner
-				retValue = TRUE;
+				retValue = 1;
 				break;
 
 			case 28: // continue
-				retValue = FALSE;
+				retValue = 0;
 				break;
 
 			case 950:
@@ -2767,7 +2750,7 @@ LONG	QuitMenu()
 					SaveGameWithName(PlayerName);
 				}
 
-				retValue = FALSE;
+				retValue = 0;
 				break;
 
 			case 951:
@@ -2783,7 +2766,7 @@ LONG	QuitMenu()
 					SaveGameWithName(PlayerName);
 				}
 
-				retValue = FALSE;
+				retValue = 0;
 				break;
 		}
 	}
