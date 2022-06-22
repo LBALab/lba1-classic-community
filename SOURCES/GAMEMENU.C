@@ -1351,7 +1351,7 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
-	int successInventory, successKeys, successListObjets, successNbZones;
+	int successInventory, successKeys, successListObjets, successNbZones, successListExtras;
 	int successListZones = 1;
 	int i;
 
@@ -1412,7 +1412,7 @@ void	LoadGame()
 
 	successKeys = Read( handle, &NbLittleKeys, 1 );
 	successListObjets = Read(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
-	Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
+	successListExtras = Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
 	successNbZones = Read(handle, &NbZones, 2);
 
 	ListZone = malloc(sizeof(T_ZONE) * NbZones);
@@ -1429,6 +1429,7 @@ void	LoadGame()
 	HasLoadedSave = 1;
 	HasLoadedInventoryOnSave = successInventory;
 	HasLoadedListObjetsOnSave = successListObjets;
+	HasLoadedListExtraOnSave = successListExtras;
 	HasLoadedListZoneOnSave = successNbZones && NbZones > 0 && successListZones;
 	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
 
@@ -2724,7 +2725,7 @@ LONG	QuitMenu()
 
 				InitGame(-1, 0);
 
-/*				if (MainLoop())
+				if (MainLoop())
 				{
 	#ifdef	DEMO
 					PlayMidiFile(6);
@@ -2737,11 +2738,12 @@ LONG	QuitMenu()
 					Flip();
 					Palette(PtrPal);
 	#endif
-				}*/
+				}
 				CopyScreen(Log, Screen);
 				while (Key OR Fire); // provisoire
 				
-				retValue = FALSE;
+				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
+				retValue = TRUE;
 				break;
 
 			case 27: // abandonner

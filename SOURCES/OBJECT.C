@@ -404,6 +404,8 @@ void	ChangeCube()
 	FreeGrille() ;
 	ClearScene() ;
 
+	HasLoadedListExtraOnSave = 0;
+
 // perso reinit
 
 	LoadFicPerso() ;

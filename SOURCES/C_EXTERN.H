@@ -244,6 +244,7 @@ extern	WORD	NumPingouin ;
 
 extern	WORD	HasLoadedSave ;
 extern	WORD	HasLoadedListObjetsOnSave;
+extern	WORD	HasLoadedListExtraOnSave;
 extern	WORD	HasLoadedListZoneOnSave;
 extern	WORD	HasLoadedKeysOnSave ;
 extern	WORD	HasLoadedInventoryOnSave;

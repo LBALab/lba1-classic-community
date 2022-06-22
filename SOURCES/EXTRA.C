@@ -677,8 +677,16 @@ void	ClearExtra()
 
 	for( n=0; n<MAX_EXTRAS; n++ )
 	{
-		ListExtra[n].Sprite = -1 ;
-		ListExtra[n].Divers = 1 ;
+		if (!HasLoadedListExtraOnSave)
+		{
+			ListExtra[n].Sprite = -1;
+			ListExtra[n].Divers = 1;
+		}
+		else
+		{
+			//Reset extra item timer to loading time
+			ListExtra[n].Timer = TimerRef;
+		}
 	}
 
 }
