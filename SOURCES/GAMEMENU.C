@@ -124,6 +124,7 @@ ULONG	TimerSample ;
 // save players games
 
 #define	MAX_PLAYER	200
+#define AUTO_SAVE_NAME "AUTO"
 
 UBYTE	NumVersion = 0 ;
 
@@ -1194,7 +1195,7 @@ void	CopyBlockPhysMCGA( LONG x0, LONG y0, LONG x1, LONG y1 )
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname )
+WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave )
 {
 	struct	find_t	fileinfo ;
 	ULONG	rc ;
@@ -1203,13 +1204,48 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname )
 	WORD	nb = 0 ;
 	FILE*	handle ;
 
-	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
 
+	if (showAutoSave)
+	{
+		strcpy(pathname, PATH_RESSOURCE);
+		strcat(pathname, AUTO_SAVE_NAME".LBA");
+
+		//Get Auto save file first
+		rc = _dos_findfirst(pathname, _A_NORMAL, &fileinfo);
+		if (!rc)
+		{
+			int i = 0;
+			int autoNameLen = strlen(AUTO_SAVE_NAME);
+
+			*ptrlistname++ = listname;
+			for (i = 0; i < autoNameLen; i++)
+			{
+				*listname++ = AUTO_SAVE_NAME[i];
+			}
+
+			*listname++ = 0;
+
+			nb++;
+			if (nb == MAX_PLAYER)	return nb;
+		}
+	}
+
+	strcpy(pathname, PATH_RESSOURCE"*.LBA");
+
+	//Get all the other save files
 	rc = _dos_findfirst( pathname, _A_NORMAL, &fileinfo ) ;
 	while( !rc )
 	{
+		//ignore auto save file
+		if (strcmp(fileinfo.name, AUTO_SAVE_NAME".LBA") == 0)
+		{
+			rc = _dos_findnext(&fileinfo);
+			continue;
+		}
+
 		strcpy( pathname, PATH_RESSOURCE ) ;
 		strcat( pathname,  fileinfo.name ) ;
+
 		handle = OpenRead( pathname ) ;
 		if( handle )
 		{
@@ -1283,10 +1319,10 @@ WORD	FindPlayerFile()
 
 void SaveGame()
 {
-	SaveGameWithName("AUTO");
+	SaveGameWithName(AUTO_SAVE_NAME, 1);
 }
 
-void SaveGameWithName(char* fileName)
+void SaveGameWithName(char* fileName, WORD isAutoSave)
 {
 	FILE*	handle ;
 	WORD	wword ;
@@ -1362,15 +1398,19 @@ void SaveGameWithName(char* fileName)
 // others
 	Write( handle, &NbFourLeafClover, 1 ) ;
 	Write( handle, &Weapon, 2 ) ;
-	Write( handle, &NbLittleKeys, 1 );
-	Write( handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS );
-	Write( handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS );
-	Write( handle, &NbZones, 2 );
 
-	//Iterating for ListZone because it has a different data type
-	for (i = 0; i < NbZones; i++)
+	if (!isAutoSave)
 	{
-		Write(handle, &ListZone[i], sizeof(T_ZONE));
+		Write(handle, &NbLittleKeys, 1);
+		Write(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
+		Write(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
+		Write(handle, &NbZones, 2);
+
+		//Iterating for ListZone because it has a different data type
+		for (i = 0; i < NbZones; i++)
+		{
+			Write(handle, &ListZone[i], sizeof(T_ZONE));
+		}
 	}
 
 	Close( handle ) ;
@@ -1820,7 +1860,7 @@ try_again:
 
 #define	NB_GAME_CHOICE	6
 
-WORD	ChoosePlayerName( WORD mess )
+WORD	ChoosePlayerName( WORD mess, WORD showAutoSave )
 {
 	WORD	flag = 1 ;
 	UBYTE	*listplayername ;
@@ -1843,7 +1883,7 @@ WORD	ChoosePlayerName( WORD mess )
 		TheEnd( NOT_ENOUGH_MEM, "Choose Player Name" ) ;
 	}
 
-	nb = PlayerGameList( ptrlist, listplayername ) ;
+	nb = PlayerGameList( ptrlist, listplayername, showAutoSave ) ;
 
 	if( !nb )	return FALSE ;
 
@@ -2454,7 +2494,7 @@ void	SavedGameManagement()
 				break ;
 
 			case 41: // copier
-				if( ChoosePlayerName( 41 ) )
+				if( ChoosePlayerName( 41, 1 ) )
 				{
 					UBYTE	*ptr,*ptrs ;
 					LONG	size ;
@@ -2492,7 +2532,7 @@ void	SavedGameManagement()
 				break ;
 
 			case 45: // detruire
-				if( ChoosePlayerName( 45 ) )
+				if( ChoosePlayerName( 45, 0 ) )
 				{
 					CopyScreen( Screen, Log ) ;
 
@@ -2664,13 +2704,13 @@ LONG	MainGameMenu()
 
 				if( !InputPlayerName( 42 ) )	break ;
 
-				do
+				/**do
 				{
 					strcpy( GamePathname, PATH_RESSOURCE"S" ) ;
 					strcat( GamePathname, Itoa( Rnd(10000) ) ) ;
 					strcat( GamePathname, ".LBA" ) ;
 				}
-				while( FileSize( GamePathname ) != 0 ) ;
+				while( FileSize( GamePathname ) != 0 ) ;*/
 
 				MenuInitGame(1,0,1);
 				while( Key OR Fire ) ; // provisoire
@@ -2678,7 +2718,7 @@ LONG	MainGameMenu()
 
 			case 21: // load
 
-				if( !ChoosePlayerName( 21 ) ) break ;
+				if( !ChoosePlayerName( 21, 1 ) ) break ;
 				
 				MenuInitGame(-1,0,0);
 				while( Key OR Fire ) ; // provisoire
@@ -2722,7 +2762,7 @@ LONG	QuitMenu()
 		switch( select )	// num mess
 		{
 			case 21: // load
-				if (!ChoosePlayerName(21)) break;
+				if (!ChoosePlayerName(21, 1)) break;
 
 				while (Key OR Fire); // provisoire
 				
@@ -2738,7 +2778,7 @@ LONG	QuitMenu()
 				retValue = 0;
 				break;
 
-			case 950:
+			case 950: // new save
 				if (InputPlayerName(950))
 				{
 					SaveComportement = Comportement;
@@ -2748,14 +2788,14 @@ LONG	QuitMenu()
 					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
 					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
 
-					SaveGameWithName(PlayerName);
+					SaveGameWithName(PlayerName, 0);
 				}
 
 				retValue = 0;
 				break;
 
-			case 951:
-				if (ChoosePlayerName(951))
+			case 951: //replace save
+				if (ChoosePlayerName(951, 0))
 				{
 					SaveComportement = Comportement;
 					SaveBeta = ListObjet[NUM_PERSO].Beta;
@@ -2764,7 +2804,7 @@ LONG	QuitMenu()
 					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
 					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
 
-					SaveGameWithName(PlayerName);
+					SaveGameWithName(PlayerName, 0);
 				}
 
 				retValue = 0;
