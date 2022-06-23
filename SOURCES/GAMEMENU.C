@@ -123,7 +123,7 @@ ULONG	TimerSample ;
 
 // save players games
 
-#define	MAX_PLAYER	50
+#define	MAX_PLAYER	200
 
 UBYTE	NumVersion = 0 ;
 
