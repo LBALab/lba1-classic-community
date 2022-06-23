@@ -173,6 +173,7 @@ WORD	NbCloverBox = 2 ;
 
 WORD	HasLoadedSave = 0;
 WORD	HasLoadedListObjetsOnSave = 0;
+WORD	HasLoadedListObjetTracksOnSave = 0;
 WORD	HasLoadedListExtraOnSave = 0;
 WORD	HasLoadedListZoneOnSave = 0;
 WORD	HasLoadedKeysOnSave = 0;

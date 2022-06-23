@@ -144,9 +144,13 @@ void	StartInitObj( WORD numobj )
 				0, &ptrobj->RealAngle ) ;
 	}
 
-	ptrobj->OffsetTrack = -1 ;
-	ptrobj->LabelTrack = -1 ;
-	ptrobj->OffsetLife = 0 ;
+
+	if (!HasLoadedListObjetTracksOnSave)
+	{
+		ptrobj->OffsetTrack = -1 ;
+		ptrobj->LabelTrack = -1 ;
+		ptrobj->OffsetLife = 0;
+	}
 }
 
 

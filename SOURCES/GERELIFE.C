@@ -571,13 +571,23 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_SET_TRACK:
-				ptrobj->OffsetTrack = *(WORD*)PtrPrg ;
+				if (HasLoadedListObjetTracksOnSave)
+				{
+					if (ptrobj->OffsetTrack == -1)
+						ptrobj->OffsetTrack = *(WORD*)PtrPrg;
+				}
+				else ptrobj->OffsetTrack = *(WORD*)PtrPrg ;
 				PtrPrg += 2 ;
 				break ;
 
 			case LM_SET_TRACK_OBJ:
 				num = *PtrPrg++ ;
-				ListObjet[num].OffsetTrack = *(WORD*)PtrPrg ;
+				if (HasLoadedListObjetTracksOnSave)
+				{
+					if (ptrobj->OffsetTrack == -1)
+						ListObjet[num].OffsetTrack = *(WORD*)PtrPrg;
+				}
+				else ListObjet[num].OffsetTrack = *(WORD*)PtrPrg;
 				PtrPrg += 2 ;
 				break ;
 

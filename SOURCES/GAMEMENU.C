@@ -1462,6 +1462,7 @@ void	LoadGame()
 	HasLoadedSave = 1;
 	HasLoadedInventoryOnSave = successInventory;
 	HasLoadedListObjetsOnSave = successListObjets;
+	HasLoadedListObjetTracksOnSave = successListObjets;
 	HasLoadedListExtraOnSave = successListExtras;
 	HasLoadedListZoneOnSave = successNbZones && NbZones > 0 && successListZones;
 	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
