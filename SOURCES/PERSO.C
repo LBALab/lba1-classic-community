@@ -970,6 +970,7 @@ startloop:
 
 	if (NbObjets > 0)
 	{
+		HasLoadedSave = 0;
 		HasLoadedInventoryOnSave = 0;
 		HasLoadedListObjetTracksOnSave = 0;
 	}

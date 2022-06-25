@@ -423,6 +423,7 @@ void	DoLife( WORD numobj )
 	UBYTE	macro ;
 	T_OBJET	*ptrobj ;
 
+	WORD auxMove;
 	LONG	obj ;
 	LONG	num ;
 	UBYTE	index ;
@@ -432,12 +433,15 @@ void	DoLife( WORD numobj )
 	UBYTE	string[256] ;
 	LONG	dx, n ;
 
+	WORD isPersoFromLoad = HasLoadedSave && numobj == NUM_PERSO;
+
 	ptrobj = &ListObjet[numobj] ;
 
 	PtrPrg = ptrobj->PtrLife + ptrobj->OffsetLife ;
 
 	while( flag != -1 )
 	{
+
 		ptrmacro = PtrPrg ;
 		switch( *PtrPrg++ )
 		{
@@ -524,10 +528,17 @@ void	DoLife( WORD numobj )
 				break	;
 
 			case LM_SET_DIR:
-				ptrobj->Move = *PtrPrg++ ;
-				if( ptrobj->Move == MOVE_FOLLOW )
+				auxMove = *PtrPrg++ ;
+
+				if (!isPersoFromLoad)
+					ptrobj->Move = auxMove;
+
+				if( auxMove == MOVE_FOLLOW )
 				{
-					ptrobj->Info3 = *PtrPrg++ ;
+					WORD auxInfo3 = *PtrPrg++;
+
+					if (!isPersoFromLoad)
+						ptrobj->Info3 = auxInfo3 ;
 				}
 				break ;
 
@@ -1007,9 +1018,13 @@ void	DoLife( WORD numobj )
 				Y0 = ListBrickTrack[Value].Y ;
 				Z0 = ListBrickTrack[Value].Z ;
 
-				ptrobj->PosObjX = X0 ;
-				ptrobj->PosObjY = Y0 ;
-				ptrobj->PosObjZ = Z0 ;
+
+				if (!isPersoFromLoad)
+				{
+					ptrobj->PosObjX = X0;
+					ptrobj->PosObjY = Y0;
+					ptrobj->PosObjZ = Z0;
+				}
 				break ;
 
 			case LM_PLAY_FLA:

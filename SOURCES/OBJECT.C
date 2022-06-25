@@ -283,21 +283,23 @@ void	RestartPerso()
 
 	ptrobj = &ListObjet[NUM_PERSO] ;
 
-	ptrobj->Move = MOVE_MANUAL ;
+	ptrobj->Move = MOVE_MANUAL;
+	ptrobj->WorkFlags = 0;
+	ptrobj->Flags = OBJ_FALLABLE
+		+ CHECK_ZONE
+		+ CHECK_OBJ_COL
+		+ CHECK_BRICK_COL
+		+ CHECK_CODE_JEU;
 
-	ptrobj->WorkFlags = 0 ;
-	ptrobj->Flags =	  OBJ_FALLABLE
-			+ CHECK_ZONE
-			+ CHECK_OBJ_COL
-			+ CHECK_BRICK_COL
-			+ CHECK_CODE_JEU ;
+	if (!HasLoadedSave)
+	{
+		ptrobj->Armure = 1;
 
-	ptrobj->Armure = 1 ;
-
-	ptrobj->OffsetTrack = -1 ;
-	ptrobj->LabelTrack = -1 ;
-	ptrobj->OffsetLife = 0 ;
-	ptrobj->ZoneSce = -1 ;
+		ptrobj->OffsetTrack = -1;
+		ptrobj->LabelTrack = -1;
+		ptrobj->OffsetLife = 0;
+		ptrobj->ZoneSce = -1;
+	}
 
 ptrobj->Beta = SaveBeta ;
 
@@ -479,9 +481,7 @@ void	ChangeCube()
 		SaveBeta = ListObjet[NUM_PERSO].Beta ;
 		SaveGame() ;
 	}
-
-	HasLoadedSave = 0;
-
+	
 	RestartPerso() ;
 
 	StartInitAllObjs();
