@@ -908,17 +908,30 @@ startloop:
 				{
 				    if( NbFourLeafClover > 0 )
 				    {
-					FlagWater = FALSE ;
-
 					// restart
 					NbFourLeafClover-- ;
 
-					ListObjet[NUM_PERSO].PosObjX = SceneStartX ;
-					ListObjet[NUM_PERSO].PosObjY = SceneStartY ;
-					ListObjet[NUM_PERSO].PosObjZ = SceneStartZ ;
+					//For now, if death occurs in water, set position to cube start. Ideally it should work like in LBA2 but might require some code refactoring  
+					//Do not reset scene any longer
+					if (FlagWater)
+					{
+						//If respawning Twinsen in cube start position generates softlocks, uncomment these to respawn all objects to scene start 
+						//NewCube = NumCube;
+						//FlagChgCube = 3;
 
-					NewCube = NumCube ;
-					FlagChgCube = 3 ;
+						SceneStartX = CubeStartX;
+						SceneStartY = CubeStartY;
+						SceneStartZ = CubeStartZ;
+					}
+
+					FlagWater = FALSE;
+
+					ListObjet[NUM_PERSO].PosObjX = SceneStartX;
+					ListObjet[NUM_PERSO].PosObjY = SceneStartY;
+					ListObjet[NUM_PERSO].PosObjZ = SceneStartZ;
+
+					ListObjet[NUM_PERSO].Move = MOVE_MANUAL;
+
 
 					ListObjet[NUM_PERSO].LifePoint = 50 ;
 					MagicPoint = MagicLevel * 20 ;
