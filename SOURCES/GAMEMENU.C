@@ -1433,8 +1433,7 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
-	int successInventory, successKeys, successListObjets, successNbZones, successListExtras;
-	int successListZones = 1;
+	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, successListExtras = 0;
 	int i;
 
 	handle = OpenRead( GamePathname ) ;
@@ -1497,18 +1496,26 @@ void	LoadGame()
 	successListExtras = Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
 	successNbZones = Read(handle, &NbZones, 2);
 
-	ListZone = malloc(sizeof(T_ZONE) * NbZones);
-
-	//Iterating for ListZone because it has a different data type
-	for (i = 0; i < NbZones; i++)
+	if (successNbZones && NbZones > 0)
 	{
-		successListZones &= Read(handle, &ListZone[i], sizeof(T_ZONE));
+		ListZone = malloc(sizeof(T_ZONE) * NbZones);
+
+		successListZones = 1;
+
+		//Iterating for ListZone because it has a different data type
+		for (i = 0; i < NbZones; i++)
+		{
+			successListZones &= Read(handle, &ListZone[i], sizeof(T_ZONE));
+		}
 	}
 
 	Close( handle ) ;
 
 	//These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
-	HasLoadedSave = 1;
+	HasLoadedSave = successListObjets || successListExtras || successNbZones || successListZones || successKeys; /*If any of these are present in the save file,
+																													it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file, 
+																													therefore the code should run the same logic for previous versions.	
+																													Inventory is not checked because it was already in original save files.*/
 	HasLoadedInventoryOnSave = successInventory;
 	HasLoadedListObjetsOnSave = successListObjets;
 	HasLoadedListObjetTracksOnSave = successListObjets;
