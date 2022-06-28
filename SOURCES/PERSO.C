@@ -412,7 +412,8 @@ startloop:
 			TestRestoreModeSVGA( TRUE ) ;
 			SaveTimer() ;
 
-			retQuitMenu = QuitMenu();
+			//If Twinsen is in MOVE_MANUAL mode, show save options in QuitMenu. If Twinsen is in another move mode (a tracking in the middle of a cutscene, or another automatic mode), hide save options
+			retQuitMenu = QuitMenu( ListObjet[NUM_PERSO].Move == MOVE_MANUAL );
 			if( retQuitMenu == 2)
 			{
 				RestoreTimer() ;

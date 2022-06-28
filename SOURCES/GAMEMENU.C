@@ -28,6 +28,15 @@ UWORD	GameMainMenu[] = {
 			0, 22	// ret dos
 				}	;
 
+UWORD	GameQuitMenuWithoutSave[] = {
+			0,	// selected
+			2,	// nb entries
+			240,	// y center
+			0,	// .dia num
+			0, 28,	// continuer jeu
+			0, 27	// abandonner partie
+};
+
 UWORD	GameQuitMenu[] = {
 			0,	// selected
 			5,	// nb entries
@@ -2739,7 +2748,7 @@ LONG	MainGameMenu()
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	QuitMenu()
+LONG	QuitMenu(WORD showSaveOptions)
 {
 	LONG retValue = -999;
 	WORD select ;
@@ -2755,7 +2764,7 @@ LONG	QuitMenu()
 		InitDial( 0 )		;//	SYS
 		FlagSpeak = memoflagspeak ;
 
-		select = DoGameMenu( GameQuitMenu ) ;
+		select = DoGameMenu( showSaveOptions ? GameQuitMenu : GameQuitMenuWithoutSave) ;
 
 		InitDial( START_FILE_ISLAND+Island )	;//	SYS
 
