@@ -709,35 +709,50 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_MESSAGE_OBJ:
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				num = *PtrPrg++	;
-				if( Bulle )	DrawBulle( num ) ;
-				TestCoulDial( ListObjet[num].CoulObj ) ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					num = *PtrPrg++;
+					if (Bulle)	DrawBulle(num);
+					TestCoulDial(ListObjet[num].CoulObj);
 #ifdef	CDROM
-				NumObjSpeak = num ;
+					NumObjSpeak = num;
 #endif
-				Dial( *(WORD*)PtrPrg ) ;
-				PtrPrg += 2 ;
-				RestoreTimer() ;
+					Dial(*(WORD*)PtrPrg);
+					PtrPrg += 2;
+					RestoreTimer();
 
-				AffScene(TRUE) ;
-				WaitReleaseSpace() ;
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else
+				{
+					num = *PtrPrg++;
+					PtrPrg += 2;
+				}
 				break ;
 
 			case LM_MESSAGE:
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( numobj ) ;
-				TestCoulDial( ptrobj->CoulObj ) ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(numobj);
+					TestCoulDial(ptrobj->CoulObj);
 #ifdef	CDROM
-				NumObjSpeak = numobj ;
+					NumObjSpeak = numobj;
 #endif
-				Dial( *(WORD*)PtrPrg ) ;
-				PtrPrg += 2 ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+					Dial(*(WORD*)PtrPrg);
+					PtrPrg += 2;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else
+				{
+					PtrPrg += 2;
+				}
 				break ;
 
 			case LM_SAY_MESSAGE_OBJ:
@@ -1047,34 +1062,49 @@ void	DoLife( WORD numobj )
 
 			case LM_ASK_CHOICE:
 #ifndef	DEMO
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( numobj ) ;
-				TestCoulDial( ptrobj->CoulObj ) ;
-				GameAskChoice( *(WORD*)PtrPrg ) ;
-				GameNbChoices = 0 ;
-				PtrPrg += 2 ;
-//				FlagFade = TRUE ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(numobj);
+					TestCoulDial(ptrobj->CoulObj);
+					GameAskChoice(*(WORD*)PtrPrg);
+					GameNbChoices = 0;
+					PtrPrg += 2;
+					//				FlagFade = TRUE ;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else {
+					GameNbChoices = 0;
+					PtrPrg += 2;
+				}
 #endif
 				break ;
 
 			case LM_ASK_CHOICE_OBJ:
 #ifndef	DEMO
-				SaveTimer() ;
-				num = *PtrPrg++	;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( num ) ;
-				TestCoulDial( ListObjet[num].CoulObj ) ;
-				GameAskChoice( *(WORD*)PtrPrg ) ;
-				GameNbChoices = 0 ;
-				PtrPrg += 2 ;
-//				FlagFade = TRUE ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					num = *PtrPrg++;
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(num);
+					TestCoulDial(ListObjet[num].CoulObj);
+					GameAskChoice(*(WORD*)PtrPrg);
+					GameNbChoices = 0;
+					PtrPrg += 2;
+					//				FlagFade = TRUE ;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else {
+					num = *PtrPrg++;
+					GameNbChoices = 0;
+					PtrPrg += 2;
+				}
 #endif
 				break ;
 
