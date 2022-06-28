@@ -2762,7 +2762,12 @@ LONG	QuitMenu()
 		switch( select )	// num mess
 		{
 			case 21: // load
-				if (!ChoosePlayerName(21, 1)) break;
+				if (!ChoosePlayerName(21, 1))
+				{
+					//if no load file is selected, reset dialog file to current island
+					InitDial(START_FILE_ISLAND + Island);
+					break;
+				}
 
 				while (Key OR Fire); // provisoire
 				
@@ -2791,6 +2796,9 @@ LONG	QuitMenu()
 					SaveGameWithName(PlayerName, 0);
 				}
 
+				//reset dialog file to current island
+				InitDial(START_FILE_ISLAND + Island);
+
 				retValue = 0;
 				break;
 
@@ -2806,6 +2814,9 @@ LONG	QuitMenu()
 
 					SaveGameWithName(PlayerName, 0);
 				}
+
+				//reset dialog file to current island
+				InitDial(START_FILE_ISLAND + Island);
 
 				retValue = 0;
 				break;
