@@ -3339,7 +3339,9 @@ void	CheckZoneSce( T_OBJET *ptrobj, WORD numobj )
 				break ;
 
 			case 2:	// zone scenarique
-				ptrobj->ZoneSce = ptrz->Num ;
+				// Prevent entering boat, dinofly, vehicle, immediately on load save file
+				if(!(HasLoadedSave && numobj == NUM_PERSO))
+					ptrobj->ZoneSce = ptrz->Num ;
 				break ;
 
 			case 3: // zone grm
