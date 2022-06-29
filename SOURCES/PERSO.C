@@ -986,6 +986,7 @@ startloop:
 	{
 		HasLoadedSave = 0;
 		HasLoadedInventoryOnSave = 0;
+		HasLoadedListObjetsOnSave = 0;
 		HasLoadedListObjetTracksOnSave = 0;
 	}
 /*

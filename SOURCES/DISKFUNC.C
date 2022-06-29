@@ -230,7 +230,6 @@ WORD	LoadScene( WORD numscene )
 		ListBrickTrack = (T_TRACK*)PtrSce ;
 
 		HasLoadedListZoneOnSave = 0;
-		HasLoadedListObjetsOnSave = 0;
 
 		return TRUE ;
 }

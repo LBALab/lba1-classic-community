@@ -120,7 +120,8 @@ void	StartInitObj( WORD numobj )
 
 		InitRealAngle(	0,0,0, &ptrobj->RealAngle ) ;
 
-		if( ptrobj->Flags & SPRITE_CLIP )
+		//Do not set AnimStepX, Y, Z if the values are coming from a save. Use what's already in the save state instead. These variables are used as a reference to where an object should be animated to (e.g. like a closed door, and if the door is saved in an open state, the reference would be set to the open position, but it should be in the closed position)
+		if( ptrobj->Flags & SPRITE_CLIP && !HasLoadedListObjetsOnSave )
 		{
 			ptrobj->AnimStepX = ptrobj->PosObjX ;
 			ptrobj->AnimStepY = ptrobj->PosObjY ;
