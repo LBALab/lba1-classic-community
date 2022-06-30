@@ -363,6 +363,44 @@ void	ClearScene()
 	ClearDial() ;
 }
 
+void	SetFadePalOnLoad()
+{
+	if (HasLoadedSave && HasLoadedListFlagCubeOnSave)
+	{
+		//Set red alarm pal on teleportation center when active (num cube is 99)
+		if (NumCube == 99)
+		{
+			int i;
+			int maxFlags = 7; // devices destroyed are stored in indexes from 0 to 6
+			WORD isInAlarmState = 0;
+
+			if (maxFlags <= MAX_FLAGS_CUBE)
+			{
+				int nbDevicesDestroyed = 0;
+
+				for (i = 0; i < maxFlags; i++)
+				{
+					WORD deviceDestroyed = ListFlagCube[i] > 0;
+
+					if (deviceDestroyed)
+						nbDevicesDestroyed++;
+
+					isInAlarmState |= deviceDestroyed;
+				}
+
+				if (isInAlarmState && nbDevicesDestroyed < maxFlags)
+				{
+					SaveTimer();
+					Load_HQR(PATH_RESSOURCE"ress.hqr", PalettePcx, RESS_PAL_ALARM);
+					FadePalToPal(PtrPal, PalettePcx);
+					FlagPalettePcx = TRUE;
+					RestoreTimer();
+				}
+			}
+		}
+	}
+}
+
 /*══════════════════════════════════════════════════════════════════════════*/
 // need: NewCube
 
@@ -518,6 +556,8 @@ void	ChangeCube()
 	{
 		PlayMusic( CubeJingle ) ;
 	}
+
+	SetFadePalOnLoad();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
