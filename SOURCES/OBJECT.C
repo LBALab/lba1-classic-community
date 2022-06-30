@@ -321,9 +321,12 @@ void	ClearFlagsCube()
 {
 	WORD	n ;
 
-	for( n=0; n<MAX_FLAGS_CUBE; n++ )
+	if (!HasLoadedListFlagCubeOnSave)
 	{
-		ListFlagCube[n] = 0 ;
+		for (n = 0; n < MAX_FLAGS_CUBE; n++)
+		{
+			ListFlagCube[n] = 0;
+		}
 	}
 }
 

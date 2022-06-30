@@ -988,6 +988,7 @@ startloop:
 		HasLoadedInventoryOnSave = 0;
 		HasLoadedListObjetsOnSave = 0;
 		HasLoadedListObjetTracksOnSave = 0;
+		HasLoadedListFlagCubeOnSave = 0;
 	}
 /*
 ptrobj = &ListObjet[ 4 ] ;

@@ -178,6 +178,7 @@ WORD	HasLoadedListExtraOnSave = 0;
 WORD	HasLoadedListZoneOnSave = 0;
 WORD	HasLoadedKeysOnSave = 0;
 WORD	HasLoadedInventoryOnSave = 0;
+WORD	HasLoadedListFlagCubeOnSave = 0;
 
 WORD	Island = 0	;
 WORD	Fuel = 0 ;

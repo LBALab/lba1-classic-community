@@ -249,6 +249,7 @@ extern	WORD	HasLoadedListExtraOnSave;
 extern	WORD	HasLoadedListZoneOnSave;
 extern	WORD	HasLoadedKeysOnSave ;
 extern	WORD	HasLoadedInventoryOnSave;
+extern	WORD	HasLoadedListFlagCubeOnSave;
 
 extern	WORD	NbFourLeafClover ;
 extern	WORD	NbCloverBox ;
