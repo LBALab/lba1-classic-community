@@ -24,7 +24,7 @@ extern void DrawOneString(short ,short ,unsigned char *,short );
 extern void DrawSingleString(short ,short ,unsigned char *);
 extern void DrawOneLetter(short ,short ,short );
 extern void DrawAllLetters(void);
-extern short InputPlayerName(short );
+extern short InputPlayerName(short, short );
 extern short ChoosePlayerName(short, short );
 extern void DrawOneChoice(short ,short ,short ,short ,short );
 extern void InfoWallCollisionDamage();

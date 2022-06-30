@@ -1714,7 +1714,7 @@ void	DrawAllLetters()
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	InputPlayerName( WORD nummess )
+WORD	InputPlayerName( WORD nummess, WORD isSaveGame )
 {
 	WORD	flag = 1 ;
 	UBYTE	string[256] ;
@@ -1864,9 +1864,11 @@ try_again:
 
 	if( car == A_RETURN )
 	{
-		if( FindPlayerFile() == TRUE )
+		//Ignore this check for new game, since what's input there does not influence the save name file anymore
+		if( isSaveGame && FindPlayerFile() == TRUE )
 		{
-			nummess = 43 ;
+			//nummess = 43 ;
+			nummess = 952; // use id from community text
 			goto try_again ;
 		}
 		else	retval = TRUE ;
@@ -2536,7 +2538,7 @@ void	SavedGameManagement()
 					num = *ptr++ ;		// num version
 					n = strlen( ptr ) + 1 ; // size player name
 
-					if( InputPlayerName( 44 ) )
+					if( InputPlayerName( 44, 1 ) )
 					{
 						do
 						{
@@ -2731,7 +2733,7 @@ LONG	MainGameMenu()
 
 			case 20: // newgame
 
-				if( !InputPlayerName( 42 ) )	break ;
+				if( !InputPlayerName( 42, 0 ) )	break ;
 
 				/**do
 				{
@@ -2813,7 +2815,7 @@ LONG	QuitMenu(WORD showSaveOptions)
 				break;
 
 			case 950: // new save
-				if (InputPlayerName(950))
+				if (InputPlayerName(950, 1))
 				{
 					SaveComportement = Comportement;
 					SaveBeta = ListObjet[NUM_PERSO].Beta;
