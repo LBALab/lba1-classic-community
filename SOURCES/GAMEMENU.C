@@ -39,13 +39,12 @@ UWORD	GameQuitMenuWithoutSave[] = {
 
 UWORD	GameQuitMenu[] = {
 			0,	// selected
-			5,	// nb entries
+			4,	// nb entries
 			240,	// y center
 			0,	// .dia num
 			0, 28,	// continuer jeu
-			0, 21,	// load game
-			0, 950,	// new save
-			0, 951,	// gestion saved game
+			0, 950,	// load game
+			0, 951,	// save game
 			0, 27	// abandonner partie
 				} ;
 
@@ -133,7 +132,7 @@ ULONG	TimerSample ;
 // save players games
 
 #define	MAX_PLAYER	200
-#define AUTO_SAVE_NAME "AUTO"
+#define AUTO_SAVE_NAME "AUTOSAVE"
 
 UBYTE	NumVersion = 0 ;
 
@@ -1204,7 +1203,7 @@ void	CopyBlockPhysMCGA( LONG x0, LONG y0, LONG x1, LONG y1 )
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave )
+WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WORD showNewGame )
 {
 	struct	find_t	fileinfo ;
 	ULONG	rc ;
@@ -1213,6 +1212,25 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave )
 	WORD	nb = 0 ;
 	FILE*	handle ;
 
+	if (showNewGame)
+	{
+		int i = 0;
+		UBYTE string[256];
+		
+		GetMenuMultiTextAux(953, string);
+
+		*ptrlistname++ = listname;
+
+		for (i = 0; i < strlen(string) && string[i] != 0; i++)
+		{
+			*listname++ = string[i];
+		}
+
+		*listname++ = 0;
+
+		nb++;
+		if (nb == MAX_PLAYER)	return nb;
+	}
 
 	if (showAutoSave)
 	{
@@ -1891,7 +1909,7 @@ try_again:
 
 #define	NB_GAME_CHOICE	6
 
-WORD	ChoosePlayerName( WORD mess, WORD showAutoSave )
+WORD	ChoosePlayerName( WORD mess, WORD showAutoSave, WORD showNewGame )
 {
 	WORD	flag = 1 ;
 	UBYTE	*listplayername ;
@@ -1914,7 +1932,7 @@ WORD	ChoosePlayerName( WORD mess, WORD showAutoSave )
 		TheEnd( NOT_ENOUGH_MEM, "Choose Player Name" ) ;
 	}
 
-	nb = PlayerGameList( ptrlist, listplayername, showAutoSave ) ;
+	nb = PlayerGameList( ptrlist, listplayername, showAutoSave, showNewGame ) ;
 
 	if( !nb )	return FALSE ;
 
@@ -1977,7 +1995,8 @@ WORD	ChoosePlayerName( WORD mess, WORD showAutoSave )
 
 		if( Fire )
 		{
-			retval = 1 ;
+			// New Game option is in index 0, return 2 if this is selected, else return 1 
+			retval = showNewGame && select == 0 ? 2 : 1 ;
 			break ;
 		}
 	}
@@ -2525,7 +2544,7 @@ void	SavedGameManagement()
 				break ;
 
 			case 41: // copier
-				if( ChoosePlayerName( 41, 1 ) )
+				if( ChoosePlayerName( 41, 1, 0 ) )
 				{
 					UBYTE	*ptr,*ptrs ;
 					LONG	size ;
@@ -2563,7 +2582,7 @@ void	SavedGameManagement()
 				break ;
 
 			case 45: // detruire
-				if( ChoosePlayerName( 45, 0 ) )
+				if( ChoosePlayerName( 45, 0, 0 ) )
 				{
 					CopyScreen( Screen, Log ) ;
 
@@ -2749,7 +2768,7 @@ LONG	MainGameMenu()
 
 			case 21: // load
 
-				if( !ChoosePlayerName( 21, 1 ) ) break ;
+				if( !ChoosePlayerName( 21, 1, 0 ) ) break ;
 				
 				MenuInitGame(-1,0,0);
 				while( Key OR Fire ) ; // provisoire
@@ -2775,6 +2794,9 @@ LONG	QuitMenu(WORD showSaveOptions)
 	LONG retValue = -999;
 	WORD select ;
 	LONG memoflagspeak ;
+	WORD playerNameResult;
+	WORD doSaveGame = 0;
+
 
 	CopyScreen( Log, Screen ) ;
 	HQ_StopSample() ;
@@ -2792,20 +2814,6 @@ LONG	QuitMenu(WORD showSaveOptions)
 
 		switch( select )	// num mess
 		{
-			case 21: // load
-				if (!ChoosePlayerName(21, 1))
-				{
-					//if no load file is selected, reset dialog file to current island
-					InitDial(START_FILE_ISLAND + Island);
-					break;
-				}
-
-				while (Key OR Fire); // provisoire
-				
-				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
-				retValue = 2;
-				break;
-
 			case 27: // abandonner
 				retValue = 1;
 				break;
@@ -2814,27 +2822,37 @@ LONG	QuitMenu(WORD showSaveOptions)
 				retValue = 0;
 				break;
 
-			case 950: // new save
-				if (InputPlayerName(950, 1))
+			case 950: // load game
+				if (!ChoosePlayerName(950, 1, 0))
 				{
-					SaveComportement = Comportement;
-					SaveBeta = ListObjet[NUM_PERSO].Beta;
-
-					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
-					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
-					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
-
-					SaveGameWithName(PlayerName, 0);
+					//if no load file is selected, reset dialog file to current island
+					InitDial(START_FILE_ISLAND + Island);
+					break;
 				}
 
-				//reset dialog file to current island
-				InitDial(START_FILE_ISLAND + Island);
+				while (Key OR Fire); // provisoire
 
-				retValue = 0;
+				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
+				retValue = 2;
 				break;
 
-			case 951: //replace save
-				if (ChoosePlayerName(951, 0))
+			case 951: //save game
+				playerNameResult = ChoosePlayerName(951, 0, 1);
+				doSaveGame = 0;
+
+				if (playerNameResult == 2)
+				{
+					if (InputPlayerName(951, 1))
+					{
+						doSaveGame = 1;
+					}
+				}
+				else if (playerNameResult)
+				{
+					doSaveGame = 1;
+				}
+
+				if (doSaveGame)
 				{
 					SaveComportement = Comportement;
 					SaveBeta = ListObjet[NUM_PERSO].Beta;

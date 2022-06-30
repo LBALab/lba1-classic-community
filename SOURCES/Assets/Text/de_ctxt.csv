@@ -1,5 +1,6 @@
 234,Kollisionsschaden aktiv
 34,Kollisionsschaden inaktiv
-950,Create new save
-951,Replace existing save
+950,Load game
+951,Save game
 952,This save already exists! Try again.
+953,New game
