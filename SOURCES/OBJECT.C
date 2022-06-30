@@ -365,10 +365,27 @@ void	ClearScene()
 
 void	SetFadePalOnLoad()
 {
-	if (HasLoadedSave && HasLoadedListFlagCubeOnSave)
+	if (HasLoadedSave)
 	{
+		//HasLoadedInventoryOnSave used for ListFlagGame
+		//Set dark pal on museum when alarm is active (num cube is 43)
+		if (HasLoadedInventoryOnSave && NumCube == 43)
+		{
+			int indexMuseumAlarm = 41; // index 41 is changed when activating the museum alarm 
+
+			//If the flag is set in ListFlagGame, apply the dark pal
+			if (indexMuseumAlarm < MAX_FLAGS_GAME && ListFlagGame[indexMuseumAlarm])
+			{
+				SaveTimer();
+				Load_HQR(PATH_RESSOURCE"ress.hqr", PalettePcx, RESS_PAL_MUSEE);
+				Palette(PalettePcx);
+				FlagPalettePcx = TRUE;
+				RestoreTimer();
+			}
+		}
+
 		//Set red alarm pal on teleportation center when active (num cube is 99)
-		if (NumCube == 99)
+		if (HasLoadedListFlagCubeOnSave && NumCube == 99)
 		{
 			int i;
 			int maxFlags = 7; // devices destroyed are stored in indexes from 0 to 6
