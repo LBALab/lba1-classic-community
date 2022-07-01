@@ -1363,14 +1363,15 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 #ifdef WINDOWS_SAVE
 
 		//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
-		if (FindPlayerFile())
+		//No need to perform this validation if we're doing an auto save
+		if (!isAutoSave && FindPlayerFile())
 		{
 			//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
 			strcpy(savePath, GamePathname);
 		}
 		else
 		{
-			//If the file doesn't exist, create a new one with fileName as name
+			//If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming 
 			strcpy(savePath, PATH_RESSOURCE);
 			strcat(savePath, fileName);
 			strcat(savePath, ".LBA");
