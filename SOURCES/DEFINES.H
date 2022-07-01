@@ -36,6 +36,11 @@
 //path des ressources
 #define	PATH_RESSOURCE		""
 
+// with this define, save file names will use the name inserted by the player (e.g. TWINSEN.LBA), but these will be truncated on DOS and open the possibility of different saves replacing each other
+#define WINDOWS_SAVE 1
+
+// uncomment this line to go back to DOS file name saving (S0000.LBA), to bypass the DOS truncating issue
+//#undef WINDOWS_SAVE
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 

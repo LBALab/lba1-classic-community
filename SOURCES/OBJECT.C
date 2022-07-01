@@ -534,7 +534,7 @@ void	ChangeCube()
 	SetLightVector( AlphaLight, BetaLight, 0 ) ;
 //	PlayMidiFile( CubeJingle ) ;
 
-	if( NewCube != oldcube && !HasLoadedSave)
+	if( NewCube != oldcube && !DisableAutoSave)
 	{
 		SaveComportement = Comportement ;
 		SaveBeta = ListObjet[NUM_PERSO].Beta ;

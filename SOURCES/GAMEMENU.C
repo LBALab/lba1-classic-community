@@ -1346,6 +1346,7 @@ WORD	FindPlayerFile()
 
 void SaveGame()
 {
+	strcpy(PlayerName, AUTO_SAVE_NAME);
 	SaveGameWithName(AUTO_SAVE_NAME, 1);
 }
 
@@ -1359,10 +1360,45 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 	if (fileName)
 	{
 		char savePath[1024];
-		
-		strcpy(savePath, PATH_RESSOURCE);
-		strcat(savePath, fileName);
-		strcat(savePath, ".LBA");
+#ifdef WINDOWS_SAVE
+
+		//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
+		if (FindPlayerFile())
+		{
+			//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
+			strcpy(savePath, GamePathname);
+		}
+		else
+		{
+			//If the file doesn't exist, create a new one with fileName as name
+			strcpy(savePath, PATH_RESSOURCE);
+			strcat(savePath, fileName);
+			strcat(savePath, ".LBA");
+		}
+#else 
+		if (isAutoSave)
+		{
+			strcpy(savePath, PATH_RESSOURCE);
+			strcat(savePath, fileName);
+			strcat(savePath, ".LBA");
+		}
+		else
+		{
+			if (FindPlayerFile())
+			{
+				strcpy(savePath, GamePathname);
+			}
+			else
+			{
+				do
+				{
+					strcpy(savePath, PATH_RESSOURCE"S");
+					strcat(savePath, Itoa(Rnd(10000)));
+					strcat(savePath, ".LBA");
+				} while (FileSize(savePath) != 0);
+			}
+		}
+#endif
 
 		handle = OpenWrite(savePath);
 	}
@@ -1553,6 +1589,8 @@ void	LoadGame()
 	HasLoadedListZoneOnSave = successNbZones && NbZones > 0 && successListZones;
 	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
 	HasLoadedListFlagCubeOnSave = successNbListFlagCube && successListFlagCube;
+
+	DisableAutoSave = 1; // do not let the code auto save immediately after loading a save
 
 	NumCube = -1 ;
 	FlagChgCube = 3 ;
