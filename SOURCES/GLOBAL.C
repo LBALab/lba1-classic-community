@@ -127,6 +127,8 @@ WORD	GameListChoice[10] ; // max 7 (normally)
 
 /*--------- perso ----------------------------*/
 
+WORD	PersoInvulnerable = 0;
+
 WORD	FlagTheEnd = FALSE ;
 
 WORD	ActionNormal = FALSE ;
@@ -179,6 +181,7 @@ WORD	HasLoadedListZoneOnSave = 0;
 WORD	HasLoadedKeysOnSave = 0;
 WORD	HasLoadedInventoryOnSave = 0;
 WORD	HasLoadedListFlagCubeOnSave = 0;
+WORD	HasLoadedLastValidPersoOnSave = 0;
 WORD	DisableAutoSave = 0;
 
 WORD	Island = 0	;
@@ -241,6 +244,7 @@ T_HQR_HEADER	*HQR_Anims ;
 
 LONG	NbObjets = 0 ;
 T_OBJET	ListObjet[MAX_OBJETS] ;
+T_OBJET LastValidPerso;
 
 T_SORT	ListTri[MAX_OBJETS+MAX_EXTRAS] ;
 

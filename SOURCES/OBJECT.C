@@ -545,6 +545,9 @@ void	ChangeCube()
 
 	StartInitAllObjs();
 
+	if (!HasLoadedLastValidPersoOnSave)
+		LastValidPerso = ListObjet[NUM_PERSO];
+
 	NbLittleKeys = HasLoadedKeysOnSave ? NbLittleKeys : 0 ;
 	MagicBall = -1 ;
 	LastJoyFlag = TRUE ;
@@ -591,7 +594,8 @@ void	HitObj( WORD numhitter, WORD num, WORD hitforce, WORD beta )
 
 	ptrobjt = &ListObjet[ num ] ;
 
-	if( ptrobjt->LifePoint <= 0 )	return ;
+	// Ignore hits on Twinsen if he is marked as invulnerable (after loosing a life)
+	if( ptrobjt->LifePoint <= 0 || (num == NUM_PERSO && PersoInvulnerable))	return ;
 
 	ptrobjt->HitBy = numhitter ;
 

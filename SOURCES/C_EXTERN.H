@@ -200,6 +200,8 @@ extern	WORD	GameListChoice[] ;
 
 /*--------- perso ----------------------------*/
 
+extern	WORD	PersoInvulnerable;
+
 extern	WORD	FlagTheEnd ;
 
 extern	WORD	ActionNormal ;
@@ -250,6 +252,7 @@ extern	WORD	HasLoadedListZoneOnSave;
 extern	WORD	HasLoadedKeysOnSave ;
 extern	WORD	HasLoadedInventoryOnSave;
 extern	WORD	HasLoadedListFlagCubeOnSave;
+extern	WORD	HasLoadedLastValidPersoOnSave;
 extern	WORD	DisableAutoSave;
 
 extern	WORD	NbFourLeafClover ;
@@ -307,6 +310,7 @@ extern	T_HQR_HEADER	*HQR_Anims ;
 
 extern	LONG	NbObjets ;
 extern	T_OBJET	ListObjet[] ;
+extern	T_OBJET LastValidPerso;
 
 extern	T_SORT	ListTri[] ;
 
