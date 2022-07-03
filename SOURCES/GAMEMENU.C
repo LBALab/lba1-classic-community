@@ -1481,6 +1481,7 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 		Write(handle, &wbyte, 1);	// nb octets
 		Write(handle, &ListFlagCube, MAX_FLAGS_CUBE);
 		Write(handle, &LastValidPerso, sizeof(T_OBJET));
+		Write(handle, &NumPingouin, 2); // save meca penguin use reference
 	}
 
 	Close( handle ) ;
@@ -1494,7 +1495,7 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
-	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0;
+	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0, successMecaPenguin = 0;
 	int i;
 
 	handle = OpenRead( GamePathname ) ;
@@ -1578,13 +1579,16 @@ void	LoadGame()
 	// Last valid perso obj
 	successLastValidPerso = Read(handle, &LastValidPerso, sizeof(T_OBJET));
 
+	successMecaPenguin = Read(handle, &NumPingouin, 2);
+
 	Close( handle ) ;
 
 	//These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
 	HasLoadedSave = successListObjets || successListExtras || 
 					successNbZones || successListZones || 
-					successKeys || successNbListFlagCube |
-					successListFlagCube || successLastValidPerso;	/*If any of these are present in the save file,
+					successKeys || successNbListFlagCube ||
+					successListFlagCube || successLastValidPerso ||
+					successMecaPenguin;								/*If any of these are present in the save file,
 																	it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file, 
 																	therefore the code should run the same logic for previous versions.	
 																	Inventory is not checked because it was already in original save files.*/

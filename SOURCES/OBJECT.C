@@ -151,6 +151,10 @@ void	StartInitObj( WORD numobj )
 	{
 		ptrobj->OffsetTrack = -1 ;
 		ptrobj->LabelTrack = -1 ;
+	}
+
+	if (!HasLoadedListObjetsOnSave)
+	{
 		ptrobj->OffsetLife = 0;
 	}
 }

@@ -201,7 +201,7 @@ WORD	LoadScene( WORD numscene )
 				//This will retain NPC and object position and other states when loading a save
 				*ptrobj = *savedPtrObj;
 
-				//Do not render object if it's marked as dead on save
+				//Do not render object if it's marked as dead on save.
 				if (savedPtrObj->LifePoint <= 0)
 				{
 					ptrobj->GenBody = NO_BODY;
@@ -210,9 +210,13 @@ WORD	LoadScene( WORD numscene )
 					ptrobj->WorkFlags |= OBJ_DEAD;
 					ptrobj->Sprite = -1;
 					ptrobj->Body = -1;
+
 					ptrobj->ZoneSce = -1;
-					ptrobj->OffsetLife = -1;
 					ptrobj->OffsetTrack = -1;
+
+					//Do not reset OffsetLife if the object is a meca penguin (because if it's in inventory, it's marked as dead in code, and it's still needed when used)
+					if (n != NumPingouin)
+						ptrobj->OffsetLife = -1;
 				}
 
 				free(savedPtrObj);
