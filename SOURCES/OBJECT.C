@@ -333,6 +333,15 @@ void	ClearFlagsCube()
 			ListFlagCube[n] = 0;
 		}
 	}
+
+	if (!HasLoadedListAuxFlagCubeOnSave)
+	{
+		for (n = 0; n < MAX_AUX_FLAGS_CUBE; n++)
+		{
+			ListAuxFlagCube[n].NumObj = -1;
+			ListAuxFlagCube[n].PerformedOffsetLife = -1;
+		}
+	}
 }
 
 /*══════════════════════════════════════════════════════════════════════════*

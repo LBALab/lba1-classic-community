@@ -179,6 +179,8 @@ extern	T_FLAG	ListFlagGame[] ;
 extern	UBYTE	ListFlagCube[] ;
 extern	UBYTE	ListFlagGame[] ;
 
+extern T_AUX_FLAG_CUBE ListAuxFlagCube[]; //auxiliary cube flags set aside from the original ListFlagCube, to aid in manual saving
+
 extern	UBYTE	ListFlagInventory[] ;
 
 
@@ -252,6 +254,7 @@ extern	WORD	HasLoadedListZoneOnSave;
 extern	WORD	HasLoadedKeysOnSave ;
 extern	WORD	HasLoadedInventoryOnSave;
 extern	WORD	HasLoadedListFlagCubeOnSave;
+extern	WORD	HasLoadedListAuxFlagCubeOnSave;
 extern	WORD	HasLoadedLastValidPersoOnSave;
 extern	WORD	DisableAutoSave;
 

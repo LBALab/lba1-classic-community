@@ -266,3 +266,11 @@ typedef	struct
 	WORD	Y ;
 	WORD	Z ;		}	T_TRACK ;
 
+
+// struct for some additional cube flags
+typedef struct
+{
+	WORD NumObj;
+	WORD PerformedOffsetLife; 
+} T_AUX_FLAG_CUBE;
+

@@ -108,6 +108,8 @@ T_FLAG	ListFlagGame[MAX_FLAGS_GAME] ;
 UBYTE	ListFlagCube[MAX_FLAGS_CUBE] ;
 UBYTE	ListFlagGame[MAX_FLAGS_GAME] ;
 
+T_AUX_FLAG_CUBE ListAuxFlagCube[MAX_AUX_FLAGS_CUBE];
+
 UBYTE	ListFlagInventory[MAX_INVENTORY] ;
 
 /*--------- holomap ----------------------------*/
@@ -181,6 +183,7 @@ WORD	HasLoadedListZoneOnSave = 0;
 WORD	HasLoadedKeysOnSave = 0;
 WORD	HasLoadedInventoryOnSave = 0;
 WORD	HasLoadedListFlagCubeOnSave = 0;
+WORD	HasLoadedListAuxFlagCubeOnSave = 0;
 WORD	HasLoadedLastValidPersoOnSave = 0;
 WORD	DisableAutoSave = 0;
 

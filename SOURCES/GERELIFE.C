@@ -20,6 +20,47 @@ extern	LONG	FlagDisplayText ;
 #endif
 
 /*══════════════════════════════════════════════════════════════════════════*
+		   Auxiliary Functions
+ *══════════════════════════════════════════════════════════════════════════*/
+ /*──────────────────────────────────────────────────────────────────────────*/
+WORD CheckAuxCubeFlag(WORD numobj, WORD offsetLife)
+{
+	WORD retValue = FALSE;
+
+	int i;
+
+	if (NumCube == 74 && numobj == 5) //Tippet village, fisherman who gives you a key
+	{
+		if (ListAuxFlagCube[0].NumObj == numobj && ListAuxFlagCube[0].PerformedOffsetLife == offsetLife)
+			retValue = TRUE;
+	}
+
+	if (NumCube == 105 && numobj == 8) //Funfrock headquarters, grobo who gives the key to the coffer with the sabre
+	{
+		if (ListAuxFlagCube[0].NumObj == numobj && ListAuxFlagCube[0].PerformedOffsetLife == offsetLife)
+			retValue = TRUE;
+	}
+	
+	return retValue;
+}
+
+void InsertAuxCubeFlag(WORD numobj, WORD offsetLife)
+{
+	if (NumCube == 74 && numobj == 5) //Tippet village, fisherman who gives you a key
+	{
+		ListAuxFlagCube[0].NumObj = numobj;
+		ListAuxFlagCube[0].PerformedOffsetLife = offsetLife;
+	}
+
+	if (NumCube == 105 && numobj == 8) //Funfrock headquarters, grobo who gives the key to the coffer with the sabre
+	{
+		ListAuxFlagCube[0].NumObj = numobj;
+		ListAuxFlagCube[0].PerformedOffsetLife = offsetLife;
+	}
+}
+
+
+/*══════════════════════════════════════════════════════════════════════════*
 		   █▀▀▀▄ █▀▀▀█       █      █    █▀▀▀▀ █▀▀▀▀
 		   ██  █ ██  █       ██     ██   ██▀▀  ██▀▀
 		   ▀▀▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀  ▀▀   ▀▀    ▀▀▀▀▀
@@ -922,16 +963,22 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_GIVE_BONUS:
-				if( ptrobj->OptionFlags & EXTRA_MASK )
+				if (!CheckAuxCubeFlag(numobj, LM_GIVE_BONUS)) // check if bonus was already given in aux cube flags
 				{
-					GiveExtraBonus( ptrobj ) ;
+					if (ptrobj->OptionFlags & EXTRA_MASK)
+					{
+						GiveExtraBonus(ptrobj);
 
+					}
+					if (*PtrPrg++)
+					{
+						// ne donne plus rien ????
+						ptrobj->OptionFlags |= EXTRA_GIVE_NOTHING;
+					}
+
+					InsertAuxCubeFlag(numobj, LM_GIVE_BONUS); // if bonus was not given before, insert it now in aux cube flags
 				}
-				if( *PtrPrg++ )
-				{
-					// ne donne plus rien ????
-					ptrobj->OptionFlags |= EXTRA_GIVE_NOTHING ;
-				}
+				else *PtrPrg++;
 				break ;
 
 			case LM_CHANGE_CUBE:

@@ -174,6 +174,11 @@ void	InitGameLists()
 	{
 		TabHoloPos[i] = 0 ;
 	}
+	for (i = 0; i < MAX_AUX_FLAGS_CUBE; i++)
+	{
+		ListAuxFlagCube[i].NumObj = -1;
+		ListAuxFlagCube[i].PerformedOffsetLife = -1;
+	}
 
 	NbObjets = 0 ;
 	NbBodys = 0 ;
@@ -1049,6 +1054,7 @@ startloop:
 			HasLoadedListObjetsOnSave = 0;
 			HasLoadedListObjetTracksOnSave = 0;
 			HasLoadedListFlagCubeOnSave = 0;
+			HasLoadedListAuxFlagCubeOnSave = 0;
 			HasLoadedLastValidPersoOnSave = 0;
 			DisableAutoSave = 0;
 		}

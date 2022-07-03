@@ -1482,6 +1482,9 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 		Write(handle, &ListFlagCube, MAX_FLAGS_CUBE);
 		Write(handle, &LastValidPerso, sizeof(T_OBJET));
 		Write(handle, &NumPingouin, 2); // save meca penguin use reference
+		wbyte = MAX_AUX_FLAGS_CUBE;
+		Write(handle, &wbyte, 1); // nb octets
+		Write(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * MAX_AUX_FLAGS_CUBE); // save auxiliary cube flags
 	}
 
 	Close( handle ) ;
@@ -1495,7 +1498,9 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
-	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0, successMecaPenguin = 0;
+	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, 
+		successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0,
+		successMecaPenguin = 0, successNbListAuxFlagCube = 0, successListAuxFlagCube = 0;
 	int i;
 
 	handle = OpenRead( GamePathname ) ;
@@ -1579,7 +1584,13 @@ void	LoadGame()
 	// Last valid perso obj
 	successLastValidPerso = Read(handle, &LastValidPerso, sizeof(T_OBJET));
 
+	// Meca Penguin
 	successMecaPenguin = Read(handle, &NumPingouin, 2);
+
+	// Auxiliary Cube Flags
+	successNbListAuxFlagCube = Read(handle, &wbyte, 1); // nb octets
+	if (successNbListAuxFlagCube && wbyte > 0)
+		successListAuxFlagCube = Read(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * wbyte); // read auxiliary cube flags
 
 	Close( handle ) ;
 
@@ -1588,7 +1599,8 @@ void	LoadGame()
 					successNbZones || successListZones || 
 					successKeys || successNbListFlagCube ||
 					successListFlagCube || successLastValidPerso ||
-					successMecaPenguin;								/*If any of these are present in the save file,
+					successMecaPenguin || successNbListAuxFlagCube ||
+					successListAuxFlagCube;							/*If any of these are present in the save file,
 																	it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file, 
 																	therefore the code should run the same logic for previous versions.	
 																	Inventory is not checked because it was already in original save files.*/
@@ -1600,6 +1612,7 @@ void	LoadGame()
 	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
 	HasLoadedListFlagCubeOnSave = successNbListFlagCube && successListFlagCube;
 	HasLoadedLastValidPersoOnSave = successLastValidPerso;
+	HasLoadedListAuxFlagCubeOnSave = successNbListAuxFlagCube && successListAuxFlagCube;
 
 	DisableAutoSave = 1; // do not let the code auto save immediately after loading a save
 
