@@ -196,7 +196,7 @@ WORD	LoadScene( WORD numscene )
 			{
 				//Starting animation will still be the one from SCENE.HQR file (this is to avoid a glitch when a NPC is in the middle of an animation when a save is made, other than the default one like getting hit)
 				//If the NPC has a tracking flow, attempt to use the last memorized track animation
-				savedPtrObj->GenAnim = savedPtrObj->OffsetTrack != -1 && savedPtrObj->MemoTrackGenAnim ? savedPtrObj->MemoTrackGenAnim : ptrobj->GenAnim;
+				savedPtrObj->GenAnim = savedPtrObj->OffsetTrack != -1 && savedPtrObj->MemoTrackGenAnim && savedPtrObj->MemoTrackGenAnim != NO_ANIM ? savedPtrObj->MemoTrackGenAnim : ptrobj->GenAnim;
 
 				//This will retain NPC and object position and other states when loading a save
 				*ptrobj = *savedPtrObj;
@@ -205,7 +205,8 @@ WORD	LoadScene( WORD numscene )
 				if (savedPtrObj->LifePoint <= 0)
 				{
 					ptrobj->GenBody = NO_BODY;
-					ptrobj->GenAnim = GEN_ANIM_RIEN;
+					ptrobj->GenAnim = NO_ANIM;
+					ptrobj->Anim = NO_ANIM;
 					ptrobj->WorkFlags |= OBJ_DEAD;
 					ptrobj->Sprite = -1;
 					ptrobj->Body = -1;
