@@ -194,9 +194,9 @@ WORD	LoadScene( WORD numscene )
 			//If loading from a save, replace content with the saved one (but keep the SCENE.HQR file reading flow from LoadScene for other necessary readings afterwards) 
 			if (HasLoadedListObjetsOnSave && savedPtrObj)
 			{
-				//Starting animation will still be the one from SCENE.HQR file (this is to avoid a glitch when a NPC is in the middle of an animation when a save is made, other than the default one like getting hit)
-				//If the NPC has a tracking flow, attempt to use the last memorized track animation
-				savedPtrObj->GenAnim = savedPtrObj->OffsetTrack != -1 && savedPtrObj->MemoTrackGenAnim && savedPtrObj->MemoTrackGenAnim != NO_ANIM ? savedPtrObj->MemoTrackGenAnim : ptrobj->GenAnim;
+				//If object was saved while getting hit, starting animation will be the one from SCENE.HQR file (this is to avoid a glitch when a NPC is in the middle of an animation when a save is made)
+				if (savedPtrObj->GenAnim == GEN_ANIM_CHOC || savedPtrObj->GenAnim == GEN_ANIM_CHOC2)
+					savedPtrObj->GenAnim = ptrobj->GenAnim;
 
 				//This will retain NPC and object position and other states when loading a save
 				*ptrobj = *savedPtrObj;
