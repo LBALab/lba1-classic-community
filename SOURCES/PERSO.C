@@ -1007,8 +1007,10 @@ startloop:
 					if( GameOverCube != NumCube )
 					{
 						NumCube = GameOverCube ;
-						SceneStartX = SceneStartY = SceneStartZ = -1 ; // mean use startpos
 					}
+
+					SceneStartX = SceneStartY = SceneStartZ = -1; // mean use startpos (manual save gaming: always use startpos, regardless of GameOverCube being different than NumCube or not, this is to prevent Twinsen spawning in the middle of a cube when loading AUTOSAVE, if Gameover was achieved after loading a manual save)
+
 					SaveGame() ;
 
 					GameOver() ;
