@@ -94,7 +94,7 @@ void	CheckSavePcx()
  /*──────────────────────────────────────────────────────────────────────────*/
 WORD isObjectInAnimation(T_OBJET* ptrobj, WORD numAnim)
 {
-	return ptrobj->GenAnim == numAnim || ptrobj->Anim == numAnim || ptrobj->NextGenAnim == numAnim;
+	return ptrobj->GenAnim == numAnim || ptrobj->Anim == numAnim; //|| ptrobj->NextGenAnim == numAnim;
 }
 
 
