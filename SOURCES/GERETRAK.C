@@ -24,7 +24,6 @@ void	DoTrack( WORD	numobj )
 	WORD	overflow = 0 ;
 	UBYTE	*ptr ;
 	UBYTE	n, c ;
-	UBYTE memoanimtrack;
 
 	ptrobj = &ListObjet[numobj] ;
 
@@ -108,17 +107,14 @@ void	DoTrack( WORD	numobj )
 
 /*-------------------------------------------------------------------------*/
 		case TM_ANIM:
-			memoanimtrack = *ptrtrack++;
-
-			if (!InitAnim(memoanimtrack, ANIM_REPEAT, 0, numobj))
+			if (!InitAnim( *ptrtrack++, ANIM_REPEAT, 0, numobj ) )
 			{
 				ptrobj->OffsetTrack = memooffsettrack ;
 				flag = FALSE ;
 			}
 			else
 			{
-				ptrobj->MemoTrackGenAnim = memoanimtrack;
-				ptrobj->OffsetTrack++;
+				ptrobj->OffsetTrack++ ;
 			}
 			break ;
 

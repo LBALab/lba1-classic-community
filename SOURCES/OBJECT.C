@@ -48,7 +48,6 @@ void	InitObject( WORD numobj )
 
     ptrobj->GenBody = GEN_BODY_NORMAL ;
 	ptrobj->GenAnim = GEN_ANIM_RIEN ;
-	ptrobj->MemoTrackGenAnim = NO_ANIM;
 
 	ptrobj->PosObjX = 0 ;
 	ptrobj->PosObjY = SIZE_BRICK_Y ;

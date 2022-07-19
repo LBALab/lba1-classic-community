@@ -263,8 +263,6 @@ typedef	struct
 
 	UBYTE	CodeJeu ;		// brick spéciale sample ou action
 
-	UBYTE	MemoTrackGenAnim ;
-
 }	T_OBJET ;
 
 /*
