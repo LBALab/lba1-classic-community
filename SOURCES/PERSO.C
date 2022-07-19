@@ -997,7 +997,8 @@ startloop:
 				    }
 				    else	// game over
 				    {
-
+// Do not save game when game over is reached any longer
+#ifndef DISABLE_GAME_OVER_SAVE
 					NbFourLeafClover = NbCloverBox / 2 ;
 					ListObjet[NUM_PERSO].LifePoint = 25 ;
 					MagicPoint = (MagicLevel*20) / 2 ;
@@ -1007,12 +1008,11 @@ startloop:
 					if( GameOverCube != NumCube )
 					{
 						NumCube = GameOverCube ;
+						SceneStartX = SceneStartY = SceneStartZ = -1; // mean use startpos
 					}
 
-					SceneStartX = SceneStartY = SceneStartZ = -1; // mean use startpos (manual save gaming: always use startpos, regardless of GameOverCube being different than NumCube or not, this is to prevent Twinsen spawning in the middle of a cube when loading AUTOSAVE, if Gameover was achieved after loading a manual save)
-
 					SaveGame() ;
-
+#endif
 					GameOver() ;
 
 					return 0 ;

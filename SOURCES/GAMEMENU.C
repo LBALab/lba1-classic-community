@@ -92,12 +92,18 @@ UWORD	GameVolumeMenu[] = {
 
 UWORD	SavedGameMenu[] = {
 			0,	// selected
+#ifndef DISABLE_COPY_SAVED_GAME
 			3,	// nb entries
+#else		
+			2,	// nb entries
+#endif
 			0,	// y from top.
 			0,	// .dia num
 
 			0, 26,  // retour menu prec
+#ifndef DISABLE_COPY_SAVED_GAME
 			0, 41,	// copier une sauvegarde
+#endif
 			0, 45	// détruire une sauvegarde
 
 				} ;
@@ -2604,7 +2610,8 @@ void	SavedGameManagement()
 			case 26: // quitter
 				flag = 1 ;
 				break ;
-
+// Do not show copy saved game feature any longer, player can pretty much copy save games with Create New Save feature now
+#ifndef DISABLE_COPY_SAVED_GAME
 			case 41: // copier
 				if( ChoosePlayerName( 41, 1, 0 ) )
 				{
@@ -2642,7 +2649,7 @@ void	SavedGameManagement()
 				}
 				CopyScreen( Screen, Log ) ;
 				break ;
-
+#endif
 			case 45: // detruire
 				if( ChoosePlayerName( 45, 0, 0 ) )
 				{

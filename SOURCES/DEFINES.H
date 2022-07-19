@@ -41,6 +41,19 @@
 
 // uncomment this line to go back to DOS file name saving (S0000.LBA), to bypass the DOS truncating issue
 //#undef WINDOWS_SAVE
+
+// disable auto saving on game over
+#define DISABLE_GAME_OVER_SAVE 1
+
+// uncomment to reenable auto saving on game over
+//#undef DISABLE_GAME_OVER_SAVE
+
+// disable copy saved game feature
+#define DISABLE_COPY_SAVED_GAME 1
+
+// uncomment to reenable copy saved game feature
+//#undef DISABLE_COPY_SAVED_GAME
+
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
