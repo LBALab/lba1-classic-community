@@ -179,6 +179,8 @@ extern	T_FLAG	ListFlagGame[] ;
 extern	UBYTE	ListFlagCube[] ;
 extern	UBYTE	ListFlagGame[] ;
 
+extern T_AUX_FLAG_CUBE ListAuxFlagCube[]; //auxiliary cube flags set aside from the original ListFlagCube, to aid in manual saving
+
 extern	UBYTE	ListFlagInventory[] ;
 
 
@@ -199,6 +201,8 @@ extern	WORD	GameNbChoices ;
 extern	WORD	GameListChoice[] ;
 
 /*--------- perso ----------------------------*/
+
+extern	WORD	PersoInvulnerable;
 
 extern	WORD	FlagTheEnd ;
 
@@ -241,6 +245,18 @@ extern	WORD	Chapitre ;
 extern	UBYTE	Island 	;
 extern	WORD	Fuel ;
 extern	WORD	NumPingouin ;
+
+extern	WORD	HasLoadedSave ;
+extern	WORD	HasLoadedListObjetsOnSave;
+extern	WORD	HasLoadedListObjetTracksOnSave;
+extern	WORD	HasLoadedListExtraOnSave;
+extern	WORD	HasLoadedListZoneOnSave;
+extern	WORD	HasLoadedKeysOnSave ;
+extern	WORD	HasLoadedInventoryOnSave;
+extern	WORD	HasLoadedListFlagCubeOnSave;
+extern	WORD	HasLoadedListAuxFlagCubeOnSave;
+extern	WORD	HasLoadedLastValidPersoOnSave;
+extern	WORD	DisableAutoSave;
 
 extern	WORD	NbFourLeafClover ;
 extern	WORD	NbCloverBox ;
@@ -297,6 +313,7 @@ extern	T_HQR_HEADER	*HQR_Anims ;
 
 extern	LONG	NbObjets ;
 extern	T_OBJET	ListObjet[] ;
+extern	T_OBJET LastValidPerso;
 
 extern	T_SORT	ListTri[] ;
 

@@ -108,6 +108,8 @@ T_FLAG	ListFlagGame[MAX_FLAGS_GAME] ;
 UBYTE	ListFlagCube[MAX_FLAGS_CUBE] ;
 UBYTE	ListFlagGame[MAX_FLAGS_GAME] ;
 
+T_AUX_FLAG_CUBE ListAuxFlagCube[MAX_AUX_FLAGS_CUBE];
+
 UBYTE	ListFlagInventory[MAX_INVENTORY] ;
 
 /*--------- holomap ----------------------------*/
@@ -126,6 +128,8 @@ WORD	GameNbChoices ;
 WORD	GameListChoice[10] ; // max 7 (normally)
 
 /*--------- perso ----------------------------*/
+
+WORD	PersoInvulnerable = 0;
 
 WORD	FlagTheEnd = FALSE ;
 
@@ -170,6 +174,18 @@ WORD	NbLittleKeys = 0 ;
 WORD	Chapitre = 0 ;
 WORD	NbFourLeafClover = 2 ;
 WORD	NbCloverBox = 2 ;
+
+WORD	HasLoadedSave = 0;
+WORD	HasLoadedListObjetsOnSave = 0;
+WORD	HasLoadedListObjetTracksOnSave = 0;
+WORD	HasLoadedListExtraOnSave = 0;
+WORD	HasLoadedListZoneOnSave = 0;
+WORD	HasLoadedKeysOnSave = 0;
+WORD	HasLoadedInventoryOnSave = 0;
+WORD	HasLoadedListFlagCubeOnSave = 0;
+WORD	HasLoadedListAuxFlagCubeOnSave = 0;
+WORD	HasLoadedLastValidPersoOnSave = 0;
+WORD	DisableAutoSave = 0;
 
 WORD	Island = 0	;
 WORD	Fuel = 0 ;
@@ -231,6 +247,7 @@ T_HQR_HEADER	*HQR_Anims ;
 
 LONG	NbObjets = 0 ;
 T_OBJET	ListObjet[MAX_OBJETS] ;
+T_OBJET LastValidPerso;
 
 T_SORT	ListTri[MAX_OBJETS+MAX_EXTRAS] ;
 

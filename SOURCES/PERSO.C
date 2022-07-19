@@ -15,6 +15,8 @@ extern	UBYTE	*BufMemoSeek	;
 #endif
 
 ULONG	SpriteMem, SampleMem, AnimMem ;
+ULONG	ValidPositionTimer;
+ULONG	PersoInvulnerableTimer;
 
 //WORD	Lig=0 ;
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -86,6 +88,52 @@ void	CheckSavePcx()
 }
 
 #endif
+/*══════════════════════════════════════════════════════════════════════════*
+	Auxiliary Functions
+ *══════════════════════════════════════════════════════════════════════════*/
+ /*──────────────────────────────────────────────────────────────────────────*/
+WORD isObjectInAnimation(T_OBJET* ptrobj, WORD numAnim)
+{
+	return ptrobj->GenAnim == numAnim || ptrobj->Anim == numAnim; //|| ptrobj->NextGenAnim == numAnim;
+}
+
+
+WORD validatePersoPosition()
+{
+	T_OBJET* ptrobj;
+	WORD isJumping = 0, isDrowning = 0, isGettingHit = 0;
+
+	if (NbObjets <= NUM_PERSO)
+		return FALSE;
+
+	ptrobj = &ListObjet[NUM_PERSO];
+
+	if (ptrobj->Body == -1 || ptrobj->WorkFlags & OBJ_DEAD) // if dead, not valid
+		return FALSE;
+
+	if (ptrobj->Move != MOVE_MANUAL) // if player input for movement is disabled, not a valid position 
+		return FALSE;
+
+	if (Comportement == C_PROTOPACK && isObjectInAnimation(ptrobj, GEN_ANIM_MARCHE)) // if behavior is in protopack, and moving forward (flying), do not save position
+		return FALSE;
+
+	isJumping = isObjectInAnimation(ptrobj, GEN_ANIM_SAUTE);
+	isDrowning = isObjectInAnimation(ptrobj, GEN_ANIM_NOYADE);
+	isGettingHit = isObjectInAnimation(ptrobj, GEN_ANIM_CHOC) || isObjectInAnimation(ptrobj, GEN_ANIM_CHOC2);
+
+	// reset timer if character is in jumping, drowning or getting hit animation, this gives some time to revalidate once the animation is finished(i.e.when the animation finished on top of water but not yet drowning, to avoid saving position in this state)
+	if (isJumping || isDrowning || isGettingHit)
+		ValidPositionTimer = TimerRef;
+
+	return !isJumping && // not jumping
+		!isDrowning && // not drowning
+		!isGettingHit && // not getting hit
+		!isObjectInAnimation(ptrobj, GEN_ANIM_MORT) && // not dying
+		!isObjectInAnimation(ptrobj, GEN_ANIM_ECHELLE) && // not climbing ladder
+		!isObjectInAnimation(ptrobj, GEN_ANIM_MONTE) && // not mounted
+		!isObjectInAnimation(ptrobj, GEN_ANIM_TOMBE) && !(ptrobj->WorkFlags & FALLING); // not falling
+}
+
 
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -125,6 +173,11 @@ void	InitGameLists()
 	for ( i = 0 ; i < MAX_HOLO_POS ; i++ )
 	{
 		TabHoloPos[i] = 0 ;
+	}
+	for (i = 0; i < MAX_AUX_FLAGS_CUBE; i++)
+	{
+		ListAuxFlagCube[i].NumObj = -1;
+		ListAuxFlagCube[i].PerformedOffsetLife = -1;
 	}
 
 	NbObjets = 0 ;
@@ -406,19 +459,31 @@ startloop:
 		AND (!(ListObjet[NUM_PERSO].Flags&INVISIBLE))
 		)
 		{
+			int retQuitMenu;
+
 			// confirmation sortie
 			TestRestoreModeSVGA( TRUE ) ;
 			SaveTimer() ;
 
-			if( QuitMenu() )
+			//If Twinsen is in MOVE_MANUAL mode, show save options in QuitMenu. If Twinsen is in another move mode (a tracking in the middle of a cutscene, or another automatic mode), hide save options
+			retQuitMenu = QuitMenu( ListObjet[NUM_PERSO].Move == MOVE_MANUAL );
+			if( retQuitMenu == 2)
 			{
 				RestoreTimer() ;
 				AffScene( TRUE ) ;
 
-				SaveTimer() ;
-				SaveGame() ;
-				RestoreTimer() ;
-				break ;
+				return MAIN_LOOP_LOAD_GAME;
+			}
+			else if (retQuitMenu == 1)
+			{
+				RestoreTimer();
+				AffScene(TRUE);
+
+				//SaveTimer() ;
+				//SaveGame() ;
+				//RestoreTimer() ;
+
+				break;
 			}
 			else
 			{
@@ -780,6 +845,13 @@ startloop:
 				{
 					InitAnim( GEN_ANIM_MORT, ANIM_SET, GEN_ANIM_RIEN, NUM_PERSO ) ;
 					ptrobj->Move = NO_MOVE ;
+					//Disable collisions on Twinsen to allow other objects to continue their tracks while the death animation is playing
+					ptrobj->Flags = OBJ_FALLABLE
+						+ ~CHECK_ZONE
+						+ ~CHECK_OBJ_COL
+						+ ~CHECK_BRICK_COL
+						+ CHECK_CODE_JEU;
+					ptrobj->WorkFlags &= ~OK_HIT;
 				}
 				else	// tout objet
 				{
@@ -897,32 +969,36 @@ startloop:
 				{
 				    if( NbFourLeafClover > 0 )
 				    {
-					FlagWater = FALSE ;
-
 					// restart
 					NbFourLeafClover-- ;
 
-					ListObjet[NUM_PERSO].PosObjX = SceneStartX ;
-					ListObjet[NUM_PERSO].PosObjY = SceneStartY ;
-					ListObjet[NUM_PERSO].PosObjZ = SceneStartZ ;
+					FlagWater = FALSE;
 
-					NewCube = NumCube ;
-					FlagChgCube = 3 ;
+					PersoInvulnerable = 1;
+					PersoInvulnerableTimer = TimerRef;
+
+					ListObjet[NUM_PERSO] = LastValidPerso;
+					ListObjet[NUM_PERSO].Move = MOVE_MANUAL;
+					ListObjet[NUM_PERSO].GenAnim = ListObjet[NUM_PERSO].Anim = GEN_ANIM_RIEN;
 
 					ListObjet[NUM_PERSO].LifePoint = 50 ;
 					MagicPoint = MagicLevel * 20 ;
 
-					StartXCube = ((ListObjet[NUM_PERSO].PosObjX+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
-					StartYCube = ((ListObjet[NUM_PERSO].PosObjY+SIZE_BRICK_Y)/SIZE_BRICK_Y) ;
-					StartZCube = ((ListObjet[NUM_PERSO].PosObjZ+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
+					SetComportement( Comportement );
 
-					FirstTime = TRUE ;
-					FlagFade = TRUE ;
+					InitIncrustDisp(INCRUST_OBJ,
+						FLAG_CLOVER,
+						0, 0,
+						0, 0, 3);
+					
+					//FirstTime = TRUE ;
+					//FlagFade = TRUE ;
 					goto startloop ;
 				    }
 				    else	// game over
 				    {
-
+// Do not save game when game over is reached any longer
+#ifndef DISABLE_GAME_OVER_SAVE
 					NbFourLeafClover = NbCloverBox / 2 ;
 					ListObjet[NUM_PERSO].LifePoint = 25 ;
 					MagicPoint = (MagicLevel*20) / 2 ;
@@ -932,10 +1008,11 @@ startloop:
 					if( GameOverCube != NumCube )
 					{
 						NumCube = GameOverCube ;
-						SceneStartX = SceneStartY = SceneStartZ = -1 ; // mean use startpos
+						SceneStartX = SceneStartY = SceneStartZ = -1; // mean use startpos
 					}
-					SaveGame() ;
 
+					SaveGame() ;
+#endif
 					GameOver() ;
 
 					return 0 ;
@@ -951,12 +1028,38 @@ startloop:
 				}
 			}
 
+			if (i == NUM_PERSO)
+			{
+				//About 3 seconds after, make character vulnerable again. Consider changing 150 to something more precise, as it may give different results based on framerate
+				if (PersoInvulnerable && TimerRef - PersoInvulnerableTimer >= 150)
+					PersoInvulnerable = 0;
+
+				// 25 is approximately 500ms in LIB_SYS TimerRef. Consider changing 25 to something more precise, as it may give different results based on framerate
+				if (TimerRef - ValidPositionTimer >= 25 && validatePersoPosition())
+				{
+					ValidPositionTimer = TimerRef;
+
+					LastValidPerso = ListObjet[NUM_PERSO];
+				}
+			}
+
 			if( NewCube != -1 )
 			{
 				goto startloop ;
 			}
 		}
 
+		if (NbObjets > 0)
+		{
+			HasLoadedSave = 0;
+			HasLoadedInventoryOnSave = 0;
+			HasLoadedListObjetsOnSave = 0;
+			HasLoadedListObjetTracksOnSave = 0;
+			HasLoadedListFlagCubeOnSave = 0;
+			HasLoadedListAuxFlagCubeOnSave = 0;
+			HasLoadedLastValidPersoOnSave = 0;
+			DisableAutoSave = 0;
+		}
 /*
 ptrobj = &ListObjet[ 4 ] ;
 CoulText( 15, 0 ) ;

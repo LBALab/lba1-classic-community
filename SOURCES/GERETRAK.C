@@ -107,9 +107,8 @@ void	DoTrack( WORD	numobj )
 
 /*-------------------------------------------------------------------------*/
 		case TM_ANIM:
-			if( !InitAnim( *ptrtrack++, ANIM_REPEAT, 0, numobj ) )
+			if (!InitAnim( *ptrtrack++, ANIM_REPEAT, 0, numobj ) )
 			{
-
 				ptrobj->OffsetTrack = memooffsettrack ;
 				flag = FALSE ;
 			}

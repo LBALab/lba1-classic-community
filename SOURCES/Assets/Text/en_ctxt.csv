@@ -1,2 +1,6 @@
 234,Collision Damage On
 34,Collision Damage Off
+950,Load game
+951,Save game
+952,This save already exists! Try again.
+953,Create new save

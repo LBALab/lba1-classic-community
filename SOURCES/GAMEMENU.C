@@ -28,12 +28,23 @@ UWORD	GameMainMenu[] = {
 			0, 22	// ret dos
 				}	;
 
-UWORD	GameQuitMenu[] = {
+UWORD	GameQuitMenuWithoutSave[] = {
 			0,	// selected
 			2,	// nb entries
 			240,	// y center
 			0,	// .dia num
 			0, 28,	// continuer jeu
+			0, 27	// abandonner partie
+};
+
+UWORD	GameQuitMenu[] = {
+			0,	// selected
+			4,	// nb entries
+			240,	// y center
+			0,	// .dia num
+			0, 28,	// continuer jeu
+			0, 950,	// load game
+			0, 951,	// save game
 			0, 27	// abandonner partie
 				} ;
 
@@ -81,12 +92,18 @@ UWORD	GameVolumeMenu[] = {
 
 UWORD	SavedGameMenu[] = {
 			0,	// selected
+#ifndef DISABLE_COPY_SAVED_GAME
 			3,	// nb entries
+#else		
+			2,	// nb entries
+#endif
 			0,	// y from top.
 			0,	// .dia num
 
 			0, 26,  // retour menu prec
+#ifndef DISABLE_COPY_SAVED_GAME
 			0, 41,	// copier une sauvegarde
+#endif
 			0, 45	// détruire une sauvegarde
 
 				} ;
@@ -120,7 +137,8 @@ ULONG	TimerSample ;
 
 // save players games
 
-#define	MAX_PLAYER	50
+#define	MAX_PLAYER	200
+#define AUTO_SAVE_NAME "AUTOSAVE"
 
 UBYTE	NumVersion = 0 ;
 
@@ -172,6 +190,39 @@ extern	WORD	IndexGrm ;
 /*══════════════════════════════════════════════════════════════════════════*
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
+void MenuInitGame(int argc, UBYTE* argv[], WORD showIntroduction)
+{
+	int retMainLoop;
+
+	InitGame(argc, argv);
+
+	if (showIntroduction)
+		Introduction();
+
+	if (retMainLoop = MainLoop())
+	{
+#ifdef	DEMO
+		PlayMidiFile(6);
+		Credits();
+		TheEnd(PROGRAM_OK, "* End of Demo version.");
+#else
+		if (retMainLoop == MAIN_LOOP_LOAD_GAME)
+		{
+			MenuInitGame(-1, 0, 0);
+		}
+		else
+		{
+			Credits();
+			PlayAnimFla("The_End");
+			Cls();
+			Flip();
+			Palette(PtrPal);
+		}
+#endif
+	}
+	CopyScreen(Log, Screen);
+}
+
 
 void	Init3DGame()
 {
@@ -201,6 +252,24 @@ void	WaitReleaseSpace()
 	while( (Fire & F_SPACE)
 	OR (Key == K_ESC) ) ;
 	RestoreTimer() ;
+}
+
+char*	GetMenuMultiTextAux(WORD num, char* dst)
+{
+	char* multiTextPtr = GetMultiText(num, dst);
+
+	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
+	if (!multiTextPtr)
+	{
+		char* customTextPtr = GetCustomizedMultiText(num);
+
+		if (customTextPtr)
+			strcpy(dst, customTextPtr);
+
+		free(customTextPtr);
+	}
+
+	return dst;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -1140,7 +1209,7 @@ void	CopyBlockPhysMCGA( LONG x0, LONG y0, LONG x1, LONG y1 )
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname )
+WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WORD showNewGame )
 {
 	struct	find_t	fileinfo ;
 	ULONG	rc ;
@@ -1149,13 +1218,67 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname )
 	WORD	nb = 0 ;
 	FILE*	handle ;
 
-	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
+	if (showNewGame)
+	{
+		int i = 0;
+		UBYTE string[256];
+		
+		GetMenuMultiTextAux(953, string);
 
+		*ptrlistname++ = listname;
+
+		for (i = 0; i < strlen(string) && string[i] != 0; i++)
+		{
+			*listname++ = string[i];
+		}
+
+		*listname++ = 0;
+
+		nb++;
+		if (nb == MAX_PLAYER)	return nb;
+	}
+
+	if (showAutoSave)
+	{
+		strcpy(pathname, PATH_RESSOURCE);
+		strcat(pathname, AUTO_SAVE_NAME".LBA");
+
+		//Get Auto save file first
+		rc = _dos_findfirst(pathname, _A_NORMAL, &fileinfo);
+		if (!rc)
+		{
+			int i = 0;
+			int autoNameLen = strlen(AUTO_SAVE_NAME);
+
+			*ptrlistname++ = listname;
+			for (i = 0; i < autoNameLen; i++)
+			{
+				*listname++ = AUTO_SAVE_NAME[i];
+			}
+
+			*listname++ = 0;
+
+			nb++;
+			if (nb == MAX_PLAYER)	return nb;
+		}
+	}
+
+	strcpy(pathname, PATH_RESSOURCE"*.LBA");
+
+	//Get all the other save files
 	rc = _dos_findfirst( pathname, _A_NORMAL, &fileinfo ) ;
 	while( !rc )
 	{
+		//ignore auto save file
+		if (strcmp(fileinfo.name, AUTO_SAVE_NAME".LBA") == 0)
+		{
+			rc = _dos_findnext(&fileinfo);
+			continue;
+		}
+
 		strcpy( pathname, PATH_RESSOURCE ) ;
 		strcat( pathname,  fileinfo.name ) ;
+
 		handle = OpenRead( pathname ) ;
 		if( handle )
 		{
@@ -1227,13 +1350,71 @@ WORD	FindPlayerFile()
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	SaveGame()
+void SaveGame()
+{
+	strcpy(PlayerName, AUTO_SAVE_NAME);
+	SaveGameWithName(AUTO_SAVE_NAME, 1);
+}
+
+void SaveGameWithName(char* fileName, WORD isAutoSave)
 {
 	FILE*	handle ;
 	WORD	wword ;
 	UBYTE	wbyte ;
+	int i;
 
-	handle = OpenWrite( GamePathname ) ;
+	if (fileName)
+	{
+		char savePath[1024];
+#ifdef WINDOWS_SAVE
+
+		//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
+		//No need to perform this validation if we're doing an auto save
+		if (!isAutoSave && FindPlayerFile())
+		{
+			//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
+			strcpy(savePath, GamePathname);
+		}
+		else
+		{
+			//If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming 
+			strcpy(savePath, PATH_RESSOURCE);
+			strcat(savePath, fileName);
+			strcat(savePath, ".LBA");
+		}
+#else 
+		if (isAutoSave)
+		{
+			strcpy(savePath, PATH_RESSOURCE);
+			strcat(savePath, fileName);
+			strcat(savePath, ".LBA");
+		}
+		else
+		{
+			if (FindPlayerFile())
+			{
+				strcpy(savePath, GamePathname);
+			}
+			else
+			{
+				do
+				{
+					strcpy(savePath, PATH_RESSOURCE"S");
+					strcat(savePath, Itoa(Rnd(10000)));
+					strcat(savePath, ".LBA");
+				} while (FileSize(savePath) != 0);
+			}
+		}
+#endif
+
+		handle = OpenWrite(savePath);
+	}
+	else
+	{
+		Message("Invalid file name", TRUE);
+		return;
+	}
+
 	if( !handle )
 	{
 		Message( "Error Writing Saved Game", TRUE ) ;
@@ -1244,7 +1425,7 @@ void	SaveGame()
 
 	Write( handle, &NumVersion, 1 ) ;
 
-	Write( handle, PlayerName, strlen(PlayerName)+1 ) ;
+	Write( handle, fileName, strlen(fileName)+1 ) ;
 
 // list flag game
 	wbyte = MAX_FLAGS_GAME ;
@@ -1288,6 +1469,30 @@ void	SaveGame()
 	Write( handle, &NbFourLeafClover, 1 ) ;
 	Write( handle, &Weapon, 2 ) ;
 
+	if (!isAutoSave)
+	{
+		Write(handle, &NbLittleKeys, 1);
+		Write(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
+		Write(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
+		Write(handle, &NbZones, 2);
+
+		// Iterating for ListZone because it has a different data type
+		for (i = 0; i < NbZones; i++)
+		{
+			Write(handle, &ListZone[i], sizeof(T_ZONE));
+		}
+
+		// list flag cube
+		wbyte = MAX_FLAGS_CUBE;
+		Write(handle, &wbyte, 1);	// nb octets
+		Write(handle, &ListFlagCube, MAX_FLAGS_CUBE);
+		Write(handle, &LastValidPerso, sizeof(T_OBJET));
+		Write(handle, &NumPingouin, 2); // save meca penguin use reference
+		wbyte = MAX_AUX_FLAGS_CUBE;
+		Write(handle, &wbyte, 1); // nb octets
+		Write(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * MAX_AUX_FLAGS_CUBE); // save auxiliary cube flags
+	}
+
 	Close( handle ) ;
 }
 
@@ -1299,6 +1504,10 @@ void	LoadGame()
 	WORD	wword ;
 	UBYTE	wbyte ;
 	UBYTE	*ptr ;
+	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, 
+		successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0,
+		successMecaPenguin = 0, successNbListAuxFlagCube = 0, successListAuxFlagCube = 0;
+	int i;
 
 	handle = OpenRead( GamePathname ) ;
 
@@ -1314,7 +1523,8 @@ void	LoadGame()
 
 // list flag game
 	Read( handle, &wbyte, 1 ) ;	// nb octets
-	Read( handle, ListFlagGame, wbyte ) ;
+	
+	successInventory = Read( handle, ListFlagGame, wbyte ) ;
 
 	NewCube = 0 ;
 	Read( handle, &NewCube, 1 ) ;
@@ -1354,8 +1564,63 @@ void	LoadGame()
 	Read( handle, &NbFourLeafClover, 1 ) ;
 	Read( handle, &Weapon, 2 ) ;
 
+	successKeys = Read( handle, &NbLittleKeys, 1 );
+	successListObjets = Read(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
+	successListExtras = Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
+	successNbZones = Read(handle, &NbZones, 2);
+
+	if (successNbZones && NbZones > 0)
+	{
+		ListZone = malloc(sizeof(T_ZONE) * NbZones);
+
+		successListZones = 1;
+
+		//Iterating for ListZone because it has a different data type
+		for (i = 0; i < NbZones; i++)
+		{
+			successListZones &= Read(handle, &ListZone[i], sizeof(T_ZONE));
+		}
+	}
+
+	// List flag cube
+	successNbListFlagCube = Read(handle, &wbyte, 1);	// nb octets
+	if (successNbListFlagCube && wbyte > 0)
+		successListFlagCube = Read(handle, &ListFlagCube, wbyte);
+
+	// Last valid perso obj
+	successLastValidPerso = Read(handle, &LastValidPerso, sizeof(T_OBJET));
+
+	// Meca Penguin
+	successMecaPenguin = Read(handle, &NumPingouin, 2);
+
+	// Auxiliary Cube Flags
+	successNbListAuxFlagCube = Read(handle, &wbyte, 1); // nb octets
+	if (successNbListAuxFlagCube && wbyte > 0)
+		successListAuxFlagCube = Read(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * wbyte); // read auxiliary cube flags
 
 	Close( handle ) ;
+
+	//These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
+	HasLoadedSave = successListObjets || successListExtras || 
+					successNbZones || successListZones || 
+					successKeys || successNbListFlagCube ||
+					successListFlagCube || successLastValidPerso ||
+					successMecaPenguin || successNbListAuxFlagCube ||
+					successListAuxFlagCube;							/*If any of these are present in the save file,
+																	it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file, 
+																	therefore the code should run the same logic for previous versions.	
+																	Inventory is not checked because it was already in original save files.*/
+	HasLoadedInventoryOnSave = successInventory;
+	HasLoadedListObjetsOnSave = successListObjets;
+	HasLoadedListObjetTracksOnSave = successListObjets;
+	HasLoadedListExtraOnSave = successListExtras;
+	HasLoadedListZoneOnSave = successNbZones && NbZones > 0 && successListZones;
+	HasLoadedKeysOnSave = successKeys && NbLittleKeys > 0;
+	HasLoadedListFlagCubeOnSave = successNbListFlagCube && successListFlagCube;
+	HasLoadedLastValidPersoOnSave = successLastValidPerso;
+	HasLoadedListAuxFlagCubeOnSave = successNbListAuxFlagCube && successListAuxFlagCube;
+
+	DisableAutoSave = 1; // do not let the code auto save immediately after loading a save
 
 	NumCube = -1 ;
 	FlagChgCube = 3 ;
@@ -1535,7 +1800,7 @@ void	DrawAllLetters()
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	InputPlayerName( WORD nummess )
+WORD	InputPlayerName( WORD nummess, WORD isSaveGame )
 {
 	WORD	flag = 1 ;
 	UBYTE	string[256] ;
@@ -1554,7 +1819,7 @@ try_again:
 
 	InitDial( 0 ) ;
 
-	GetMultiText( nummess, string ) ;
+	GetMenuMultiTextAux( nummess, string ) ;
 	CoulFont( COUL_LETTER_INPUT ) ;
 	Font( 320 - SizeFont(string)/2, 20, string ) ;
 	CopyBlockPhys( 0,0,639,99 ) ;
@@ -1685,9 +1950,11 @@ try_again:
 
 	if( car == A_RETURN )
 	{
-		if( FindPlayerFile() == TRUE )
+		//Ignore this check for new game, since what's input there does not influence the save name file anymore
+		if( isSaveGame && FindPlayerFile() == TRUE )
 		{
-			nummess = 43 ;
+			//nummess = 43 ;
+			nummess = 952; // use id from community text
 			goto try_again ;
 		}
 		else	retval = TRUE ;
@@ -1710,7 +1977,7 @@ try_again:
 
 #define	NB_GAME_CHOICE	6
 
-WORD	ChoosePlayerName( WORD mess )
+WORD	ChoosePlayerName( WORD mess, WORD showAutoSave, WORD showNewGame )
 {
 	WORD	flag = 1 ;
 	UBYTE	*listplayername ;
@@ -1733,16 +2000,17 @@ WORD	ChoosePlayerName( WORD mess )
 		TheEnd( NOT_ENOUGH_MEM, "Choose Player Name" ) ;
 	}
 
-	nb = PlayerGameList( ptrlist, listplayername ) ;
+	nb = PlayerGameList( ptrlist, listplayername, showAutoSave, showNewGame ) ;
 
 	if( !nb )	return FALSE ;
 
 	InitDial( 0 ) ;
 
-	DrawSingleString( 320, 40, (UBYTE*)GetMultiText( mess,string ) ) ;
+	DrawSingleString( 320, 40, (UBYTE*)GetMenuMultiTextAux( mess,string ) ) ;
 
 	while( Key != K_ESC )
 	{
+
 		if( flag == 1 )
 		{
 			for( n=0; n<6; n++ )
@@ -1795,7 +2063,8 @@ WORD	ChoosePlayerName( WORD mess )
 
 		if( Fire )
 		{
-			retval = 1 ;
+			// New Game option is in index 0, return 2 if this is selected, else return 1 
+			retval = showNewGame && select == 0 ? 2 : 1 ;
 			break ;
 		}
 	}
@@ -1821,7 +2090,6 @@ WORD	ChoosePlayerName( WORD mess )
 
 void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 {
-	char* 	multiTextPtr;
 	WORD	x2, x0,y0,x1,y1 ;
 	UBYTE	string[256] ;
 	ULONG	volleft, volright ;
@@ -1900,18 +2168,7 @@ void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
 	// text
 
 	CoulFont( COUL_TEXT_MENU ) ;
-	multiTextPtr = GetMultiText( num, string ) ;
-
-	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
-	if(!multiTextPtr)
-	{
-		char *customTextPtr = GetCustomizedMultiText( num );
-
-		if (customTextPtr)
-			strcpy(string, customTextPtr);
-
-		free(customTextPtr);
-	}
+	GetMenuMultiTextAux( num, string ) ;
 	
 	Font( x - SizeFont( string )/2, y-18, string ) ;
 
@@ -2353,9 +2610,10 @@ void	SavedGameManagement()
 			case 26: // quitter
 				flag = 1 ;
 				break ;
-
+// Do not show copy saved game feature any longer, player can pretty much copy save games with Create New Save feature now
+#ifndef DISABLE_COPY_SAVED_GAME
 			case 41: // copier
-				if( ChoosePlayerName( 41 ) )
+				if( ChoosePlayerName( 41, 1, 0 ) )
 				{
 					UBYTE	*ptr,*ptrs ;
 					LONG	size ;
@@ -2368,7 +2626,7 @@ void	SavedGameManagement()
 					num = *ptr++ ;		// num version
 					n = strlen( ptr ) + 1 ; // size player name
 
-					if( InputPlayerName( 44 ) )
+					if( InputPlayerName( 44, 1 ) )
 					{
 						do
 						{
@@ -2391,9 +2649,9 @@ void	SavedGameManagement()
 				}
 				CopyScreen( Screen, Log ) ;
 				break ;
-
+#endif
 			case 45: // detruire
-				if( ChoosePlayerName( 45 ) )
+				if( ChoosePlayerName( 45, 0, 0 ) )
 				{
 					CopyScreen( Screen, Log ) ;
 
@@ -2563,58 +2821,25 @@ LONG	MainGameMenu()
 
 			case 20: // newgame
 
-				if( !InputPlayerName( 42 ) )	break ;
+				if( !InputPlayerName( 42, 0 ) )	break ;
 
-				do
+				/**do
 				{
 					strcpy( GamePathname, PATH_RESSOURCE"S" ) ;
 					strcat( GamePathname, Itoa( Rnd(10000) ) ) ;
 					strcat( GamePathname, ".LBA" ) ;
 				}
-				while( FileSize( GamePathname ) != 0 ) ;
+				while( FileSize( GamePathname ) != 0 ) ;*/
 
-				InitGame( 1, 0 ) ;
-				Introduction() ;
-				if( MainLoop() )
-				{
-#ifdef	DEMO
-					PlayMidiFile( 6 ) ;
-					Credits() ;
-					TheEnd( PROGRAM_OK, "* End of Demo version." ) ;
-#else
-					Credits() ;
-					PlayAnimFla( "The_End" ) ;
-					Cls() ;
-					Flip() ;
-					Palette( PtrPal ) ;
-#endif
-				}
-
-				CopyScreen( Log, Screen ) ;
+				MenuInitGame(1,0,1);
 				while( Key OR Fire ) ; // provisoire
 				break ;
 
 			case 21: // load
 
-				if( !ChoosePlayerName( 21 ) ) break ;
-
-				InitGame( -1, 0 ) ;
-				Introduction() ;
-				if( MainLoop() )
-				{
-#ifdef	DEMO
-					PlayMidiFile( 6 ) ;
-					Credits() ;
-					TheEnd( PROGRAM_OK, "* End of Demo version." ) ;
-#else
-					Credits() ;
-					PlayAnimFla( "The_End" ) ;
-					Cls() ;
-					Flip() ;
-					Palette( PtrPal ) ;
-#endif
-				}
-				CopyScreen( Log, Screen ) ;
+				if( !ChoosePlayerName( 21, 1, 0 ) ) break ;
+				
+				MenuInitGame(-1,0,0);
 				while( Key OR Fire ) ; // provisoire
 				break ;
 
@@ -2633,34 +2858,90 @@ LONG	MainGameMenu()
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	QuitMenu()
+LONG	QuitMenu(WORD showSaveOptions)
 {
+	LONG retValue = -999;
 	WORD select ;
 	LONG memoflagspeak ;
+	WORD playerNameResult;
+	WORD doSaveGame = 0;
+
 
 	CopyScreen( Log, Screen ) ;
 	HQ_StopSample() ;
 
-	while( TRUE )
+	while( retValue == -999 )
 	{
 		memoflagspeak = FlagSpeak ;
 		FlagSpeak = FALSE ;
 		InitDial( 0 )		;//	SYS
 		FlagSpeak = memoflagspeak ;
 
-		select = DoGameMenu( GameQuitMenu ) ;
+		select = DoGameMenu( showSaveOptions ? GameQuitMenu : GameQuitMenuWithoutSave) ;
 
 		InitDial( START_FILE_ISLAND+Island )	;//	SYS
 
 		switch( select )	// num mess
 		{
-			case 28: // continue
-				return FALSE ;
-
 			case 27: // abandonner
-				return TRUE ;
+				retValue = 1;
+				break;
+
+			case 28: // continue
+				retValue = 0;
+				break;
+
+			case 950: // load game
+				if (!ChoosePlayerName(950, 1, 0))
+				{
+					//if no load file is selected, reset dialog file to current island
+					InitDial(START_FILE_ISLAND + Island);
+					break;
+				}
+
+				while (Key OR Fire); // provisoire
+
+				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
+				retValue = 2;
+				break;
+
+			case 951: //save game
+				playerNameResult = ChoosePlayerName(951, 0, 1);
+				doSaveGame = 0;
+
+				if (playerNameResult == 2)
+				{
+					if (InputPlayerName(951, 1))
+					{
+						doSaveGame = 1;
+					}
+				}
+				else if (playerNameResult)
+				{
+					doSaveGame = 1;
+				}
+
+				if (doSaveGame)
+				{
+					SaveComportement = Comportement;
+					SaveBeta = ListObjet[NUM_PERSO].Beta;
+
+					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
+					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
+					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
+
+					SaveGameWithName(PlayerName, 0);
+				}
+
+				//reset dialog file to current island
+				InitDial(START_FILE_ISLAND + Island);
+
+				retValue = 0;
+				break;
 		}
 	}
+
+	return retValue;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*

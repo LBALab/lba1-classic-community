@@ -20,6 +20,47 @@ extern	LONG	FlagDisplayText ;
 #endif
 
 /*══════════════════════════════════════════════════════════════════════════*
+		   Auxiliary Functions
+ *══════════════════════════════════════════════════════════════════════════*/
+ /*──────────────────────────────────────────────────────────────────────────*/
+WORD CheckAuxCubeFlag(WORD numobj, WORD offsetLife)
+{
+	WORD retValue = FALSE;
+
+	int i;
+
+	if (NumCube == 74 && numobj == 5) //Tippet village, fisherman who gives you a key
+	{
+		if (ListAuxFlagCube[0].NumObj == numobj && ListAuxFlagCube[0].PerformedOffsetLife == offsetLife)
+			retValue = TRUE;
+	}
+
+	if (NumCube == 105 && numobj == 8) //Funfrock headquarters, grobo who gives the key to the coffer with the sabre
+	{
+		if (ListAuxFlagCube[0].NumObj == numobj && ListAuxFlagCube[0].PerformedOffsetLife == offsetLife)
+			retValue = TRUE;
+	}
+	
+	return retValue;
+}
+
+void InsertAuxCubeFlag(WORD numobj, WORD offsetLife)
+{
+	if (NumCube == 74 && numobj == 5) //Tippet village, fisherman who gives you a key
+	{
+		ListAuxFlagCube[0].NumObj = numobj;
+		ListAuxFlagCube[0].PerformedOffsetLife = offsetLife;
+	}
+
+	if (NumCube == 105 && numobj == 8) //Funfrock headquarters, grobo who gives the key to the coffer with the sabre
+	{
+		ListAuxFlagCube[0].NumObj = numobj;
+		ListAuxFlagCube[0].PerformedOffsetLife = offsetLife;
+	}
+}
+
+
+/*══════════════════════════════════════════════════════════════════════════*
 		   █▀▀▀▄ █▀▀▀█       █      █    █▀▀▀▀ █▀▀▀▀
 		   ██  █ ██  █       ██     ██   ██▀▀  ██▀▀
 		   ▀▀▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀  ▀▀   ▀▀    ▀▀▀▀▀
@@ -423,6 +464,7 @@ void	DoLife( WORD numobj )
 	UBYTE	macro ;
 	T_OBJET	*ptrobj ;
 
+	WORD auxMove;
 	LONG	obj ;
 	LONG	num ;
 	UBYTE	index ;
@@ -432,12 +474,15 @@ void	DoLife( WORD numobj )
 	UBYTE	string[256] ;
 	LONG	dx, n ;
 
+	WORD isPersoFromLoad = HasLoadedSave && numobj == NUM_PERSO;
+
 	ptrobj = &ListObjet[numobj] ;
 
 	PtrPrg = ptrobj->PtrLife + ptrobj->OffsetLife ;
 
 	while( flag != -1 )
 	{
+
 		ptrmacro = PtrPrg ;
 		switch( *PtrPrg++ )
 		{
@@ -507,7 +552,7 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_KILL_OBJ:
-				num = *PtrPrg++	;
+				num = *PtrPrg++;
                                 CheckCarrier( num ) ;
 				ListObjet[num].WorkFlags |= OBJ_DEAD	;
 				ListObjet[num].Body = -1		;
@@ -524,10 +569,17 @@ void	DoLife( WORD numobj )
 				break	;
 
 			case LM_SET_DIR:
-				ptrobj->Move = *PtrPrg++ ;
-				if( ptrobj->Move == MOVE_FOLLOW )
+				auxMove = *PtrPrg++ ;
+
+				if (!isPersoFromLoad)
+					ptrobj->Move = auxMove;
+
+				if( auxMove == MOVE_FOLLOW )
 				{
-					ptrobj->Info3 = *PtrPrg++ ;
+					WORD auxInfo3 = *PtrPrg++;
+
+					if (!isPersoFromLoad)
+						ptrobj->Info3 = auxInfo3 ;
 				}
 				break ;
 
@@ -571,13 +623,23 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_SET_TRACK:
-				ptrobj->OffsetTrack = *(WORD*)PtrPrg ;
+				if (HasLoadedListObjetTracksOnSave)
+				{
+					if (ptrobj->OffsetTrack == -1)
+						ptrobj->OffsetTrack = *(WORD*)PtrPrg;
+				}
+				else ptrobj->OffsetTrack = *(WORD*)PtrPrg ;
 				PtrPrg += 2 ;
 				break ;
 
 			case LM_SET_TRACK_OBJ:
 				num = *PtrPrg++ ;
-				ListObjet[num].OffsetTrack = *(WORD*)PtrPrg ;
+				if (HasLoadedListObjetTracksOnSave)
+				{
+					if (ptrobj->OffsetTrack == -1)
+						ListObjet[num].OffsetTrack = *(WORD*)PtrPrg;
+				}
+				else ListObjet[num].OffsetTrack = *(WORD*)PtrPrg;
 				PtrPrg += 2 ;
 				break ;
 
@@ -688,35 +750,50 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_MESSAGE_OBJ:
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				num = *PtrPrg++	;
-				if( Bulle )	DrawBulle( num ) ;
-				TestCoulDial( ListObjet[num].CoulObj ) ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					num = *PtrPrg++;
+					if (Bulle)	DrawBulle(num);
+					TestCoulDial(ListObjet[num].CoulObj);
 #ifdef	CDROM
-				NumObjSpeak = num ;
+					NumObjSpeak = num;
 #endif
-				Dial( *(WORD*)PtrPrg ) ;
-				PtrPrg += 2 ;
-				RestoreTimer() ;
+					Dial(*(WORD*)PtrPrg);
+					PtrPrg += 2;
+					RestoreTimer();
 
-				AffScene(TRUE) ;
-				WaitReleaseSpace() ;
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else
+				{
+					num = *PtrPrg++;
+					PtrPrg += 2;
+				}
 				break ;
 
 			case LM_MESSAGE:
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( numobj ) ;
-				TestCoulDial( ptrobj->CoulObj ) ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(numobj);
+					TestCoulDial(ptrobj->CoulObj);
 #ifdef	CDROM
-				NumObjSpeak = numobj ;
+					NumObjSpeak = numobj;
 #endif
-				Dial( *(WORD*)PtrPrg ) ;
-				PtrPrg += 2 ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+					Dial(*(WORD*)PtrPrg);
+					PtrPrg += 2;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else
+				{
+					PtrPrg += 2;
+				}
 				break ;
 
 			case LM_SAY_MESSAGE_OBJ:
@@ -755,7 +832,19 @@ void	DoLife( WORD numobj )
 
 			case LM_SET_FLAG_GAME:
 				num = *PtrPrg++ ;
-				ListFlagGame[num] = *PtrPrg++ ;
+
+				//If ListFlagName[num] is already populated for inventory, do nothing (this appears to allow to keep inventory when loading a save in the middle of a scene)
+				if (HasLoadedInventoryOnSave)
+				{
+					if (num < MAX_INVENTORY)
+					{
+						if (!ListFlagGame[num])
+							ListFlagGame[num] = *PtrPrg++;
+						else *PtrPrg++;
+					}
+					else ListFlagGame[num] = *PtrPrg++;
+				}
+				else ListFlagGame[num] = *PtrPrg++;
 
 //Text( 0,100, "%Fset ListFlagGame %d = %d",num,ListFlagGame[num] ) ;
 
@@ -874,16 +963,22 @@ void	DoLife( WORD numobj )
 				break ;
 
 			case LM_GIVE_BONUS:
-				if( ptrobj->OptionFlags & EXTRA_MASK )
+				if (!CheckAuxCubeFlag(numobj, LM_GIVE_BONUS)) // check if bonus was already given in aux cube flags
 				{
-					GiveExtraBonus( ptrobj ) ;
+					if (ptrobj->OptionFlags & EXTRA_MASK)
+					{
+						GiveExtraBonus(ptrobj);
 
+					}
+					if (*PtrPrg++)
+					{
+						// ne donne plus rien ????
+						ptrobj->OptionFlags |= EXTRA_GIVE_NOTHING;
+					}
+
+					InsertAuxCubeFlag(numobj, LM_GIVE_BONUS); // if bonus was not given before, insert it now in aux cube flags
 				}
-				if( *PtrPrg++ )
-				{
-					// ne donne plus rien ????
-					ptrobj->OptionFlags |= EXTRA_GIVE_NOTHING ;
-				}
+				else *PtrPrg++;
 				break ;
 
 			case LM_CHANGE_CUBE:
@@ -985,9 +1080,13 @@ void	DoLife( WORD numobj )
 				Y0 = ListBrickTrack[Value].Y ;
 				Z0 = ListBrickTrack[Value].Z ;
 
-				ptrobj->PosObjX = X0 ;
-				ptrobj->PosObjY = Y0 ;
-				ptrobj->PosObjZ = Z0 ;
+
+				if (!isPersoFromLoad)
+				{
+					ptrobj->PosObjX = X0;
+					ptrobj->PosObjY = Y0;
+					ptrobj->PosObjZ = Z0;
+				}
 				break ;
 
 			case LM_PLAY_FLA:
@@ -1010,34 +1109,49 @@ void	DoLife( WORD numobj )
 
 			case LM_ASK_CHOICE:
 #ifndef	DEMO
-				SaveTimer() ;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( numobj ) ;
-				TestCoulDial( ptrobj->CoulObj ) ;
-				GameAskChoice( *(WORD*)PtrPrg ) ;
-				GameNbChoices = 0 ;
-				PtrPrg += 2 ;
-//				FlagFade = TRUE ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(numobj);
+					TestCoulDial(ptrobj->CoulObj);
+					GameAskChoice(*(WORD*)PtrPrg);
+					GameNbChoices = 0;
+					PtrPrg += 2;
+					//				FlagFade = TRUE ;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else {
+					GameNbChoices = 0;
+					PtrPrg += 2;
+				}
 #endif
 				break ;
 
 			case LM_ASK_CHOICE_OBJ:
 #ifndef	DEMO
-				SaveTimer() ;
-				num = *PtrPrg++	;
-				TestRestoreModeSVGA( TRUE ) ;
-				if( Bulle )	DrawBulle( num ) ;
-				TestCoulDial( ListObjet[num].CoulObj ) ;
-				GameAskChoice( *(WORD*)PtrPrg ) ;
-				GameNbChoices = 0 ;
-				PtrPrg += 2 ;
-//				FlagFade = TRUE ;
-				RestoreTimer() ;
-				AffScene(TRUE)	;
-				WaitReleaseSpace() ;
+				if (!HasLoadedSave)
+				{
+					SaveTimer();
+					num = *PtrPrg++;
+					TestRestoreModeSVGA(TRUE);
+					if (Bulle)	DrawBulle(num);
+					TestCoulDial(ListObjet[num].CoulObj);
+					GameAskChoice(*(WORD*)PtrPrg);
+					GameNbChoices = 0;
+					PtrPrg += 2;
+					//				FlagFade = TRUE ;
+					RestoreTimer();
+					AffScene(TRUE);
+					WaitReleaseSpace();
+				}
+				else {
+					num = *PtrPrg++;
+					GameNbChoices = 0;
+					PtrPrg += 2;
+				}
 #endif
 				break ;
 
