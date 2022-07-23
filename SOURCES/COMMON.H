@@ -107,6 +107,7 @@
 
 #define	MAX_FLAGS_CUBE		80
 #define	MAX_FLAGS_GAME		255
+#define	MAX_AUX_FLAGS_CUBE	10
 
 #define	MAX_INVENTORY		28
 

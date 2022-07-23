@@ -46,10 +46,11 @@ OBJETS3  = grille.obj grille_a.obj func.obj cpymask.obj
 OBJETS4  = Message.obj ambiance.obj Balance.obj gamemenu.obj fire.obj
 OBJETS5  = geretrak.obj gerelife.obj
 OBJETS6  = HoloMap.obj playfla.obj adfli_a.obj mcga.obj
+OBJETS7  = Message_custom.obj
 
 EXE      = LBA0
 
-$(EXE).exe: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6)
+$(EXE).exe: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6) $(OBJETS7)
 	echo "run LINK.bat under 4DOS"
 
 .c.obj :

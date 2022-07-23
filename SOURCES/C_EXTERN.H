@@ -15,6 +15,7 @@
 #include	"holomap.def"
 #include	"incrust.def"
 #include	"message.def"
+#include 	"message_custom.def"
 #include	"object.def"
 #include	"perso.def"
 #include	"playfla.def"
@@ -94,6 +95,8 @@ extern	WORD	FlaFromCD ;
 extern	UBYTE	PathFla[] ;
 
 extern	LONG	Version_US ;
+
+extern	WORD	FlagWindowsFilenameSaving;
 
 /*-------- RESSOURCES ---------------------------------------------*/
 
@@ -178,6 +181,8 @@ extern	T_FLAG	ListFlagGame[] ;
 extern	UBYTE	ListFlagCube[] ;
 extern	UBYTE	ListFlagGame[] ;
 
+extern T_AUX_FLAG_CUBE ListAuxFlagCube[]; //auxiliary cube flags set aside from the original ListFlagCube, to aid in manual saving
+
 extern	UBYTE	ListFlagInventory[] ;
 
 
@@ -198,6 +203,8 @@ extern	WORD	GameNbChoices ;
 extern	WORD	GameListChoice[] ;
 
 /*--------- perso ----------------------------*/
+
+extern	WORD	PersoInvulnerable;
 
 extern	WORD	FlagTheEnd ;
 
@@ -241,6 +248,18 @@ extern	UBYTE	Island 	;
 extern	WORD	Fuel ;
 extern	WORD	NumPingouin ;
 
+extern	WORD	HasLoadedSave ;
+extern	WORD	HasLoadedListObjetsOnSave;
+extern	WORD	HasLoadedListObjetTracksOnSave;
+extern	WORD	HasLoadedListExtraOnSave;
+extern	WORD	HasLoadedListZoneOnSave;
+extern	WORD	HasLoadedKeysOnSave ;
+extern	WORD	HasLoadedInventoryOnSave;
+extern	WORD	HasLoadedListFlagCubeOnSave;
+extern	WORD	HasLoadedListAuxFlagCubeOnSave;
+extern	WORD	HasLoadedLastValidPersoOnSave;
+extern	WORD	DisableAutoSave;
+
 extern	WORD	NbFourLeafClover ;
 extern	WORD	NbCloverBox ;
 
@@ -269,6 +288,8 @@ extern	WORD	SaveChapitre ;
 extern	WORD	SaveNbCloverBox ;
 extern	WORD	SaveNbFourLeafClover ;
 
+extern  WORD	WallColDamageEnabled ;	// 0: disabled, 1: enabled
+
 /*--------- Extra objs ----------------------------*/
 
 extern	T_EXTRA	ListExtra[] ;
@@ -294,6 +315,7 @@ extern	T_HQR_HEADER	*HQR_Anims ;
 
 extern	LONG	NbObjets ;
 extern	T_OBJET	ListObjet[] ;
+extern	T_OBJET LastValidPerso;
 
 extern	T_SORT	ListTri[] ;
 

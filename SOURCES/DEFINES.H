@@ -36,6 +36,18 @@
 //path des ressources
 #define	PATH_RESSOURCE		""
 
+// disable auto saving on game over
+#define DISABLE_GAME_OVER_SAVE 1
+
+// uncomment to reenable auto saving on game over
+//#undef DISABLE_GAME_OVER_SAVE
+
+// disable copy saved game feature
+#define DISABLE_COPY_SAVED_GAME 1
+
+// uncomment to reenable copy saved game feature
+//#undef DISABLE_COPY_SAVED_GAME
+
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
@@ -150,6 +162,8 @@ extern	ULONG	UsedHQMemory ;
 #define	GEN_ANIM_SABRE		23
 #define	GEN_ANIM_DEGAINE	24
 
+#define MAIN_LOOP_LOAD_GAME 3
+
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 typedef	struct
@@ -256,4 +270,12 @@ typedef	struct
 	WORD	X ;
 	WORD	Y ;
 	WORD	Z ;		}	T_TRACK ;
+
+
+// struct for some additional cube flags
+typedef struct
+{
+	WORD NumObj;
+	WORD PerformedOffsetLife; 
+} T_AUX_FLAG_CUBE;
 

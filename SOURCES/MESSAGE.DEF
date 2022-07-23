@@ -25,3 +25,4 @@ extern void CloseDial(void);
 extern void Dial(long );
 extern void MyDial(short );
 extern char *GetMultiText(long ,char *);
+extern char* GetCurrentListLanguage();

@@ -46,7 +46,7 @@ void	InitObject( WORD numobj )
 
 	ptrobj = &ListObjet[numobj] ;
 
-        ptrobj->GenBody = GEN_BODY_NORMAL ;
+    ptrobj->GenBody = GEN_BODY_NORMAL ;
 	ptrobj->GenAnim = GEN_ANIM_RIEN ;
 
 	ptrobj->PosObjX = 0 ;
@@ -120,7 +120,8 @@ void	StartInitObj( WORD numobj )
 
 		InitRealAngle(	0,0,0, &ptrobj->RealAngle ) ;
 
-		if( ptrobj->Flags & SPRITE_CLIP )
+		//Do not set AnimStepX, Y, Z if the values are coming from a save. Use what's already in the save state instead. These variables are used as a reference to where an object should be animated to (e.g. like a closed door, and if the door is saved in an open state, the reference would be set to the open position, but it should be in the closed position)
+		if( ptrobj->Flags & SPRITE_CLIP && !HasLoadedListObjetsOnSave )
 		{
 			ptrobj->AnimStepX = ptrobj->PosObjX ;
 			ptrobj->AnimStepY = ptrobj->PosObjY ;
@@ -144,9 +145,17 @@ void	StartInitObj( WORD numobj )
 				0, &ptrobj->RealAngle ) ;
 	}
 
-	ptrobj->OffsetTrack = -1 ;
-	ptrobj->LabelTrack = -1 ;
-	ptrobj->OffsetLife = 0 ;
+
+	if (!HasLoadedListObjetTracksOnSave)
+	{
+		ptrobj->OffsetTrack = -1 ;
+		ptrobj->LabelTrack = -1 ;
+	}
+
+	if (!HasLoadedListObjetsOnSave)
+	{
+		ptrobj->OffsetLife = 0;
+	}
 }
 
 
@@ -279,21 +288,23 @@ void	RestartPerso()
 
 	ptrobj = &ListObjet[NUM_PERSO] ;
 
-	ptrobj->Move = MOVE_MANUAL ;
+	ptrobj->Move = MOVE_MANUAL;
+	ptrobj->WorkFlags = 0;
+	ptrobj->Flags = OBJ_FALLABLE
+		+ CHECK_ZONE
+		+ CHECK_OBJ_COL
+		+ CHECK_BRICK_COL
+		+ CHECK_CODE_JEU;
 
-	ptrobj->WorkFlags = 0 ;
-	ptrobj->Flags =	  OBJ_FALLABLE
-			+ CHECK_ZONE
-			+ CHECK_OBJ_COL
-			+ CHECK_BRICK_COL
-			+ CHECK_CODE_JEU ;
+	if (!HasLoadedSave)
+	{
+		ptrobj->Armure = 1;
 
-	ptrobj->Armure = 1 ;
-
-	ptrobj->OffsetTrack = -1 ;
-	ptrobj->LabelTrack = -1 ;
-	ptrobj->OffsetLife = 0 ;
-	ptrobj->ZoneSce = -1 ;
+		ptrobj->OffsetTrack = -1;
+		ptrobj->LabelTrack = -1;
+		ptrobj->OffsetLife = 0;
+		ptrobj->ZoneSce = -1;
+	}
 
 ptrobj->Beta = SaveBeta ;
 
@@ -314,9 +325,21 @@ void	ClearFlagsCube()
 {
 	WORD	n ;
 
-	for( n=0; n<MAX_FLAGS_CUBE; n++ )
+	if (!HasLoadedListFlagCubeOnSave)
 	{
-		ListFlagCube[n] = 0 ;
+		for (n = 0; n < MAX_FLAGS_CUBE; n++)
+		{
+			ListFlagCube[n] = 0;
+		}
+	}
+
+	if (!HasLoadedListAuxFlagCubeOnSave)
+	{
+		for (n = 0; n < MAX_AUX_FLAGS_CUBE; n++)
+		{
+			ListAuxFlagCube[n].NumObj = -1;
+			ListAuxFlagCube[n].PerformedOffsetLife = -1;
+		}
 	}
 }
 
@@ -351,6 +374,61 @@ void	ClearScene()
 	FlagPalettePcx = FALSE ;
 
 	ClearDial() ;
+}
+
+void	SetFadePalOnLoad()
+{
+	if (HasLoadedSave)
+	{
+		//HasLoadedInventoryOnSave used for ListFlagGame
+		//Set dark pal on museum when alarm is active (num cube is 43)
+		if (HasLoadedInventoryOnSave && NumCube == 43)
+		{
+			int indexMuseumAlarm = 41; // index 41 is changed when activating the museum alarm 
+
+			//If the flag is set in ListFlagGame, apply the dark pal
+			if (indexMuseumAlarm < MAX_FLAGS_GAME && ListFlagGame[indexMuseumAlarm])
+			{
+				SaveTimer();
+				Load_HQR(PATH_RESSOURCE"ress.hqr", PalettePcx, RESS_PAL_MUSEE);
+				Palette(PalettePcx);
+				FlagPalettePcx = TRUE;
+				RestoreTimer();
+			}
+		}
+
+		//Set red alarm pal on teleportation center when active (num cube is 99)
+		if (HasLoadedListFlagCubeOnSave && NumCube == 99)
+		{
+			int i;
+			int maxFlags = 7; // devices destroyed are stored in indexes from 0 to 6
+			WORD isInAlarmState = 0;
+
+			if (maxFlags <= MAX_FLAGS_CUBE)
+			{
+				int nbDevicesDestroyed = 0;
+
+				for (i = 0; i < maxFlags; i++)
+				{
+					WORD deviceDestroyed = ListFlagCube[i] > 0;
+
+					if (deviceDestroyed)
+						nbDevicesDestroyed++;
+
+					isInAlarmState |= deviceDestroyed;
+				}
+
+				if (isInAlarmState && nbDevicesDestroyed < maxFlags)
+				{
+					SaveTimer();
+					Load_HQR(PATH_RESSOURCE"ress.hqr", PalettePcx, RESS_PAL_ALARM);
+					FadePalToPal(PtrPal, PalettePcx);
+					FlagPalettePcx = TRUE;
+					RestoreTimer();
+				}
+			}
+		}
+	}
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -403,6 +481,8 @@ void	ChangeCube()
 */
 	FreeGrille() ;
 	ClearScene() ;
+
+	HasLoadedListExtraOnSave = 0;
 
 // perso reinit
 
@@ -467,18 +547,21 @@ void	ChangeCube()
 	SetLightVector( AlphaLight, BetaLight, 0 ) ;
 //	PlayMidiFile( CubeJingle ) ;
 
-	if( NewCube != oldcube )
+	if( NewCube != oldcube && !DisableAutoSave)
 	{
 		SaveComportement = Comportement ;
 		SaveBeta = ListObjet[NUM_PERSO].Beta ;
 		SaveGame() ;
 	}
-
+	
 	RestartPerso() ;
 
-	StartInitAllObjs() ;
+	StartInitAllObjs();
 
-	NbLittleKeys = 0 ;
+	if (!HasLoadedLastValidPersoOnSave)
+		LastValidPerso = ListObjet[NUM_PERSO];
+
+	NbLittleKeys = HasLoadedKeysOnSave ? NbLittleKeys : 0 ;
 	MagicBall = -1 ;
 	LastJoyFlag = TRUE ;
 	ZoneGrm = -1 ;
@@ -494,6 +577,8 @@ void	ChangeCube()
 	SamplePlayed = 2+4+8 ;	// joue le premier sample en 1er
 	TimerNextAmbiance = 0 ;
 
+	HasLoadedKeysOnSave = 0;
+
 	StartXCube = ((ListObjet[NumObjFollow].PosObjX+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
 	StartYCube = ((ListObjet[NumObjFollow].PosObjY+SIZE_BRICK_Y)/SIZE_BRICK_Y) ;
 	StartZCube = ((ListObjet[NumObjFollow].PosObjZ+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
@@ -504,6 +589,8 @@ void	ChangeCube()
 	{
 		PlayMusic( CubeJingle ) ;
 	}
+
+	SetFadePalOnLoad();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -520,7 +607,8 @@ void	HitObj( WORD numhitter, WORD num, WORD hitforce, WORD beta )
 
 	ptrobjt = &ListObjet[ num ] ;
 
-	if( ptrobjt->LifePoint <= 0 )	return ;
+	// Ignore hits on Twinsen if he is marked as invulnerable (after loosing a life)
+	if( ptrobjt->LifePoint <= 0 || (num == NUM_PERSO && PersoInvulnerable))	return ;
 
 	ptrobjt->HitBy = numhitter ;
 
@@ -1772,13 +1860,17 @@ if( APtObj->Flags & CHECK_BRICK_COL )
 		if( (X0 >= 0) AND (Y0 >= 0) AND (X0 <= 63*SIZE_BRICK_XZ) AND (Y0 <= 63*SIZE_BRICK_XZ)
 		AND (WorldColBrick( X0, Nyw+256, Y0 ) != 0) )
 		{
-			InitSpecial(	APtObj->PosObjX,
-					APtObj->PosObjY+1000,
-					APtObj->PosObjZ,
-					0 ) ;
-			InitAnim( GEN_ANIM_CHOC, ANIM_ALL_THEN, GEN_ANIM_RIEN, AnimNumObj ) ;
-			if( AnimNumObj == NUM_PERSO )		LastJoyFlag = TRUE ;
-			APtObj->LifePoint -= 1 ;
+			// If wall collision damage flag is set to enabled, execute code for animating a collision and decreasing life. If disabled, ignore.
+			if (WallColDamageEnabled != 0) 
+			{
+				InitSpecial(	APtObj->PosObjX,
+						APtObj->PosObjY+1000,
+						APtObj->PosObjZ,
+						0 ) ;
+				InitAnim( GEN_ANIM_CHOC, ANIM_ALL_THEN, GEN_ANIM_RIEN, AnimNumObj ) ;
+				if( AnimNumObj == NUM_PERSO )		LastJoyFlag = TRUE ;
+				APtObj->LifePoint -= 1 ;
+			}
 		}
 	}
 	}
@@ -3325,7 +3417,9 @@ void	CheckZoneSce( T_OBJET *ptrobj, WORD numobj )
 				break ;
 
 			case 2:	// zone scenarique
-				ptrobj->ZoneSce = ptrz->Num ;
+				// Prevent entering boat, dinofly, vehicle, immediately on load save file
+				if(!(HasLoadedSave && numobj == NUM_PERSO))
+					ptrobj->ZoneSce = ptrz->Num ;
 				break ;
 
 			case 3: // zone grm

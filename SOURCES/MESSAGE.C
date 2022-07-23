@@ -1542,6 +1542,14 @@ char    *GetMultiText( LONG text, char *dst )
 
 	return(dst)     ;
 }
+
+/*-------------------------------------------------------------------------*/
+// Function that gets the language value that is set at the start of the game
+char*	GetCurrentListLanguage()
+{
+	return ListLanguage[Language];
+}
+
 /*-------------------------------------------------------------------------*/
 #ifdef	LBA_EDITOR
 void    CleanMessage( UBYTE *string, LONG flag )
