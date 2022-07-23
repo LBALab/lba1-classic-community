@@ -1366,46 +1366,50 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 	if (fileName)
 	{
 		char savePath[1024];
-#ifdef WINDOWS_SAVE
 
-		//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
-		//No need to perform this validation if we're doing an auto save
-		if (!isAutoSave && FindPlayerFile())
+		//Check if WindowsFilenameSaving flag in LBA.CFG is set to ON
+		if (FlagWindowsFilenameSaving)
 		{
-			//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
-			strcpy(savePath, GamePathname);
-		}
-		else
-		{
-			//If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming 
-			strcpy(savePath, PATH_RESSOURCE);
-			strcat(savePath, fileName);
-			strcat(savePath, ".LBA");
-		}
-#else 
-		if (isAutoSave)
-		{
-			strcpy(savePath, PATH_RESSOURCE);
-			strcat(savePath, fileName);
-			strcat(savePath, ".LBA");
-		}
-		else
-		{
-			if (FindPlayerFile())
+			//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
+			//No need to perform this validation if we're doing an auto save
+			if (!isAutoSave && FindPlayerFile())
 			{
+				//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
 				strcpy(savePath, GamePathname);
 			}
 			else
 			{
-				do
-				{
-					strcpy(savePath, PATH_RESSOURCE"S");
-					strcat(savePath, Itoa(Rnd(10000)));
-					strcat(savePath, ".LBA");
-				} while (FileSize(savePath) != 0);
+				//If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming 
+				strcpy(savePath, PATH_RESSOURCE);
+				strcat(savePath, fileName);
+				strcat(savePath, ".LBA");
 			}
 		}
-#endif
+		else
+		{
+			if (isAutoSave)
+			{
+				strcpy(savePath, PATH_RESSOURCE);
+				strcat(savePath, fileName);
+				strcat(savePath, ".LBA");
+			}
+			else
+			{
+				if (FindPlayerFile())
+				{
+					strcpy(savePath, GamePathname);
+				}
+				else
+				{
+					do
+					{
+						strcpy(savePath, PATH_RESSOURCE"S");
+						strcat(savePath, Itoa(Rnd(10000)));
+						strcat(savePath, ".LBA");
+					} while (FileSize(savePath) != 0);
+				}
+			}
+		}
 
 		handle = OpenWrite(savePath);
 	}

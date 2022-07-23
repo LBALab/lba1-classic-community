@@ -50,6 +50,9 @@ UBYTE	PathFla[_MAX_PATH] ;
 
 LONG	Version_US = TRUE ;
 
+
+WORD	FlagWindowsFilenameSaving = 0;
+
 /*--------- ressources ---------------------------*/
 
 T_HQR_HEADER	*HQR_Samples ;

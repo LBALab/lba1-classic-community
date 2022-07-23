@@ -96,6 +96,8 @@ extern	UBYTE	PathFla[] ;
 
 extern	LONG	Version_US ;
 
+extern	WORD	FlagWindowsFilenameSaving;
+
 /*-------- RESSOURCES ---------------------------------------------*/
 
 extern	T_HQR_HEADER	*HQR_Samples ;

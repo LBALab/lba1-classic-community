@@ -1356,6 +1356,7 @@ void	main( int argc, UBYTE *argv[] )
 	WORD	n ;
 	ULONG	memory ;
 	ULONG	memotimer ;
+	UBYTE	string[256];
 
 	// _harderr_( Critical_Error_Handler )	;
 
@@ -1369,6 +1370,12 @@ void	main( int argc, UBYTE *argv[] )
 	InitProgram() ;			/* init graphmode timer ... */
 
 // infos from lba.cfg
+
+	strcpy( string, Def_ReadString( PathConfigFile, "WindowsFilenameSaving" ) );
+
+	if (!strcmpi(string, "ON"))
+		FlagWindowsFilenameSaving = 1;
+
 
 	ReadVolumeSettings() ;
 
