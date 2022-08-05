@@ -100,4 +100,8 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: lba1
-          path: SOURCES/LBA0.exe
+          path: |
+            SOURCES/LBA0.exe
+            SOURCES/Assets/Text
+            !SOURCES/Assets/Text/README.md
+            !SOURCES/Assets/Text/docs
