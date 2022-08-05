@@ -1,0 +1,103 @@
+name: Build
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: windows-2022
+
+    steps:
+      - name: Setup Open Watcom v2.0
+        uses: open-watcom/setup-watcom@v0
+        with:
+          version: "2.0-64"
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x86
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Open Watcom environment
+        run: |
+          echo "INCLUDE=$env:WATCOM\H;$env:WATCOM\H\NT;$env:WATCOM\H\NT\DIRECTX;$env:WATCOM\H\NT\DDK;$env:INCLUDE" >> $env:GITHUB_ENV
+          echo "EDPATH=$env:WATCOM\EDDAT" >> $env:GITHUB_ENV
+          echo "WHTMLHELP=$env:WATCOM\BINNT\HELP" >> $env:GITHUB_ENV
+          echo "WIPFC=$env:WATCOM\WIPFC" >> $env:GITHUB_ENV
+
+      - name: Setup environment variables
+        run: |
+          echo "LIB386_PATH=$env:GITHUB_WORKSPACE\LIB386" >> $env:GITHUB_ENV
+          echo "INCLUDE=$env:GITHUB_WORKSPACE\LIB386;$env:INCLUDE" >> $env:GITHUB_ENV
+
+      - name: Print environment variables
+        run: |
+          echo "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+          echo "PATH: $env:PATH"
+          echo "WATCOM: $env:WATCOM"
+          echo "LIB386_PATH: $env:LIB386_PATH"
+          echo "INCLUDE: $env:INCLUDE"
+
+      - name: Build LIB_3D
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_3D"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_CD
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_CD"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_MENU
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MENU"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_MIDI
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIDI"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_MIX
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIX"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_SAMP
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SAMP"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_SVGA
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SVGA"
+          wmake
+          Pop-Location
+
+      - name: Build LIB_SYS
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SYS"
+          wmake
+          Pop-Location
+
+      - name: Build LBA0.exe
+        run: |
+          Push-Location "$env:GITHUB_WORKSPACE\SOURCES"
+          wmake
+          Get-Content -Path *.obj -Exclude tempo.obj -AsByteStream -ReadCount 0 | Set-Content -AsByteStream tempo.obj
+          wcl386 /l=dos4g /x /zq /4s /k7000 /fe=LBA0.exe -"""LIBP $env:LIB386_PATH\LIB_3D;$env:LIB386_PATH\LIB_CD;$env:LIB386_PATH\LIB_MENU;$env:LIB386_PATH\LIB_MIDI;$env:LIB386_PATH\LIB_MIX;$env:LIB386_PATH\LIB_SAMP;$env:LIB386_PATH\LIB_SVGA;$env:LIB386_PATH\LIB_SYS""" -'"LIB LIB_3D.LIB,LIB_CD.LIB,LIB_MENU.LIB,LIB_MIDI.LIB,LIB_MIX.LIB,LIB_WAVE.LIB,LIB_SVGA.LIB,LIB_SYS.LIB"' tempo.obj
+          Pop-Location
+
+      - name: Upload the build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: lba1
+          path: SOURCES/LBA0.exe
