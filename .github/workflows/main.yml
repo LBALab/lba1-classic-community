@@ -97,7 +97,7 @@ jobs:
           Pop-Location
           
       - name: Copy Community Text
-        run: Get-ChildItem -Path "$env:GITHUB_WORKSPACE\SOURCES\Assets\Text\*.csv" | Copy-Item -Destination "$env:GITHUB_WORKSPACE\SOURCES"
+        run: Copy-Item "$env:GITHUB_WORKSPACE\SOURCES\Assets\Text\*.csv" "$env:GITHUB_WORKSPACE\SOURCES"
 
       - name: Upload the build artifacts
         uses: actions/upload-artifact@v3
