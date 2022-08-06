@@ -20,9 +20,8 @@ This represents a table with two rows separated by two columns: the first column
 
 # Getting Started
 
-To use these localization files, copy them to the folder where you have built *'LBA0.exe'*, specifically to *'..\Assets\Text'*, on the folder where the built *'LBA0.exe'* executable is located. 
+To use these localization files, copy them to the same folder where you have built *'LBA0.exe'*. By default, the *ONE_GAME_DIRECTORY* flag is set to *true* in the code. If the flag is set to *false*, copy the localization files to *'..\Assets\Text'*, on the folder where the built *'LBA0.exe'* executable is located. 
 
-Edit: To support the artifact produced by the CI workflow, ONE_GAME_DIRECTORY currently has no effect on the default location of these texts. Since this may change in the future, by default, if the *ONE_GAME_DIRECTORY* flag was set to *true* in the code, the texts would have to be copied to the exact same location as *'LBA0.exe'*, instead of *'..\Assets\Text'*. 
 
 <br/>
 <br/>

@@ -6,7 +6,7 @@
 #include "c_extern.h"
 
 #ifdef ONE_GAME_DIRECTORY
-#define CSV_FILE_PATH "Assets\\Text\\" // use path anyway, regardless of ONE_GAME_DIRECTORY setting, to allow GitHub CI artifact result to use the texts immediately
+#define CSV_FILE_PATH ""
 #else
 #define CSV_FILE_PATH "Assets\\Text\\"
 #endif
