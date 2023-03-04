@@ -92,29 +92,29 @@ RMI_SS		dw	0
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			.code
 
-			public	NoLanguage	InitCDR
-			public	NoLanguage	ClearCDR
-			public	NoLanguage	GetCopyrightName
-			public	NoLanguage	Red2Hsg
-			public	NoLanguage	GetLengthTrackCDR
-			public	NoLanguage	StartTrackCDR
-			public	NoLanguage	ResumeCDR
-			public	NoLanguage	EjectCDR
-			public	NoLanguage	CloseTrayCDR
-			public	NoLanguage	LockCDR
-			public	NoLanguage	UnLockCDR
-			public	NoLanguage	StatusCDR
-			public	NoLanguage	GetMusicCDR
-			public	NoLanguage	ResetCDR
-			public	NoLanguage	ControlCDR
-			public	NoLanguage	LocateHeadCDR
-			public	NoLanguage	PlayCDR
-			public	NoLanguage	StopCDR
-			public	NoLanguage	PlayTrackCDR
-			public	NoLanguage	ReadLongCDR
-			public	NoLanguage	GetBitCDR
-			public	NoLanguage	WaitDisk
-			public	NoLanguage	GetFileCDR
+			public	InitCDR
+			public	ClearCDR
+			public	GetCopyrightName
+			public	Red2Hsg
+			public	GetLengthTrackCDR
+			public	StartTrackCDR
+			public	ResumeCDR
+			public	EjectCDR
+			public	CloseTrayCDR
+			public	LockCDR
+			public	UnLockCDR
+			public	StatusCDR
+			public	GetMusicCDR
+			public	ResetCDR
+			public	ControlCDR
+			public	LocateHeadCDR
+			public	PlayCDR
+			public	StopCDR
+			public	PlayTrackCDR
+			public	ReadLongCDR
+			public	GetBitCDR
+			public	WaitDisk
+			public	GetFileCDR
 
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
