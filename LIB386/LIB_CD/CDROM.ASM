@@ -307,7 +307,7 @@ NoError:
 			mov	edi, nameid
 			mov	ecx, [lennameid]
 
-			rep	cmpsb			;' Compar with Copyright
+			repe	cmpsb			;' Compar with Copyright
 			je	TheGoodOne
 NotGoodOne:
 			call	UnLockCDR
