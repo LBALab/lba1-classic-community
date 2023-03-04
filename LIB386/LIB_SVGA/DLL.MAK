@@ -1,4 +1,4 @@
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 LINKDIR = format os2 lx dll
 
 dll: realtek.dll oak.dll ncr.dll compaq.dll ati.dll cirrus.dll genoa.dll paradise.dll s3.dll trident.dll tseng.dll

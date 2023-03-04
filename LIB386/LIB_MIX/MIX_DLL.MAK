@@ -1,4 +1,4 @@
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 LINKDIR = format os2 lx dll
 
 dll: m_pas.dll m_mwss.dll m_sb2cd.dll m_sbpro.dll m_sb16.dll m_gold.dll
