@@ -23,7 +23,7 @@ WL = f:\compil\watcom10\binb\wlib
 
 CC = wcc386
 CL = Wcl386
-WL = wlib
+WL = wlink
 ASM = ml
 
 !ifeq WATCOM9 yes
@@ -34,7 +34,6 @@ CFLAGS = /oeaxt /zp2 /4s /zq /v /s /DWATCOM9
 CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
 !endif
 AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /omf
-LFLAGS = /l=dos4g /x /zq /4s /k7000
 # /d2
 # /"OPTION SYMFILE=LBA.SYM OPTION MAP=LBA.MAP"
 
@@ -50,8 +49,22 @@ OBJETS7  = msg_cust.obj
 
 EXE      = LBA0
 
-$(EXE).exe: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6) $(OBJETS7)
-	echo "run LINK.bat under 4DOS"
+$(EXE).exe: LINK.LD
+	$(WL) Name $@ @ $<
+
+LINK.LD: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6) $(OBJETS7)
+	if exist $@ del $@
+	echo option stack=7000 >> $@
+	echo system dos4g >> $@
+	for %%G in ($<) do echo File %%G >> $@
+	echo Library %LIB386_PATH%\LIB_3D\LIB_3D.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_CD\LIB_CD.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_MENU\LIB_MENU.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_MIDI\LIB_MIDI.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_MIX\LIB_MIX.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_SAMP\LIB_WAVE.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_SVGA\LIB_SVGA.LIB >> $@
+	echo Library %LIB386_PATH%\LIB_SYS\LIB_SYS.LIB >> $@
 
 .c.obj :
 	PRNTITRE M "$*.C"
