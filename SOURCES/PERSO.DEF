@@ -6,6 +6,6 @@ extern void ReadVolumeSettings(void);
 extern void WriteVolumeSettings(void);
 extern void InitProgram(void);
 extern void TheEnd(short ,unsigned char *);
-extern int __far Critical_Error_Handler(unsigned int ,unsigned int ,unsigned int __far *);
+extern int _FAR Critical_Error_Handler(unsigned int ,unsigned int ,unsigned int _FAR *);
 extern void Message(unsigned char *,short );
 extern void main(int ,unsigned char **);

@@ -1,5 +1,12 @@
 #include	"defines.h"
 
+/* define _FAR before including any definitions, so it can be used */
+#ifdef __DOS__
+#define _FAR __far
+#else
+#define _FAR
+#endif
+
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 

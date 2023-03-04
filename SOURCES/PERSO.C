@@ -1311,10 +1311,9 @@ void	TheEnd( WORD num, UBYTE *error )
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-
-int	__far	Critical_Error_Handler( unsigned deverr,
+int	_FAR	Critical_Error_Handler( unsigned deverr,
 					unsigned errcode,
-					unsigned far *devhdr )
+					unsigned _FAR *devhdr )
 {
 	return( _HARDERR_RETRY )	;
 }
@@ -1358,7 +1357,7 @@ void	main( int argc, UBYTE *argv[] )
 	ULONG	memotimer ;
 	UBYTE	string[256];
 
-	// _harderr_( Critical_Error_Handler )	;
+	_harderr( Critical_Error_Handler )	;
 
 #ifdef	DEBUG_TOOLS
 	MemoMemory = (ULONG)Malloc( -1 ) ;	// memory at start
