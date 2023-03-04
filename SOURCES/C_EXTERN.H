@@ -15,7 +15,7 @@
 #include	"holomap.def"
 #include	"incrust.def"
 #include	"message.def"
-#include 	"message_custom.def"
+#include 	"msg_cust.def"
 #include	"object.def"
 #include	"perso.def"
 #include	"playfla.def"
