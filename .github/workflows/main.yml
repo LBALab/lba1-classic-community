@@ -40,54 +40,6 @@ jobs:
           echo "LIB386_PATH: $env:LIB386_PATH"
           echo "INCLUDE: $env:INCLUDE"
 
-      - name: Build LIB_3D
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_3D"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_CD
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_CD"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MENU
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MENU"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MIDI
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIDI"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MIX
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIX"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SAMP
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SAMP"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SVGA
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SVGA"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SYS
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SYS"
-          wmake
-          Pop-Location
-
       - name: Build LBA0.exe
         run: |
           Push-Location "$env:GITHUB_WORKSPACE\SOURCES"
