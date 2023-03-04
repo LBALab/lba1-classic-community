@@ -33,7 +33,7 @@ CFLAGS = /oeaxt /zp2 /4s /zq /v /s /DWATCOM9
 !else
 CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
 !endif
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=; /omf
+AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 LFLAGS = /l=dos4g /x /zq /4s /k7000
 # /d2
 # /"OPTION SYMFILE=LBA.SYM OPTION MAP=LBA.MAP"

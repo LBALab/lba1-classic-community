@@ -13,7 +13,6 @@ comment @
 		    (c) Adeline Software International 1994
 @
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-			JUMPS
 			.386P
 			.model SMALL, C
 

@@ -1,5 +1,4 @@
 		.386p
-		jumps
 		.model SMALL, SYSCALL
 
 		.data

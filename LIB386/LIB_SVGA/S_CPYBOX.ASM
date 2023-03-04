@@ -4,7 +4,6 @@
 	.code	LIB_SVGA
 
 	.386
-	jumps
 
 OSEG	equ	FS:
 

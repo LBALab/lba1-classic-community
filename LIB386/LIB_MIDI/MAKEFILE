@@ -28,7 +28,7 @@ CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd
 !endif
 LFLAGS = -b -n -c -q
 #AFLAGS  = /m2 /mx /z /zi /t /jMASM51 /jQUIRKS
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=; /omf
+AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 
 OBJETS1  = midi.obj # ail32.obj

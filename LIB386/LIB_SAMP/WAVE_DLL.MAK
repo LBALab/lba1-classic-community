@@ -1,6 +1,6 @@
 ASM = ml
 #AFLAGS  = /m2 /mx /z /zi /t /jMASM51 /jQUIRKS
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=;
+AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL
 LINKDIR = format os2 lx dll
 
 dll: w_pas16.dll w_pas.dll w_gus.dll w_mwss.dll w_sb.dll w_sb2.dll w_sbpro.dll w_sb16.dll w_gold.dll
