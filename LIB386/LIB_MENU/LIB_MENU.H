@@ -83,11 +83,6 @@ typedef struct	{	WORD	WindowX1 ;
 #define	BLANC		15
 
 /*══════════════════════════════════════════════════════════════════════════*/
-/* asm_sort.asm */
-
-extern	int MySortCompFunc(void const*,void const* ) ;
-
-/*══════════════════════════════════════════════════════════════════════════*/
 /* menu.c */
 
 extern void SetMenuAutoPal(short );

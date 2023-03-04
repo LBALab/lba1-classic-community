@@ -82,12 +82,10 @@ void	DrawListFiles( WORD flag )
 	ShowMouse( 1 ) ;
 }
 
-/*
-int my_sort_function( char **a, char **b)
+int MySortCompFunc( void const* a, void const *b)
 {
-	return( strcmp( *a, *b) ) ;
+	return( strcmp( *(const char**)a, *(const char**)b) ) ;
 }
-*/
 
 void	ScanFiles( UBYTE *selection, LONG flag )
 {
