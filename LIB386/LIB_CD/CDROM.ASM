@@ -114,7 +114,6 @@ RMI_SS		dw	0
 			public	NoLanguage	ReadLongCDR
 			public	NoLanguage	GetBitCDR
 			public	NoLanguage	WaitDisk
-;'			public	NoLanguage	TestCDROM
 			public	NoLanguage	GetFileCDR
 
 
@@ -882,28 +881,6 @@ NoError:
 
 			ret
 PlayTrackCDR		endp
-;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-comment @
-TestCDROM		proc	uses ebx
-
-			xor	eax, eax
-			mov	ebx, 1
-
-			push    eax
-			push	[PtDosCD]
-			push	ebx
-			push	eax
-			call	ReadLongCDR
-			add	esp, 4*4
-			or	eax, eax
-			je	NoError
-			xor	eax, eax
-			ret
-NoError:
-			mov	eax, 1
-			ret
-TestCDROM		endp
-@
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ReadLongCDR		proc	uses es esi edi ebx,\
 			Start:DWORD, \
