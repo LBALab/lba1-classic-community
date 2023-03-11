@@ -23,7 +23,7 @@ WL = f:\compil\watcom10\binb\wlib
 
 CC = wcc386
 CL = Wcl386
-WL = wlib
+WL = wlink
 ASM = ml
 
 !ifeq WATCOM9 yes
@@ -33,25 +33,42 @@ CFLAGS = /oeaxt /zp2 /4s /zq /v /s /DWATCOM9
 !else
 CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
 !endif
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=; /omf
-LFLAGS = /l=dos4g /x /zq /4s /k7000
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
+LFLAGS  = option stack=7000
+LFLAGS += system dos4g
 # /d2
 # /"OPTION SYMFILE=LBA.SYM OPTION MAP=LBA.MAP"
 
 .SILENT
 
-OBJETS1  = version.obj perso.obj object.obj global.obj
-OBJETS2  = flipbox.obj diskfunc.obj fiche.obj extra.obj incrust.obj
-OBJETS3  = grille.obj grille_a.obj func.obj cpymask.obj
-OBJETS4  = Message.obj ambiance.obj Balance.obj gamemenu.obj fire.obj
-OBJETS5  = geretrak.obj gerelife.obj
-OBJETS6  = HoloMap.obj playfla.obj adfli_a.obj mcga.obj
-OBJETS7  = Message_custom.obj
+OBJECTS  = version.obj perso.obj object.obj global.obj
+OBJECTS += flipbox.obj diskfunc.obj fiche.obj extra.obj incrust.obj
+OBJECTS += grille.obj grille_a.obj func.obj cpymask.obj
+OBJECTS += Message.obj ambiance.obj Balance.obj gamemenu.obj fire.obj
+OBJECTS += geretrak.obj gerelife.obj
+OBJECTS += HoloMap.obj playfla.obj adfli_a.obj mcga.obj
+OBJECTS += msg_cust.obj
+
+LIBS  = $(%LIB386_PATH)\LIB_3D\LIB_3D.LIB
+LIBS += $(%LIB386_PATH)\LIB_CD\LIB_CD.LIB
+LIBS += $(%LIB386_PATH)\LIB_MENU\LIB_MENU.LIB
+LIBS += $(%LIB386_PATH)\LIB_MIDI\LIB_MIDI.LIB
+LIBS += $(%LIB386_PATH)\LIB_MIX\LIB_MIX.LIB
+LIBS += $(%LIB386_PATH)\LIB_SAMP\LIB_WAVE.LIB
+LIBS += $(%LIB386_PATH)\LIB_SVGA\LIB_SVGA.LIB
+LIBS += $(%LIB386_PATH)\LIB_SYS\LIB_SYS.LIB
 
 EXE      = LBA0
+# This is the GNU Make equivalent of CURDIR :=
+CURDIR   = $+ $(%cdrive):$(%cwd) $-
 
-$(EXE).exe: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6) $(OBJETS7)
-	echo "run LINK.bat under 4DOS"
+$(EXE).exe: $(LIBS) $(OBJECTS)
+	*$(WL) Name $@ $(LFLAGS) Library { $LIBS } File { $OBJECTS }
+
+$(LIBS):
+	cd $^:
+	$(MAKE)
+	@cd $(CURDIR)
 
 .c.obj :
 	PRNTITRE M "$*.C"

@@ -28,10 +28,10 @@ CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd
 !endif
 LFLAGS = /c /q /b /n
 #AFLAGS  = /m2 /mx /z /zi /t /jMASM51 /jQUIRKS
-AFLAGS = /Cx /Zm /c /W0 /Sa /DNoLanguage=SYSCALL /Djumps=; /omf
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 OBJETS1  = menu.obj selector.obj menufunc.obj
-OBJETS2  = asm_sort.obj
+OBJETS2  =
 OBJETS3  =
 OBJETS4  =
 
@@ -44,7 +44,7 @@ LIB      = LIB_MENU
 $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
 
 	@echo $(OBJETS1) > clibmak.rsp
-	@echo $(OBJETS2) >> clibmak.rsp
+#	@echo $(OBJETS2) >> clibmak.rsp
 #	@echo $(OBJETS3) >> clibmak.rsp
 #	@echo $(OBJETS4) >> clibmak.rsp
 

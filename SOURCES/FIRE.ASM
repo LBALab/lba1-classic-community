@@ -47,21 +47,21 @@ ComputeFire	proc	uses esi edi ebx edx
 		XOR     BH,BH
 @@lp:
 		XOR     AX,AX
-		ADD     AL,-1[eSI]
+		ADD     AL,(-1)[eSI]
 		ADC     AH,BH
-		ADD     AL,-320[eSI]
+		ADD     AL,(-320)[eSI]
 		ADC     AH,BH
-		ADD     AL,-319[eSI]
+		ADD     AL,(-319)[eSI]
 		ADC     AH,BH
-		ADD     AL,-321[eSI]
+		ADD     AL,(-321)[eSI]
 		ADC     AH,BH
-		ADD     AL,1[eSI]
+		ADD     AL,(1)[eSI]
 		ADC     AH,BH
-		ADD     AL,320[eSI]
+		ADD     AL,(320)[eSI]
 		ADC     AH,BH
-		ADD     AL,319[eSI]
+		ADD     AL,(319)[eSI]
 		ADC     AH,BH
-		ADD     AL,321[eSI]
+		ADD     AL,(321)[eSI]
 		ADC     AH,BH
 		ROR     AX,3
 

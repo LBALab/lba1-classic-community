@@ -3,7 +3,6 @@
 ;			      (c) Adeline 1993
 ;----------------------------------------------------------------------------
 				.386P
-				jumps
 				.model SMALL, SYSCALL
 
 				.data
@@ -69,7 +68,7 @@ ScanAgain:
 			add	esi, ebx	; Maj ESI
 
 			mov	ebx, ecx	; EBX = Bytes Restant
-			rep	scasb		; Combien != 0 ?
+			repe	scasb		; Combien != 0 ?
 			je	short UntilEnd  ; Tous jusqu'a fin (Quick!
 
 			inc	ecx		; Maj	ECX

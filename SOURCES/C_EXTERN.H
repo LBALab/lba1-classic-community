@@ -1,5 +1,12 @@
 #include	"defines.h"
 
+/* define _FAR before including any definitions, so it can be used */
+#ifdef __DOS__
+#define _FAR __far
+#else
+#define _FAR
+#endif
+
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
@@ -15,7 +22,7 @@
 #include	"holomap.def"
 #include	"incrust.def"
 #include	"message.def"
-#include 	"message_custom.def"
+#include 	"msg_cust.def"
 #include	"object.def"
 #include	"perso.def"
 #include	"playfla.def"

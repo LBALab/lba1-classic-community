@@ -3,7 +3,6 @@
 ;*══════════════════════════════════════════════════════════════════════════*/
 
 		.386P
-		jumps
 		.model SMALL, SYSCALL
 		.data
 
@@ -1692,7 +1691,7 @@ disptexture	proc
 	mov	di,ax
 	lodsw
 	sub	ax,di
-	js	#dispret
+	js	dispret
 	add	si,2
 	mov	boucle,ax
 
@@ -1775,9 +1774,9 @@ h1:		add	bx,4			; next xy
 		add	di,640			; next lig
 
 		dec	boucle
-		jns	#solidloop
+		jns	solidloop
 
-#dispret:	pop	ds
+dispret:	pop	ds
 		ret
 
 disptexture	endp

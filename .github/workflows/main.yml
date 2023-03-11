@@ -40,60 +40,10 @@ jobs:
           echo "LIB386_PATH: $env:LIB386_PATH"
           echo "INCLUDE: $env:INCLUDE"
 
-      - name: Build LIB_3D
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_3D"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_CD
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_CD"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MENU
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MENU"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MIDI
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIDI"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_MIX
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_MIX"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SAMP
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SAMP"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SVGA
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SVGA"
-          wmake
-          Pop-Location
-
-      - name: Build LIB_SYS
-        run: |
-          Push-Location "$env:GITHUB_WORKSPACE\LIB386\LIB_SYS"
-          wmake
-          Pop-Location
-
       - name: Build LBA0.exe
         run: |
           Push-Location "$env:GITHUB_WORKSPACE\SOURCES"
           wmake
-          Get-Content -Path *.obj -Exclude tempo.obj -AsByteStream -ReadCount 0 | Set-Content -AsByteStream tempo.obj
-          wcl386 /l=dos4g /x /zq /4s /k7000 /fe=LBA0.exe -"""LIBP $env:LIB386_PATH\LIB_3D;$env:LIB386_PATH\LIB_CD;$env:LIB386_PATH\LIB_MENU;$env:LIB386_PATH\LIB_MIDI;$env:LIB386_PATH\LIB_MIX;$env:LIB386_PATH\LIB_SAMP;$env:LIB386_PATH\LIB_SVGA;$env:LIB386_PATH\LIB_SYS""" -'"LIB LIB_3D.LIB,LIB_CD.LIB,LIB_MENU.LIB,LIB_MIDI.LIB,LIB_MIX.LIB,LIB_WAVE.LIB,LIB_SVGA.LIB,LIB_SYS.LIB"' tempo.obj
           Pop-Location
 
       - name: Upload the build artifacts
