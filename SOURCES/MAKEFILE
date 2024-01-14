@@ -77,3 +77,15 @@ $(LIBS):
 .asm.obj :
 	PRNTITRE M "$*.ASM"
 	$(ASM) $(AFLAGS) $^&.ASM
+
+clean: .SYMBOLIC
+	@cd $(CURDIR)\..
+	del /s /q *.obj
+	del /s /q *.lib
+	del /s /q *.err
+	del /s /q *.ld
+	del /s /q *.map
+	del /s /q *.pch
+	del /s /q *.lst
+	del /s /q *.def
+	@cd $(CURDIR)
