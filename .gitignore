@@ -5,4 +5,6 @@
 SOURCES/LBA0.EXE
 tags
 .DS_Store
-build
+build/
+build-dos/
+build-win9x/

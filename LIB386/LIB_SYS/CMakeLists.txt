@@ -2,31 +2,33 @@
 # Mixed C and Assembly library for system functions
 
 # Source files (from MAKEFILE OBJETS1-4)
+# Platform-specific files moved to LIB_SYS_DOS/LIB_SYS_WIN:
+#   - TIMER.C, TIMER_A.ASM (timer implementation)
+#   - KEYB.C, KEYBOARD.ASM (keyboard implementation)
+# MALLOC.C contains both DosMalloc (platform-specific, in lib_sys_platform.h)
+# and Malloc/Free (general purpose, stays in LIB_SYS)
 set(LIB_SYS_SOURCES
-    # OBJETS1
+    # OBJETS1 - File handling
     FILES.C
-    MALLOC.C
     LOADMALL.C
     LOADSAVE.C
     DEF_FILE.C
-    # OBJETS2
+    # OBJETS2 - System and buffers
     SYSTEM.C
-    TIMER_A.ASM
-    TIMER.C
     BUFFER_A.ASM
     DIVERS.C
-    # OBJETS3
-    KEYB.C
-    KEYBOARD.ASM
+    # OBJETS3 - HQR resources and expansion
     EXPAND.ASM
     HQ_RESS.C
     HQR.ASM
-    # OBJETS4
+    # OBJETS4 - DLL loading and memory management
     DLLLOAD.C
     ADELINE.C
     HQ_MEM.C
     HQ_R_M.C
     FILES_A.ASM
+    # Memory management (Malloc/Free - general purpose)
+    MALLOC.C
 )
 
 # Create static library

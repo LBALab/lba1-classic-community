@@ -7,6 +7,24 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_C_SOURCE_FILE_EXTENSIONS C;c)
 set(CMAKE_ASM_MASM_SOURCE_FILE_EXTENSIONS ASM;asm)
 
+#------------------------------------------------------------------------------
+# Build Target Selection
+# Build options: DOS (DOS/4GW), Windows 9x, or BOTH
+#------------------------------------------------------------------------------
+option(BUILD_DOS "Build DOS version (LBAD.EXE)" ON)
+option(BUILD_WIN9X "Build Windows 9x version (LBAW.exe)" ON)
+
+if(NOT BUILD_DOS AND NOT BUILD_WIN9X)
+    message(FATAL_ERROR "At least one platform must be enabled (BUILD_DOS or BUILD_WIN9X)")
+endif()
+
+if(BUILD_DOS)
+    message(STATUS "Building DOS version: LBAD.EXE")
+endif()
+if(BUILD_WIN9X)
+    message(STATUS "Building Windows 9x version: LBAW.exe")
+endif()
+
 # Project definition
 project(LBA1_Classic
     VERSION 1.0.0
@@ -99,23 +117,38 @@ add_subdirectory(LIB386/LIB_SAMP)
 add_subdirectory(LIB386/LIB_SVGA)
 add_subdirectory(LIB386/LIB_SYS)
 
-# Add main source directory
+# Add platform-specific libraries based on build options
+if(BUILD_DOS)
+    message(STATUS "Including DOS platform-specific implementations")
+    add_subdirectory(LIB386/LIB_SYS_DOS)
+    add_subdirectory(LIB386/LIB_SVGA_DOS)
+endif()
+
+if(BUILD_WIN9X)
+    message(STATUS "Including Windows platform-specific implementations")
+    add_subdirectory(LIB386/LIB_SYS_WIN)
+    add_subdirectory(LIB386/LIB_SVGA_WIN)
+endif()
+
+# Add main source directory (will create executables based on BUILD_* options)
 add_subdirectory(SOURCES)
 
 #------------------------------------------------------------------------------
-# Copy DOS/4GW Extender
-# DOS/4GW is required to run the 32-bit protected mode executable
+# Copy DOS/4GW Extender (DOS target only)
+# DOS/4GW is required to run the 32-bit protected mode executable in DOS
 #------------------------------------------------------------------------------
-if(DEFINED ENV{WATCOM})
-    set(DOS4GW_SOURCE "$ENV{WATCOM}/binw/dos4gw.exe")
-    if(EXISTS "${DOS4GW_SOURCE}")
-        message(STATUS "Copying DOS4GW.EXE from OpenWatcom installation")
-        file(COPY "${DOS4GW_SOURCE}" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+if(BUILD_DOS)
+    if(DEFINED ENV{WATCOM})
+        set(DOS4GW_SOURCE "$ENV{WATCOM}/binw/dos4gw.exe")
+        if(EXISTS "${DOS4GW_SOURCE}")
+            message(STATUS "Copying DOS4GW.EXE from OpenWatcom installation")
+            file(COPY "${DOS4GW_SOURCE}" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+        else()
+            message(WARNING "DOS4GW.EXE not found in OpenWatcom installation at ${DOS4GW_SOURCE}")
+            message(WARNING "The executable will require DOS4GW.EXE to run in DOS/DOSBox")
+        endif()
     else()
-        message(WARNING "DOS4GW.EXE not found in OpenWatcom installation at ${DOS4GW_SOURCE}")
+        message(WARNING "WATCOM environment variable not set - DOS4GW.EXE not copied")
         message(WARNING "The executable will require DOS4GW.EXE to run in DOS/DOSBox")
     endif()
-else()
-    message(WARNING "WATCOM environment variable not set - DOS4GW.EXE not copied")
-    message(WARNING "The executable will require DOS4GW.EXE to run in DOS/DOSBox")
 endif()

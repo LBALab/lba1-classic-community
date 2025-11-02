@@ -1,7 +1,7 @@
 # SOURCES - Main LBA1 Classic Executable
 # Mixed C and Assembly sources for the main game
 
-# Source files (from MAKEFILE OBJECTS)
+# Common source files (from MAKEFILE OBJECTS)
 set(LBA_C_SOURCES
     VERSION.C
     PERSO.C
@@ -33,20 +33,8 @@ set(LBA_ASM_SOURCES
     MCGA.ASM
 )
 
-# Create executable
-add_executable(LBA0 ${LBA_C_SOURCES} ${LBA_ASM_SOURCES})
-
-# Explicitly set language for source files with uppercase extensions
-foreach(src ${LBA_C_SOURCES})
-    set_source_files_properties(${src} PROPERTIES LANGUAGE C)
-endforeach()
-
-foreach(src ${LBA_ASM_SOURCES})
-    set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
-endforeach()
-
-# Link with all required libraries
-target_link_libraries(LBA0
+# Common libraries
+set(COMMON_LIBRARIES
     LIB_3D
     LIB_CD
     LIB_MENU
@@ -57,8 +45,8 @@ target_link_libraries(LBA0
     LIB_SYS
 )
 
-# Include directories
-target_include_directories(LBA0 PRIVATE
+# Common include directories
+set(COMMON_INCLUDES
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${LIB386_PATH}/LIB_3D
     ${LIB386_PATH}/LIB_CD
@@ -70,40 +58,114 @@ target_include_directories(LBA0 PRIVATE
     ${LIB386_PATH}/LIB_SYS
 )
 
-# Set executable output name, directory, and linker language
-set_target_properties(LBA0 PROPERTIES
-    OUTPUT_NAME "LBA0"
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
-    LINKER_LANGUAGE C
-)
-
-# Set OpenWatcom-specific linker flags
-if(CMAKE_C_COMPILER_ID MATCHES "Watcom")
-    set_target_properties(LBA0 PROPERTIES
-        LINK_FLAGS "OPTION stack=7000 SYSTEM dos4g"
+#------------------------------------------------------------------------------
+# DOS Executable - LBAD.EXE
+#------------------------------------------------------------------------------
+if(BUILD_DOS)
+    # Create DOS executable
+    add_executable(LBAD ${LBA_C_SOURCES} ${LBA_ASM_SOURCES})
+    
+    # Set language for source files
+    foreach(src ${LBA_C_SOURCES})
+        set_source_files_properties(${src} PROPERTIES LANGUAGE C)
+    endforeach()
+    foreach(src ${LBA_ASM_SOURCES})
+        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
+    endforeach()
+    
+    # Link libraries
+    target_link_libraries(LBAD ${COMMON_LIBRARIES} sys_dos svga_dos)
+    
+    # Include directories
+    target_include_directories(LBAD PRIVATE ${COMMON_INCLUDES})
+    
+    # Set executable properties
+    set_target_properties(LBAD PROPERTIES
+        OUTPUT_NAME "LBAD"
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        LINKER_LANGUAGE C
     )
+    
+    # DOS-specific linker flags
+    if(CMAKE_C_COMPILER_ID MATCHES "Watcom")
+        set_target_properties(LBAD PROPERTIES
+            LINK_FLAGS "OPTION stack=7000 SYSTEM dos4g"
+        )
+    endif()
+    
+    # Dependencies
+    add_dependencies(LBAD ${COMMON_LIBRARIES} sys_dos_build svga_dos_build)
+    
+    # Copy CSV files
+    add_custom_command(TARGET LBAD POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/EN_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/FR_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/DE_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/IT_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/SP_ctxt.csv
+        ${CMAKE_BINARY_DIR}/bin/
+        COMMENT "Copying CSV files for DOS build"
+    )
+    
+    message(STATUS "DOS executable: LBAD.EXE (DOS/4GW 32-bit protected mode)")
 endif()
 
-# Add dependency to ensure libraries are built first
-add_dependencies(LBA0
-    LIB_3D
-    LIB_CD
-    LIB_MENU
-    LIB_MIDI
-    LIB_MIX
-    LIB_WAVE
-    LIB_SVGA
-    LIB_SYS
-)
-
-# Copy CSV files to bin root (ONE_GAME_DIRECTORY is defined in DEFINES.H)
-add_custom_command(TARGET LBA0 POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/EN_ctxt.csv
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/FR_ctxt.csv
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/DE_ctxt.csv
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/IT_ctxt.csv
-    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/SP_ctxt.csv
-    ${CMAKE_BINARY_DIR}/bin/
-    COMMENT "Copying CSV files to build/bin/ (ONE_GAME_DIRECTORY mode)"
-)
+#------------------------------------------------------------------------------
+# Windows Executable - LBAW.exe
+#------------------------------------------------------------------------------
+if(BUILD_WIN9X)
+    # Windows-specific sources
+    set(LBA_WIN_C_SOURCES ${LBA_C_SOURCES} WINMAIN.C)
+    
+    # Create Windows executable
+    add_executable(LBAW ${LBA_WIN_C_SOURCES} ${LBA_ASM_SOURCES})
+    
+    # Define _WIN32 for Windows build
+    target_compile_definitions(LBAW PRIVATE _WIN32)
+    
+    # Set language for source files
+    foreach(src ${LBA_WIN_C_SOURCES})
+        set_source_files_properties(${src} PROPERTIES LANGUAGE C)
+    endforeach()
+    foreach(src ${LBA_ASM_SOURCES})
+        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
+    endforeach()
+    
+    # Link libraries
+    target_link_libraries(LBAW ${COMMON_LIBRARIES} sys_win svga_win)
+    
+    # Include directories
+    target_include_directories(LBAW PRIVATE ${COMMON_INCLUDES})
+    
+    # Set executable properties
+    set_target_properties(LBAW PROPERTIES
+        OUTPUT_NAME "LBAW"
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+        LINKER_LANGUAGE C
+    )
+    
+    # Windows-specific linker flags
+    if(CMAKE_C_COMPILER_ID MATCHES "Watcom")
+        set_target_properties(LBAW PROPERTIES
+            LINK_FLAGS "OPTION stack=7000 SYSTEM nt_win LIBRARY kernel32.lib,user32.lib,gdi32.lib,winmm.lib"
+        )
+    endif()
+    
+    # Dependencies
+    add_dependencies(LBAW ${COMMON_LIBRARIES} sys_win_build svga_win_build)
+    
+    # Copy CSV files
+    add_custom_command(TARGET LBAW POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/EN_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/FR_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/DE_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/IT_ctxt.csv
+        ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/SP_ctxt.csv
+        ${CMAKE_BINARY_DIR}/bin/
+        COMMENT "Copying CSV files for Windows build"
+    )
+    
+    message(STATUS "Windows executable: LBAW.exe (Win32 GUI application)")
+endif()

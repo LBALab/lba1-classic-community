@@ -13,6 +13,11 @@
         "MSG_CUST.C": "cpp",
         "SELECTOR.C": "cpp",
         "MESSAGE.C": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "MALLOC.C": "cpp",
+        "KEYB.C": "cpp",
+        "TIMER.C": "cpp",
+        "ADELINE.C": "cpp",
+        "WINMAIN.C": "cpp"
     }
 }

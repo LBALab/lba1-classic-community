@@ -2,10 +2,12 @@
 # Mixed C and Assembly library for SVGA video modes
 
 # Source files (from MAKEFILE OBJETS1-7)
+# Platform-specific files moved to LIB_SVGA_DOS/LIB_SVGA_WIN:
+#   - INITSVGA.ASM (SVGA initialization)
+#   - VESA.ASM (VESA BIOS interface)
 set(LIB_SVGA_SOURCES
     # OBJETS1
     INITMODE.C
-    INITSVGA.ASM
     GRAPH_A.ASM
     # OBJETS2
     S_TEXT.C
@@ -38,7 +40,6 @@ set(LIB_SVGA_SOURCES
     PCX.C
     # OBJETS7
     S_DLL.C
-    VESA.ASM
     GIF.C
 )
 

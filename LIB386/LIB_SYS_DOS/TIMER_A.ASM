@@ -32,12 +32,12 @@ TimerSystem		dd	0000
 
 				.code
 
-		public SetTimer
+		public Sys_SetTimer
 		public NewIntPM08
 		public NewProc08
 
 ;----------------------------------------------------------------------------
-SetTimer		proc	,\
+Sys_SetTimer		proc	,\
 			counter:DWORD
 
 			cli
@@ -52,7 +52,7 @@ SetTimer		proc	,\
 
 			sti
 			ret
-SetTimer		endp
+Sys_SetTimer		endp
 
 ;----------------------------------------------------------------------------
 comment	@

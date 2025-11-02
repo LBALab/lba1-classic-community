@@ -4,12 +4,21 @@
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR i386)
 
+# Determine OpenWatcom binary directory based on host OS
+if(CMAKE_HOST_APPLE)
+    set(WATCOM_BIN_DIR "$ENV{WATCOM}/bino64")  # macOS 64-bit
+elseif(CMAKE_HOST_UNIX)
+    set(WATCOM_BIN_DIR "$ENV{WATCOM}/binl64")  # Linux 64-bit
+elseif(CMAKE_HOST_WIN32)
+    set(WATCOM_BIN_DIR "$ENV{WATCOM}/binnt64") # Windows 64-bit
+endif()
+
 # Compiler toolchain
-set(CMAKE_C_COMPILER wcc386)           # OpenWatcom C compiler
-set(CMAKE_CXX_COMPILER wpp386)         # OpenWatcom C++ compiler
-set(CMAKE_ASM_MASM_COMPILER jwasm)     # JWasm MASM-compatible assembler
-set(CMAKE_LINKER wlink)                # OpenWatcom linker
-set(CMAKE_AR wlib)                     # OpenWatcom librarian
+set(CMAKE_C_COMPILER ${WATCOM_BIN_DIR}/wcc386)           # OpenWatcom C compiler
+set(CMAKE_CXX_COMPILER ${WATCOM_BIN_DIR}/wpp386)         # OpenWatcom C++ compiler
+set(CMAKE_ASM_MASM_COMPILER jwasm)                       # JWasm MASM-compatible assembler (in PATH)
+set(CMAKE_LINKER ${WATCOM_BIN_DIR}/wlink)                # OpenWatcom linker
+set(CMAKE_AR ${WATCOM_BIN_DIR}/wlib)                     # OpenWatcom librarian
 
 # Where to find the target environment
 if(DEFINED ENV{WATCOM})

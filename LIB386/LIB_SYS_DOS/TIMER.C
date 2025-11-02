@@ -71,7 +71,7 @@ void	InitTimer()
 
 /*----- It's Ok, Now I can accelerate Timer 08	*/
 
-	SetTimer( DIVISOR )		;
+	Sys_SetTimer( DIVISOR )		;
 }
 
 /*-------------------------------------------------------------------------*/
@@ -83,7 +83,7 @@ void	ClearTimer()
 
 /*----- Ok, it's finish, stop running... -------*/
 
-	SetTimer( OLD_DIVISOR )		;
+	Sys_SetTimer( OLD_DIVISOR )		;
 
 /*----- Restore Old Protected Vector 08 --------*/
 	r.x.eax = 0x2508		;/*	Set Vector Interupt PM08*/
