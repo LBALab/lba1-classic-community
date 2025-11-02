@@ -3,12 +3,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "c_extern.h"
+#include "C_EXTERN.H"
 
 #ifdef ONE_GAME_DIRECTORY
 #define CSV_FILE_PATH ""
 #else
-#define CSV_FILE_PATH "Assets//Text//"
+#define CSV_FILE_PATH "assets//text//"
 #endif
 
 #define CSV_FILE_NAME "ctxt.csv"

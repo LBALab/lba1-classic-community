@@ -95,3 +95,15 @@ add_dependencies(LBA0
     LIB_SVGA
     LIB_SYS
 )
+
+# Copy CSV files to bin root (ONE_GAME_DIRECTORY is defined in DEFINES.H)
+add_custom_command(TARGET LBA0 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/EN_ctxt.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/FR_ctxt.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/DE_ctxt.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/IT_ctxt.csv
+    ${CMAKE_CURRENT_SOURCE_DIR}/assets/text/SP_ctxt.csv
+    ${CMAKE_BINARY_DIR}/bin/
+    COMMENT "Copying CSV files to build/bin/ (ONE_GAME_DIRECTORY mode)"
+)

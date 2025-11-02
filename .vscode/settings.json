@@ -9,6 +9,10 @@
         "AMBIANCE.C": "cpp",
         "BUBSORT.C": "cpp",
         "VERSION.C": "cpp",
-        "DLLLOAD.C": "cpp"
+        "DLLLOAD.C": "cpp",
+        "MSG_CUST.C": "cpp",
+        "SELECTOR.C": "cpp",
+        "MESSAGE.C": "cpp",
+        "*.def": "cpp"
     }
 }

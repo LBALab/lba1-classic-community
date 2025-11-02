@@ -11,6 +11,7 @@ The engine uses Assembly code and was originally compiled with non-open source l
 mkdir build && cd build
 cmake -G "Watcom WMake" -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/openwatcom ..
 cmake --build .
+dosbox-x bin/LBA0.EXE -conf ../.dosbox.conf
 ```
 
 ### Licence
