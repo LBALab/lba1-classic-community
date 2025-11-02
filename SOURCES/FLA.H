@@ -6,7 +6,7 @@
 #ifdef	ONE_GAME_DIRECTORY
 #define PATH_FICHIER_SAMPLE "FLA//"
 #else
-#define PATH_FICHIER_SAMPLE "F:\/projet//lba//samples//flasamp//"
+#define PATH_FICHIER_SAMPLE "F://projet//lba//samples//flasamp//"
 #endif
 
 #define NOM_FICHIER_TEMPORAIRE "Fla_"

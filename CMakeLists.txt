@@ -101,3 +101,21 @@ add_subdirectory(LIB386/LIB_SYS)
 
 # Add main source directory
 add_subdirectory(SOURCES)
+
+#------------------------------------------------------------------------------
+# Copy DOS/4GW Extender
+# DOS/4GW is required to run the 32-bit protected mode executable
+#------------------------------------------------------------------------------
+if(DEFINED ENV{WATCOM})
+    set(DOS4GW_SOURCE "$ENV{WATCOM}/binw/dos4gw.exe")
+    if(EXISTS "${DOS4GW_SOURCE}")
+        message(STATUS "Copying DOS4GW.EXE from OpenWatcom installation")
+        file(COPY "${DOS4GW_SOURCE}" DESTINATION "${CMAKE_BINARY_DIR}/bin")
+    else()
+        message(WARNING "DOS4GW.EXE not found in OpenWatcom installation at ${DOS4GW_SOURCE}")
+        message(WARNING "The executable will require DOS4GW.EXE to run in DOS/DOSBox")
+    endif()
+else()
+    message(WARNING "WATCOM environment variable not set - DOS4GW.EXE not copied")
+    message(WARNING "The executable will require DOS4GW.EXE to run in DOS/DOSBox")
+endif()

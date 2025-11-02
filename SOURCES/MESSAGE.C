@@ -75,7 +75,7 @@ WORD    QuickMessage = FALSE ;
 #define PATH_NAR        ""
 #else
 #define PATH_TXT        "f://projet//lba//text//"
-#define PATH_NAR        "f:\/projet//lba//samples//dial//"
+#define PATH_NAR        "f://projet//lba//samples//dial//"
 #endif
 
 #ifdef	CDROM
