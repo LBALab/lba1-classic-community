@@ -7,12 +7,12 @@
 
 				.data
 
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CopyBlockIncrust
+			public CopyBlockIncrust
 
 ;----------------------------------------------------------------------------
 ;			CopyBlockIncrust( x0, y0, x1, y1, *src, xd, yd, *dst )

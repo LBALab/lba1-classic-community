@@ -1,8 +1,8 @@
-#include 	"\projet\lib386\lib_sys\adeline.h"
-#include 	"\projet\lib386\lib_sys\lib_sys.h"
-#include 	"\projet\lib386\lib_svga\lib_svga.h"
-#include 	"\projet\lib386\lib_3D\lib_3D.h"
-#include 	"\projet\lib386\lib_menu\lib_menu.h"
+#include 	"projet/lib386/lib_sys/adeline.h"
+#include 	"projet/lib386/lib_sys/lib_sys.h"
+#include 	"projet/lib386/lib_svga/lib_svga.h"
+#include 	"projet/lib386/lib_3D/lib_3D.h"
+#include 	"projet/lib386/lib_menu/lib_menu.h"
 #include	<stdlib.h>
 
 /*══════════════════════════════════════════════════════════════════════════*

@@ -214,7 +214,7 @@ void	*Malloc( LONG lenalloc )
 #ifdef	DEBUG_MALLOC
 		if( ModeTraceMalloc )
 		{
-			fh = fopen( "c:\\malloc.lst","a+t" ) ;
+			fh = fopen( "c://malloc.lst","a+t" ) ;
 			if( fh != NULL )
 			{
 				regs.x.eax = 0x00000500		;
@@ -224,7 +224,7 @@ void	*Malloc( LONG lenalloc )
 				int386x( DPMI_INT, &regs, &regs, &sregs )	;
 				size = MemInfo.LargestBlockAvail ;
 
-				fprintf( fh, "Mem: %d\n", size ) ;
+				fprintf( fh, "Mem: %d/n", size ) ;
 			}
 
 			error = mymalloc(lenalloc, &ptr) ;
@@ -232,9 +232,9 @@ void	*Malloc( LONG lenalloc )
 
 			if( fh != NULL )
 			{
-				fprintf( fh, "Malloc: %d bytes at %X to %X\n", lenalloc, ptr, (LONG)ptr+lenalloc ) ;
+				fprintf( fh, "Malloc: %d bytes at %X to %X/n", lenalloc, ptr, (LONG)ptr+lenalloc ) ;
 				if( error )
-					fprintf( fh, "Error: %X\n", error ) ;
+					fprintf( fh, "Error: %X/n", error ) ;
 
 				regs.x.eax = 0x00000500		;
 				sregs.es = FP_SEG( &MemInfo )	;
@@ -243,7 +243,7 @@ void	*Malloc( LONG lenalloc )
 				int386x( DPMI_INT, &regs, &regs, &sregs )	;
 				size = MemInfo.LargestBlockAvail ;
 
-				fprintf( fh, "Mem: %d\n", size ) ;
+				fprintf( fh, "Mem: %d/n", size ) ;
 
 				fclose( fh ) ;
 			}
@@ -278,7 +278,7 @@ void	Free( void *buffer )
 #ifdef	DEBUG_MALLOC
 	if( ModeTraceMalloc )
 	{
-		fh = fopen( "c:\\malloc.lst","a+t" ) ;
+		fh = fopen( "c://malloc.lst","a+t" ) ;
 		if( fh != NULL )
 		{
 			regs.x.eax = 0x00000500		;
@@ -288,7 +288,7 @@ void	Free( void *buffer )
 			int386x( DPMI_INT, &regs, &regs, &sregs )	;
 			size = MemInfo.LargestBlockAvail ;
 
-			fprintf( fh, "Mem: %d\n", size ) ;
+			fprintf( fh, "Mem: %d/n", size ) ;
 		}
 
 		error = myfree( buffer ) ;
@@ -296,9 +296,9 @@ void	Free( void *buffer )
 
 		if( fh != NULL )
 		{
-			fprintf( fh, "Free: %X\n", buffer ) ;
+			fprintf( fh, "Free: %X/n", buffer ) ;
 			if( error )
-				fprintf( fh, "Error: %X\n", error ) ;
+				fprintf( fh, "Error: %X/n", error ) ;
 
 			regs.x.eax = 0x00000500		;
 			sregs.es = FP_SEG( &MemInfo )	;
@@ -307,7 +307,7 @@ void	Free( void *buffer )
 			int386x( DPMI_INT, &regs, &regs, &sregs )	;
 			size = MemInfo.LargestBlockAvail ;
 
-			fprintf( fh, "Mem: %d\n", size ) ;
+			fprintf( fh, "Mem: %d/n", size ) ;
 
 			fclose( fh ) ;
 		}

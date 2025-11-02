@@ -3,7 +3,7 @@
 
 		.model	SMALL, SYSCALL
 
-		include P_define.ash
+		include P_DEFINE.ASH
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;                    P_     █▀▀▀█ ██▄ █  █    █▄ ▄█
@@ -14,37 +14,37 @@
 
 		.data
 
-		include	lib_sys\lib_sys.ash
+		include LIB_SYS/LIB_SYS.ASH
 
 ;*──────────────────────────────────────────────────────────────────────────*
 
 ALIGN 4
 
-		extrn NoLanguage	List_Anim_Point:WORD
+		extrn List_Anim_Point:WORD
 
 Offset_Source	dd      0000
 Offset_Dest	dd      0000
 
 StartInfos      dd      0000
 
-		public	NoLanguage	MemoTimerRef
-		public	NoLanguage	CmptMemoTimerRef
+		public MemoTimerRef
+		public CmptMemoTimerRef
 
 MemoTimerRef		dd	0000
 CmptMemoTimerRef	dd	0000
 
-		public  NoLanguage	AnimStepX
-		public  NoLanguage	AnimStepY
-		public  NoLanguage	AnimStepZ
+		public AnimStepX
+		public AnimStepY
+		public AnimStepZ
 
 AnimStepX       dw      00
 AnimStepY       dw      00
 AnimStepZ       dw      00
 
-		public  NoLanguage	AnimMasterRot
-		public  NoLanguage	AnimStepAlpha
-		public  NoLanguage	AnimStepBeta
-		public  NoLanguage	AnimStepGamma
+		public AnimMasterRot
+		public AnimStepAlpha
+		public AnimStepBeta
+		public AnimStepGamma
 
 AnimMasterRot	dw	00
 AnimStepAlpha	dw      00
@@ -55,20 +55,20 @@ CXSetInterAnim	dw	00
 
 		.code
 
-		public	NoLanguage	SetAngleGroupe
-		public	NoLanguage	GetAngleGroupe
-		public	NoLanguage	GetNbFramesAnim
-		public	NoLanguage	GetBouclageAnim
-		public	NoLanguage	SetAnimObjet
+		public SetAngleGroupe
+		public GetAngleGroupe
+		public GetNbFramesAnim
+		public GetBouclageAnim
+		public SetAnimObjet
 
-		public	NoLanguage	SetInterAnimObjet
-		public	NoLanguage	SetInterAnimObjet2
-		public	NoLanguage	SetInterDepObjet
+		public SetInterAnimObjet
+		public SetInterAnimObjet2
+		public SetInterDepObjet
 
-		public	NoLanguage	StockInterAnim
-		public	NoLanguage	CopyInterAnim
-		public	NoLanguage	SaveTimer
-		public	NoLanguage	RestoreTimer
+		public StockInterAnim
+		public CopyInterAnim
+		public SaveTimer
+		public RestoreTimer
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;*══════════════════════════════════════════════════════════════════════════*

@@ -11,10 +11,10 @@
 ;*──────────────────────────────────────────────────────────────────────────*
 		.data
 
-		include P_define.ash
+		include P_DEFINE.ASH
 
 
-		extrn	NoLanguage P_SinTab:WORD
+		extrn P_SinTab:WORD
 
 ;*──────────────────────────────────────────────────────────────────────────*
 ; locales
@@ -25,107 +25,107 @@ compteur	dw	00
 ; globales
 
 
-		public	NoLanguage TypeProj
+		public TypeProj
 TypeProj	dw	00
 
 
-		public	NoLanguage XCentre
-		public	NoLanguage YCentre
+		public XCentre
+		public YCentre
 XCentre		dd	320
 YCentre		dd	200
 
-		public	NoLanguage Xp
-		public	NoLanguage Yp
+		public Xp
+		public Yp
 Xp		dw	00
 Yp		dw	00
 
-		public	NoLanguage IsoScale
+		public IsoScale
 IsoScale	dw	500
 
-		public	NoLanguage Z_Min
-		public	NoLanguage Z_Max
+		public Z_Min
+		public Z_Max
 Z_Min		dw	00
 Z_Max		dw	00
 
 
 ALIGN 4
 
-		public	NoLanguage KFactor
-		public	NoLanguage LFactorX
-		public	NoLanguage LFactorY
+		public KFactor
+		public LFactorX
+		public LFactorY
 KFactor		dd	128
 LFactorX	dd	1024
 LFactorY	dd	840
 
-		public	NoLanguage CameraX
-		public	NoLanguage CameraY
-		public	NoLanguage CameraZ
+		public CameraX
+		public CameraY
+		public CameraZ
 CameraX		dd	00
 CameraY		dd	00
 CameraZ		dd	00
 
-		public	NoLanguage CameraXr
-		public	NoLanguage CameraYr
-		public	NoLanguage CameraZr
+		public CameraXr
+		public CameraYr
+		public CameraZr
 CameraXr	dd	00
 CameraYr	dd	00
 CameraZr	dd	00
 
-		public	NoLanguage AlphaLight
-		public	NoLanguage BetaLight
-		public	NoLanguage GammaLight
+		public AlphaLight
+		public BetaLight
+		public GammaLight
 AlphaLight	dd	0000
 BetaLight	dd	0000
 GammaLight	dd	0000
 
-		public	NoLanguage Alpha
-		public	NoLanguage Beta
-		public	NoLanguage Gamma
+		public Alpha
+		public Beta
+		public Gamma
 Alpha		dd	0000
 Beta		dd	0000
 Gamma		dd	0000
 
 
-		public	NoLanguage LMatriceWorld
-		public	NoLanguage LMatriceRot
-		public	NoLanguage LMatriceTempo
+		public LMatriceWorld
+		public LMatriceRot
+		public LMatriceTempo
 
-;		public	NoLanguage MatriceEntity
+;		public MatriceEntity
 
-		public	NoLanguage LMat00
-		public	NoLanguage LMat01
-		public	NoLanguage LMat02
-		public	NoLanguage LMat10
-		public	NoLanguage LMat11
-		public	NoLanguage LMat12
-		public	NoLanguage LMat20
-		public	NoLanguage LMat21
-		public	NoLanguage LMat22
+		public LMat00
+		public LMat01
+		public LMat02
+		public LMat10
+		public LMat11
+		public LMat12
+		public LMat20
+		public LMat21
+		public LMat22
 
-		public	NoLanguage compteur
+		public compteur
 
 
 		;	Je les ai bouge ici pour qu'il soit a cote des
 		;	Matrices afin d'essayer d'optimiser le cache
 		;	(on sait jamais....)
 
-		public	NoLanguage lAlpha
-		public	NoLanguage lBeta
-		public	NoLanguage lGamma
+		public lAlpha
+		public lBeta
+		public lGamma
 lAlpha		dd	0000
 lBeta		dd	0000
 lGamma		dd	0000
 
-		public	NoLanguage NormalXLight
-		public	NoLanguage NormalYLight
-		public	NoLanguage NormalZLight
+		public NormalXLight
+		public NormalYLight
+		public NormalZLight
 NormalXLight	dd	0061
 NormalYLight	dd	0000
 NormalZLight	dd	0000
 
-		public	NoLanguage X0
-		public	NoLanguage Y0
-		public	NoLanguage Z0
+		public X0
+		public Y0
+		public Z0
 X0		dd	0000
 Y0		dd	0000
 Z0		dd	0000
@@ -152,16 +152,16 @@ LMatD20		dd	0000
 LMatD21		dd	0000
 LMatD22		dd	0000
 
-Public	NoLanguage	LMatriceWorld
-Public	NoLanguage	LMatW00
-Public	NoLanguage	LMatW01
-Public	NoLanguage	LMatW02
-Public	NoLanguage	LMatW10
-Public	NoLanguage	LMatW11
-Public	NoLanguage	LMatW12
-Public	NoLanguage	LMatW20
-Public	NoLanguage	LMatW21
-Public	NoLanguage	LMatW22
+Public LMatriceWorld
+Public LMatW00
+Public LMatW01
+Public LMatW02
+Public LMatW10
+Public LMatW11
+Public LMatW12
+Public LMatW20
+Public LMatW21
+Public LMatW22
 
 LMatriceWorld	label	DWORD
 LMatW00		dd	0000
@@ -186,7 +186,7 @@ LMatT20		dd	0000
 LMatT21		dd	0000
 LMatT22		dd	0000
 
-		public	NoLanguage TabMat	; 30 Matrix max
+		public TabMat	; 30 Matrix max
 TabMat		dd	9*30 dup (?)
 
 ;*──────────────────────────────────────────────────────────────────────────*
@@ -200,37 +200,37 @@ Save1		dd	0000
 ;*══════════════════════════════════════════════════════════════════════════*
 		.code
 
-		public	NoLanguage	Rotate
-		public	NoLanguage	RotatePoint
-		public	NoLanguage	LongInverseRotatePoint
-		public	NoLanguage	RotateMatriceWorld
-		public	NoLanguage	CopyMatrice
-		public	NoLanguage	LongWorldRotatePoint
-		public	NoLanguage	WorldRotatePoint
-		public	NoLanguage	SetFollowCamera
-		public	NoLanguage	SetPosCamera
-		public	NoLanguage	SetAngleCamera
-		public	NoLanguage	SetInverseAngleCamera
-		public	NoLanguage	SetProjection
-		public	NoLanguage	SetIsoProjection
-		public	NoLanguage	ProjettePoint
-		public	Nolanguage	LongProjettePoint
-		public	NoLanguage	TestVuePoly
+		public Rotate
+		public RotatePoint
+		public LongInverseRotatePoint
+		public RotateMatriceWorld
+		public CopyMatrice
+		public LongWorldRotatePoint
+		public WorldRotatePoint
+		public SetFollowCamera
+		public SetPosCamera
+		public SetAngleCamera
+		public SetInverseAngleCamera
+		public SetProjection
+		public SetIsoProjection
+		public ProjettePoint
+		public LongProjettePoint
+		public TestVuePoly
 
-		public	NoLanguage	LongWorldRot
-		public	NoLanguage	WorldRot
-		public	NoLanguage	RotMatW
-		public	NoLanguage	RotMatIndex2
-		public	NoLanguage	Rot
-;		public	NoLanguage	Proj
-		public	NoLanguage	Proj_3D
-		public	NoLanguage	Proj_ISO
+		public LongWorldRot
+		public WorldRot
+		public RotMatW
+		public RotMatIndex2
+		public Rot
+;		public Proj
+		public Proj_3D
+		public Proj_ISO
 
-		public	NoLanguage	RotList
-		public	NoLanguage	TransRotList
-;		public	NoLanguage	RotListNormal
+		public RotList
+		public TransRotList
+;		public RotListNormal
 
-		public	NoLanguage	SetLightVector
+		public SetLightVector
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;                        █▀▀▀█ █▀▀▀█  █    ██▄ █ ▀▀█▀▀

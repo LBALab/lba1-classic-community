@@ -11,8 +11,8 @@
 
 		.DATA
 
-		PUBLIC	NoLanguage	Wave_listfcts
-		PUBLIC	NoLanguage	Wave_Driver_Enable
+		PUBLIC Wave_listfcts
+		PUBLIC Wave_Driver_Enable
 
 
 Wave_listfcts		dd	0
@@ -20,25 +20,25 @@ Wave_Driver_Enable	dd	0
 
 		.CODE
 
-		PUBLIC	NoLanguage	_InitCard
-		PUBLIC	NoLanguage	_ClearCard
-		PUBLIC	NoLanguage	WaveAskVars
-		PUBLIC	NoLanguage	WavePlay
-		PUBLIC	NoLanguage	WaveGiveInfo0
-		PUBLIC	NoLanguage	WaveStop
-		PUBLIC	NoLanguage	WaveStopOne
-		PUBLIC	NoLanguage	WaveInList
-		PUBLIC	NoLanguage	WaveGetSnap
-		PUBLIC	NoLanguage	WavePause
-		PUBLIC	NoLanguage	WaveContinue
-		PUBLIC	NoLanguage	WaveSaveState
-		PUBLIC	NoLanguage	WaveRestoreState
-		PUBLIC	NoLanguage	WaveChangeVolume
-		PUBLIC	NoLanguage	WaveGetAddr
-		PUBLIC	NoLanguage	_GetBufferSize
-		PUBLIC	NoLanguage	WaveChangeVolume
-		PUBLIC	NoLanguage	WaveMove
-		PUBLIC	NoLanguage	WaveStopOneLong
+		PUBLIC _InitCard
+		PUBLIC _ClearCard
+		PUBLIC WaveAskVars
+		PUBLIC WavePlay
+		PUBLIC WaveGiveInfo0
+		PUBLIC WaveStop
+		PUBLIC WaveStopOne
+		PUBLIC WaveInList
+		PUBLIC WaveGetSnap
+		PUBLIC WavePause
+		PUBLIC WaveContinue
+		PUBLIC WaveSaveState
+		PUBLIC WaveRestoreState
+		PUBLIC WaveChangeVolume
+		PUBLIC WaveGetAddr
+		PUBLIC _GetBufferSize
+		PUBLIC WaveChangeVolume
+		PUBLIC WaveMove
+		PUBLIC WaveStopOneLong
 
 ;----------------------------------------------------------------------------
 ;----------------------------------------------------------------------------

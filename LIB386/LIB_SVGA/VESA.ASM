@@ -11,11 +11,11 @@
 
 		.DATA
 
-		PUBLIC	NoLanguage	VESA_Error
+		PUBLIC VESA_Error
 
-		extrn	NoLanguage	ScanLine:	DWORD
-		extrn	NoLanguage	NonStdVESA:	BYTE
-		extrn	NoLanguage	BankShift:	BYTE
+		extrn ScanLine:	DWORD
+		extrn NonStdVESA:	BYTE
+		extrn BankShift:	BYTE
 
 ;----------------------------------------------------------------------------
 
@@ -46,8 +46,8 @@ Vesa_Error	db	0
 
 		.CODE
 
-		PUBLIC	NoLanguage	NewBankVesa
-		PUBLIC	NoLanguage	InitModeVesa
+		PUBLIC NewBankVesa
+		PUBLIC InitModeVesa
 
 ;----------------------------------------------------------------------------
 NewBankVesa		proc

@@ -7,12 +7,12 @@
 
 		.data
 
-		include	lib_svga\svga.ash
-		include	lib_sys\lib_sys.ash
+		include lib_svga/svga.ash
+		include	lib_sys/lib_sys.ash
 
-		public	NoLanguage      Imagen
+		public Imagen
 
-		extrn	NoLanguage	BufSpeak:DWORD
+		extrn BufSpeak:DWORD
 
 ;Imagen  DB 320*50 DUP (0)
 ;Imagen2 DB 320*50 DUP (0)
@@ -24,8 +24,8 @@ loopy	dw	00
 
 		.code
 
-		public	NoLanguage	DoFire
-		public	NoLanguage	ComputeFire
+		public DoFire
+		public ComputeFire
 
 ComputeFire	proc	uses esi edi ebx edx
 

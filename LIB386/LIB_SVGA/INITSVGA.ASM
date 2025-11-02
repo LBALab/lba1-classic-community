@@ -10,26 +10,26 @@
 
 			include	vesa.ash
 
-			public	NoLanguage Log
-			public	NoLanguage Phys
-			public	NoLanguage Text_Ink
-			public	NoLanguage Text_Paper
-			public	NoLanguage Screen_X
-			public	NoLanguage Screen_Y
-			public	NoLanguage MemoLog
-			public	NoLanguage ClipXmin
-			public	NoLanguage ClipYmin
-			public	NoLanguage ClipXmax
-			public	NoLanguage ClipYmax
-			public	NoLanguage TabOffLine
-			public	NoLanguage OldVideo
-			public	NoLanguage SizeCar
-			public	NoLanguage BankChange
-			public	NoLanguage BankCurrent
+			public Log
+			public Phys
+			public Text_Ink
+			public Text_Paper
+			public Screen_X
+			public Screen_Y
+			public MemoLog
+			public ClipXmin
+			public ClipYmin
+			public ClipXmax
+			public ClipYmax
+			public TabOffLine
+			public OldVideo
+			public SizeCar
+			public BankChange
+			public BankCurrent
 
-			public	NoLanguage InitSvgaMode
-			public	NoLanguage NewBank
-			public	NoLanguage Enable
+			public InitSvgaMode
+			public NewBank
+			public Enable
 
 
 ClipXmin	dd	0
@@ -76,18 +76,18 @@ Enable		dd	0
 			InitModeVesa		PROTO
 			NewBankVesa             PROTO
 
-			extrn	NoLanguage	ScanLine:DWORD
+			extrn ScanLine:DWORD
 
-			public	NoLanguage	InitSvga
-			public	NoLanguage	InitMcga
-			public	NoLanguage	InitMcgaMode
-			public	NoLanguage	SimpleInitSvga
-			public	NoLanguage	ClearVideo
+			public InitSvga
+			public InitMcga
+			public InitMcgaMode
+			public SimpleInitSvga
+			public ClearVideo
 
-			public	NoLanguage	SetClip
-			public	NoLanguage	UnSetClip
-			public	NoLanguage	MemoClip
-			public	NoLanguage	RestoreClip
+			public SetClip
+			public UnSetClip
+			public MemoClip
+			public RestoreClip
 
 
 ;*══════════════════════════════════════════════════════════════════════════*

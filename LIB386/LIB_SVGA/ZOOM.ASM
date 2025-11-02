@@ -18,8 +18,8 @@ Hauteur         dd      0000
 
 		.code
 
-		public   NoLanguage     ScaleLine
-		public   NoLanguage     ScaleBox
+		public ScaleLine
+		public ScaleBox
 
 ;*══════════════════════════════════════════════════════════════════════════*/
 

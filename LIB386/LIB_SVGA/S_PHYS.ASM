@@ -9,13 +9,13 @@
 
 			include	svga.ash
 
-			extrn	NoLanguage	NewBank : DWORD
+			extrn NewBank : DWORD
 
-			public	NoLanguage	ScanLine
-			public	NoLanguage	BankSize
-			public	NoLanguage	BankOver
-			public	NoLanguage	BankShift
-			public	NoLanguage	NonStdVESA
+			public ScanLine
+			public BankSize
+			public BankOver
+			public BankShift
+			public NonStdVESA
 
 ALIGN 4
 
@@ -38,10 +38,10 @@ CptLine		dw	0
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CopyBlockPhysClip
-			public	NoLanguage	CopyBlockPhys
-			public	NoLanguage	Flip
-			public	NoLanguage	Vsync
+			public CopyBlockPhysClip
+			public CopyBlockPhys
+			public Flip
+			public Vsync
 
 ;----------------------------------------------------------------------------
 ;			Vsync()

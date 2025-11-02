@@ -1,4 +1,4 @@
-#include	"defines.h"
+#include	"DEFINES.H"
 
 /* define _FAR before including any definitions, so it can be used */
 #ifdef __DOS__
@@ -10,22 +10,22 @@
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#include	"ambiance.def"
-#include	"diskfunc.def"
-#include	"extra.def"
-#include	"fiche.def"
-#include	"flipbox.def"
-#include	"gamemenu.def"
-#include	"gerelife.def"
-#include	"geretrak.def"
-#include	"grille.def"
-#include	"holomap.def"
-#include	"incrust.def"
-#include	"message.def"
-#include 	"msg_cust.def"
-#include	"object.def"
-#include	"perso.def"
-#include	"playfla.def"
+#include	"AMBIANCE.DEF"
+#include	"DISKFUNC.DEF"
+#include	"EXTRA.DEF"
+#include	"FICHE.DEF"
+#include	"FLIPBOX.DEF"
+#include	"GAMEMENU.DEF"
+#include	"GERELIFE.DEF"
+#include	"GERETRAK.DEF"
+#include	"GRILLE.DEF"
+#include	"HOLOMAP.DEF"
+#include	"INCRUST.DEF"
+#include	"MESSAGE.DEF"
+#include 	"MSG_CUST.DEF"
+#include	"OBJECT.DEF"
+#include	"PERSO.DEF"
+#include	"PLAYFLA.DEF"
 
 /* prototype */
 

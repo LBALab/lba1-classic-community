@@ -3,24 +3,24 @@
 ;-----------------------------------------------------------------------------
 				.data
 
-		extrn	NoLanguage 	ClipXmin	:DWORD
-		extrn	NoLanguage 	ClipYmin	:DWORD
-		extrn	NoLanguage 	ClipXmax	:DWORD
-		extrn	NoLanguage 	ClipYmax	:DWORD
-		extrn	NoLanguage 	Phys		:DWORD
-		extrn	NoLanguage 	Log		:DWORD
-		extrn	NoLanguage 	MemoLog		:DWORD
-		extrn	NoLanguage 	BankCurrent	:DWORD
+		extrn ClipXmin	:DWORD
+		extrn ClipYmin	:DWORD
+		extrn ClipXmax	:DWORD
+		extrn ClipYmax	:DWORD
+		extrn Phys		:DWORD
+		extrn Log		:DWORD
+		extrn MemoLog		:DWORD
+		extrn BankCurrent	:DWORD
 
-		extrn   NoLanguage 	Screen_X	:DWORD
-		extrn	NoLanguage 	Screen_Y	:DWORD
-		extrn	NoLanguage 	TabOffLine	:DWORD
+		extrn Screen_X	:DWORD
+		extrn Screen_Y	:DWORD
+		extrn TabOffLine	:DWORD
 
-		extrn	NoLanguage 	SizeCar		:WORD
+		extrn SizeCar		:WORD
 
-		extrn   NoLanguage 	Text_Ink	:BYTE
-		extrn	NoLanguage 	Text_Paper	:BYTE
-		extrn	NoLanguage 	OldVideo	:BYTE
+		extrn Text_Ink	:BYTE
+		extrn Text_Paper	:BYTE
+		extrn OldVideo	:BYTE
 
 POLY_TRISTE	equ	0
 POLY_COPPER	equ	1

@@ -1,0 +1,14 @@
+{
+    "files.associations": {
+        "HOLOMAP.C": "cpp",
+        "GAMEMENU.C": "cpp",
+        "PLAYFLA.C": "cpp",
+        "PERSO.C": "cpp",
+        "GERELIFE.C": "cpp",
+        "GRILLE.C": "cpp",
+        "AMBIANCE.C": "cpp",
+        "BUBSORT.C": "cpp",
+        "VERSION.C": "cpp",
+        "DLLLOAD.C": "cpp"
+    }
+}

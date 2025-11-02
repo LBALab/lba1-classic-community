@@ -3,9 +3,9 @@
 			      (c) Adeline 1993
  *──────────────────────────────────────────────────────────────────────────*/
 
-#include "\projet\lib386\lib_sys\adeline.h"
-#include "\projet\lib386\lib_sys\lib_sys.h"
-#include "\projet\lib386\lib_mix\lib_mix.h"
+#include "/projet/lib386/lib_sys/adeline.h"
+#include "/projet/lib386/lib_sys/lib_sys.h"
+#include "/projet/lib386/lib_mix/lib_mix.h"
 #include	<stdlib.h>
 #include	<stdio.h>
 #include	<dos.h>
@@ -28,14 +28,14 @@ LONG	MixerInitDLL(char *driverpathname)
 	dll = FILE_read( driverpathname, NULL);
 	if (dll==NULL)
 	{
-		printf("%s Could not load driver '%s'.\n", MixerError, driverpathname );
+		printf("%s Could not load driver '%s'./n", MixerError, driverpathname );
 		return FALSE ;
 	}
 
 	drvr=DLL_load(dll,DLLMEM_ALLOC | DLLSRC_MEM,NULL);
 	if (drvr==NULL)
 	{
-		printf("%s Invalid DLL image.\n", MixerError );
+		printf("%s Invalid DLL image./n", MixerError );
 		return FALSE ;
 	}
 

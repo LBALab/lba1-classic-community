@@ -3,8 +3,8 @@
 
 */
 
-#include 	"lib_sys\adeline.h"
-#include 	"lib_sys\lib_sys.h"
+#include 	"lib_sys/adeline.h"
+#include 	"lib_sys/lib_sys.h"
 
 #include <i86.h>
 #include <dos.h>
@@ -503,7 +503,7 @@ LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 {
 	UBYTE	crlf[] = { 13, 10, 0 } ;
 
-	DefHandleC = OpenWrite( "c:\\__tempo.def" ) ;
+	DefHandleC = OpenWrite( "c://__tempo.def" ) ;
 	if( !DefHandleC )	return	FALSE ;
 	DefHandle = OpenRead( deffic ) ;
 	if( DefHandle )
@@ -524,10 +524,10 @@ LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 			Close( DefHandleC ) ;
 
 //			Delete( deffic ) ;
-//			rename( "c:\\__tempo.def", deffic ) ;
-			if( Copy( "c:\\__tempo.def", deffic ) )
+//			rename( "c://__tempo.def", deffic ) ;
+			if( Copy( "c://__tempo.def", deffic ) )
 			{
-				Delete( "c:\\__tempo.def" ) ;
+				Delete( "c://__tempo.def" ) ;
 			}
 
 			DefModeCopy = FALSE ;
@@ -544,9 +544,9 @@ LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 	Close( DefHandleC ) ;
 
 //	Delete( deffic ) ;
-	if( Copy( "c:\\__tempo.def", deffic ) )
+	if( Copy( "c://__tempo.def", deffic ) )
 	{
-		Delete( "c:\\__tempo.def" ) ;
+		Delete( "c://__tempo.def" ) ;
 	}
 
 	DefModeCopy = FALSE ;

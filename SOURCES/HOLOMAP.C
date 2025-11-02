@@ -498,11 +498,11 @@ void	InitHoloDatas()
 
 		ListHoloPos = (T_HOLO_POS*)( PtrTri + (17*33*4) ) ;
 		n = Load_HQR( PATH_RESSOURCE"ress.hqr", ListHoloPos, RESS_HOLOMAP_POS ) ;
-		//Load(	"F:\\PROJET\\LBA\\DATAS\\HOLOMAP.POS",	ListHoloPos ) ;
+		//Load(	"F://PROJET//LBA//DATAS//HOLOMAP.POS",	ListHoloPos ) ;
 
 		ListTraj = (UBYTE*)(ListHoloPos) + n ;
 		n = Load_HQR( PATH_RESSOURCE"ress.hqr", ListTraj, RESS_HOLOMAP_TRAJ ) ;
-		//Load( "f:\\projet\\lba\\datas\\holotraj.pos", ListTraj ) ;
+		//Load( "f://projet//lba//datas//holotraj.pos", ListTraj ) ;
 
 		LastPtr = (UBYTE*)(ListTraj) + n ;
 

@@ -11,12 +11,12 @@
 DIVISOR			equ	23864		; 1193180 (Base Freq) / 50
 FREQUENCE		equ	50		; 1193180 (Base Freq) / 23864
 
-		public	NoLanguage	TimerSystem
-		public	NoLanguage	TimerRef
-		public	NoLanguage	NbFramePerSecond
-		public	NoLanguage	WaitNbTicks
-		public	NoLanguage	CmptFrame
-		public	NoLanguage	Cmpt_18
+		public TimerSystem
+		public TimerRef
+		public NbFramePerSecond
+		public WaitNbTicks
+		public CmptFrame
+		public Cmpt_18
 
 TimerRef		dd	0000
 NbFramePerSecond      	dw	00
@@ -27,14 +27,14 @@ TimerSystem		dd	0000
 
                 		.data
 
-		extrn	NoLanguage      Old_PM08_Sel:WORD
-		extrn	NoLanguage      Old_PM08_Off:DWORD
+		extrn Old_PM08_Sel:WORD
+		extrn Old_PM08_Off:DWORD
 
 				.code
 
-		public	NoLanguage	SetTimer
-		public	NoLanguage	NewIntPM08
-		public	NoLanguage	NewProc08
+		public SetTimer
+		public NewIntPM08
+		public NewProc08
 
 ;----------------------------------------------------------------------------
 SetTimer		proc	,\

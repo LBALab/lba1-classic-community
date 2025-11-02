@@ -1,7 +1,7 @@
-#include "lib_sys\adeline.h"
-#include "lib_sys\lib_sys.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
 
-#pragma	library	("\gussdk21\libs\ultra0wc.lib");
+#pragma	library	("/gussdk21/libs/ultra0wc.lib");
 
 #include "forte.h"
 #include "gf1proto.h"

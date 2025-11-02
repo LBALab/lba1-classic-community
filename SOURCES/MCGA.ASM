@@ -9,10 +9,10 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 ;----------------------------------------------------------------------------
-			public	NoLanguage	Mcga_Cls
-			public	NoLanguage	Mcga_Flip
+			public Mcga_Cls
+			public Mcga_Flip
 
 			.code
 

@@ -8,7 +8,7 @@
 ;                  ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀   ▀▀
 ;*══════════════════════════════════════════════════════════════════════════*
 
-		include		p_define.ash
+		include		P_DEFINE.ASH
 
 ;*──────────────────────────────────────────────────────────────────────────*
 		.data
@@ -16,63 +16,63 @@
 
 		; extern M_TRIGO
 
-		extrn	NoLanguage CameraXr:WORD
-		extrn	NoLanguage CameraYr:WORD
-		extrn	NoLanguage CameraZr:WORD
-		extrn	NoLanguage X0:WORD
-		extrn	NoLanguage Y0:WORD
-		extrn	NoLanguage Z0:WORD
-		extrn	NoLanguage XCentre:WORD
-		extrn	NoLanguage YCentre:WORD
+		extrn CameraXr:WORD
+		extrn CameraYr:WORD
+		extrn CameraZr:WORD
+		extrn X0:WORD
+		extrn Y0:WORD
+		extrn Z0:WORD
+		extrn XCentre:WORD
+		extrn YCentre:WORD
 
-		extrn	NoLanguage lAlpha:WORD
-		extrn	NoLanguage lBeta:WORD
-		extrn	NoLanguage lGamma:WORD
+		extrn lAlpha:WORD
+		extrn lBeta:WORD
+		extrn lGamma:WORD
 
-		extrn	NoLanguage NormalXLight:WORD
-		extrn	NoLanguage NormalYLight:WORD
-		extrn	NoLanguage NormalZLight:WORD
+		extrn NormalXLight:WORD
+		extrn NormalYLight:WORD
+		extrn NormalZLight:WORD
 
-		extrn	NoLanguage MatriceTempo:WORD
-		extrn	NoLanguage MatriceWorld:WORD
-		extrn	NoLanguage MatriceRot:WORD
+		extrn MatriceTempo:WORD
+		extrn MatriceWorld:WORD
+		extrn MatriceRot:WORD
 
-		extrn	NoLanguage IsoScale:WORD
-		extrn	NoLanguage TypeProj:WORD
+		extrn IsoScale:WORD
+		extrn TypeProj:WORD
 
 
-		extrn	NoLanguage Mat00:WORD
-		extrn	NoLanguage Mat01:WORD
-		extrn	NoLanguage Mat02:WORD
-		extrn	NoLanguage Mat10:WORD
-		extrn	NoLanguage Mat11:WORD
-		extrn	NoLanguage Mat12:WORD
-		extrn	NoLanguage Mat20:WORD
-		extrn	NoLanguage Mat21:WORD
-		extrn	NoLanguage Mat22:WORD
+		extrn Mat00:WORD
+		extrn Mat01:WORD
+		extrn Mat02:WORD
+		extrn Mat10:WORD
+		extrn Mat11:WORD
+		extrn Mat12:WORD
+		extrn Mat20:WORD
+		extrn Mat21:WORD
+		extrn Mat22:WORD
 
-		extrn	NoLanguage compteur:WORD
+		extrn compteur:WORD
 
 		; extern LIB_GRAF
 
-		extrn	NoLanguage NbPolyPoints:WORD
-		extrn	NoLanguage TabPoly:WORD
-		extrn	NoLanguage TypePoly:WORD
+		extrn NbPolyPoints:WORD
+		extrn TabPoly:WORD
+		extrn TypePoly:WORD
 
 ;*──────────────────────────────────────────────────────────────────────────*
-		public	NoLanguage FlagLight
+		public FlagLight
 
-		public	NoLanguage List_Point
-		public	NoLanguage NbPoints
+		public List_Point
+		public NbPoints
 
-		public	NoLanguage List_Anim_Point
-		public	NoLanguage List_Entity
-		public	NoLanguage List_Tri
+		public List_Anim_Point
+		public List_Entity
+		public List_Tri
 
-		public	NoLanguage ScreenXmin
-		public	NoLanguage ScreenYmin
-		public	NoLanguage ScreenXmax
-		public	NoLanguage ScreenYmax
+		public ScreenXmin
+		public ScreenYmin
+		public ScreenXmax
+		public ScreenYmax
 
 ;*──────────────────────────────────────────────────────────────────────────*
 
@@ -127,24 +127,24 @@ TabJump_2	dd	aff_E_LIGNE
 ;*──────────────────────────────────────────────────────────────────────────*
 
 
-		public	NoLanguage	AffObjet
+		public AffObjet
 
 
-		extrn	NoLanguage	ComputePoly:PROC
-		extrn	NoLanguage	ComputeSphere_A:PROC
-		extrn	NoLanguage	FillVertic_A:PROC
-		extrn	NoLanguage	Line_A:PROC
+		extrn ComputePoly:PROC
+		extrn ComputeSphere_A:PROC
+		extrn FillVertic_A:PROC
+		extrn Line_A:PROC
 
 ;*──────────────────────────────────────────────────────────────────────────*
 
-		extrn	NoLanguage	RotMatW:near
-		extrn	NoLanguage	RotMat:near
-		extrn	NoLanguage	WorldRot:near
-		extrn	NoLanguage	Rot:near
-		extrn	NoLanguage	Proj:near
-		extrn	NoLanguage	RotList:near
-		extrn	NoLanguage	TransRotList:near
-		extrn	NoLanguage	RotListNormal:near
+		extrn RotMatW:near
+		extrn RotMat:near
+		extrn WorldRot:near
+		extrn Rot:near
+		extrn Proj:near
+		extrn RotList:near
+		extrn TransRotList:near
+		extrn RotListNormal:near
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;		█▀▀▀█ █▀▀▀▀ █▀▀▀▀ █▀▀▀█ █▀▀█      █ █▀▀▀▀ ▀▀█▀▀

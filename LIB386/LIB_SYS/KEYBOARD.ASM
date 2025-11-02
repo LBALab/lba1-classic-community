@@ -16,14 +16,14 @@ KB_DATA		equ     60H
 ;/*───────────────────────────────────────────────────────────────────────*/
 				.DATA
 
-		public	NoLanguage	Key
-		public	NoLanguage	_Key
-		public	NoLanguage	Joy
-		public	NoLanguage	Fire
-		public	NoLanguage	FuncKey
-		public	NoLanguage	AsciiMode
-		public	NoLanguage	Old_PM09_Off
-		public	NoLanguage	Old_PM09_Sel
+		public Key
+		public _Key
+		public Joy
+		public Fire
+		public FuncKey
+		public AsciiMode
+		public Old_PM09_Off
+		public Old_PM09_Sel
 
 
 NoAscii		db	0
@@ -153,9 +153,9 @@ FlagExtendScan	db	0
 
 		.CODE
 
-		public	NoLanguage	NewIntPM09
-		public	NoLanguage	GetAscii
-		public	NoLanguage	ClearAsciiBuffer
+		public NewIntPM09
+		public GetAscii
+		public ClearAsciiBuffer
 
 ;/*══════════════════════════════════════════════════════════════════════════*/
 

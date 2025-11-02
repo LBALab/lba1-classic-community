@@ -11,7 +11,7 @@
 
 		.DATA
 
-		PUBLIC	NoLanguage	listfcts
+		PUBLIC listfcts
 
 listfcts		dd	offset	Vesafcts
 
@@ -20,8 +20,8 @@ Vesafcts		dd	offset	SvgaInitVesa
 
 		.CODE
 
-		PUBLIC	NoLanguage	SvgaInit
-		PUBLIC	NoLanguage	SvgaBank
+		PUBLIC SvgaInit
+		PUBLIC SvgaBank
 
 ;----------------------------------------------------------------------------
 

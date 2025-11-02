@@ -7,15 +7,15 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			extrn	NoLanguage	XMap	:DWORD
-			extrn	NoLanguage	YMap	:DWORD
-			extrn	NoLanguage	ZMap	:DWORD
-			extrn	NoLanguage	XScreen	:DWORD
-			extrn	NoLanguage	YScreen	:DWORD
+			extrn XMap	:DWORD
+			extrn YMap	:DWORD
+			extrn ZMap	:DWORD
+			extrn XScreen	:DWORD
+			extrn YScreen	:DWORD
 
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
-			public	NoLanguage	CodeJeu
+			public CodeJeu
 
 CodeJeu		db	0
 
@@ -26,10 +26,10 @@ UBYTE	*TabBlock		;
 UBYTE	*BufferBrick		;
 	@
 
-	extrn	NoLanguage	BufCube:DWORD
-	extrn	NoLanguage	BufMap:DWORD
-	extrn	NoLanguage	TabBlock:DWORD
-	extrn	NoLanguage	BufferBrick:DWORD
+	extrn BufCube:DWORD
+	extrn BufMap:DWORD
+	extrn TabBlock:DWORD
+	extrn BufferBrick:DWORD
 
 HEADER_BLOCK	equ	3
 
@@ -45,14 +45,14 @@ DEMI_BRICK_Y	equ	128
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	DecompColonne
-			public	NoLanguage	Map2Screen
-			public	NoLanguage	MixteColonne
-			public	NoLanguage	GetAdrBlock
-;			public	NoLanguage	GetColBrick
-			public	NoLanguage	WorldColBrick
-			public	NoLanguage	WorldColBrickFull
-			public	NoLanguage	WorldCodeBrick
+			public DecompColonne
+			public Map2Screen
+			public MixteColonne
+			public GetAdrBlock
+;			public GetColBrick
+			public WorldColBrick
+			public WorldColBrickFull
+			public WorldCodeBrick
 
 ;----------------------------------------------------------------------------
 ;*--------------------------------------------------------------------------*

@@ -7,7 +7,7 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 comment @
 		DWORD	TabOffset[]
 			Brick:
@@ -33,10 +33,10 @@ NbPix		dd	0
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CoulMask
-			public	NoLanguage	AffMask
-			public	NoLanguage	AffMask_Asm
-			public	NoLanguage	GetDxDyMask
+			public CoulMask
+			public AffMask
+			public AffMask_Asm
+			public GetDxDyMask
 
 ;----------------------------------------------------------------------------
 CoulMask		proc ,\

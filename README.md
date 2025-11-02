@@ -5,6 +5,14 @@ We are releasing this code with preservation in mind, as this piece of work was 
 
 The engine uses Assembly code and was originally compiled with non-open source libraries which have been excluded from the project. 
 
+### Build using CMake and OpenWatcom
+
+```bash
+mkdir build && cd build
+cmake -G "Watcom WMake" -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/openwatcom ..
+cmake --build .
+```
+
 ### Licence
 This source code is licensed under the [GNU General Public License](https://github.com/2point21/lba1-classic-community/blob/main/LICENSE).
 

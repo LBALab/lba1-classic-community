@@ -2,15 +2,15 @@
 
 		.model SMALL, SYSCALL
 
-		include	lib_svga\svga.ash
+		include lib_svga/svga.ash
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;*──────────────────────────────────────────────────────────────────────────*
 		.data
 ;*──────────────────────────────────────────────────────────────────────────*
 
-		extrn	NoLanguage TabOffLine:DWORD
-		extrn	NoLanguage Screen:DWORD
+		extrn TabOffLine:DWORD
+		extrn Screen:DWORD
 
 IndexCoul0	db	4*16
 PalRed		db	0
@@ -23,14 +23,14 @@ PalXor		db	0
 ;*──────────────────────────────────────────────────────────────────────────*
 ;*══════════════════════════════════════════════════════════════════════════*/
 
-		public	NoLanguage	SimpleInitMcga
-		public	NoLanguage	CopyBlockMCGA
-		public	NoLanguage	ShadeBox
-		public	NoLanguage	SmallSort
-;		public	NoLanguage	SpeedRam
-;		public	NoLanguage	TimerPalFx
-		public	NoLanguage	GetHDFreeSize
-		public	NoLanguage	ComputeTime
+		public SimpleInitMcga
+		public CopyBlockMCGA
+		public ShadeBox
+		public SmallSort
+;		public SpeedRam
+;		public TimerPalFx
+		public GetHDFreeSize
+		public ComputeTime
 
 ;*══════════════════════════════════════════════════════════════════════════*/
 

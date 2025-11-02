@@ -7,7 +7,7 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
 comment @
 		DWORD	TabOffset[]
@@ -26,7 +26,7 @@ comment @
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CalcGraphMsk
+			public CalcGraphMsk
 
 ;----------------------------------------------------------------------------
 CalcGraphMsk		proc	uses esi edi ebx ebp,\

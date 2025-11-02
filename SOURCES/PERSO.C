@@ -1265,45 +1265,45 @@ void	TheEnd( WORD num, UBYTE *error )
 	printf( Version ) ;	/*	dans version.c	*/
 
 #ifdef	DEBUG_TOOLS
-	printf( "* Start Extended Memory was %ld\n", MemoMemory ) ;
-	printf( "* Start Dos Memory was %ld\n", MemoDosMemory ) ;
-	printf( "* Min Dos Memory was %ld\n", MemoMinDosMemory ) ;
-	printf( "* HQR Sprite: %ld\n", SpriteMem ) ;
-	printf( "      Sample: %ld\n", SampleMem ) ;
-	printf( "        Anim: %ld\n", AnimMem ) ;
+	printf( "* Start Extended Memory was %ld/n", MemoMemory ) ;
+	printf( "* Start Dos Memory was %ld/n", MemoDosMemory ) ;
+	printf( "* Min Dos Memory was %ld/n", MemoMinDosMemory ) ;
+	printf( "* HQR Sprite: %ld/n", SpriteMem ) ;
+	printf( "      Sample: %ld/n", SampleMem ) ;
+	printf( "        Anim: %ld/n", AnimMem ) ;
 
-	printf( "* Size HQM Memory was %ld\n", Size_HQM_Memory ) ;
-	printf( "* Max Used HQM memory was %ld\n", UsedHQMemory ) ;
+	printf( "* Size HQM Memory was %ld/n", Size_HQM_Memory ) ;
+	printf( "* Max Used HQM memory was %ld/n", UsedHQMemory ) ;
 #endif
 	switch( num )
 	{
 		case ERROR_FILE_NOT_FOUND:
-			printf( "File not found: %s\n", error ) ;
+			printf( "File not found: %s/n", error ) ;
 			break ;
 
 		case NAME_NOT_FOUND:
-			printf( "Critical error: ident name not found: %s\n", error ) ;
+			printf( "Critical error: ident name not found: %s/n", error ) ;
 			break ;
 
 		case NOT_ENOUGH_MEM:
-			printf( "Not Enough Memory: %s (SEE README.TXT)\n", error ) ;
+			printf( "Not Enough Memory: %s (SEE README.TXT)/n", error ) ;
 			break ;
 
 		case PROGRAM_OK:
 #ifdef	DEBUG_TOOLS
 			if( NbNbf )
 			{
-				printf( "* Frame speed status:\n" ) ;
-//				printf( "  Minimal frame rate occured: %d\n", MinNbf ) ;
-				printf( "  Maximal frame rate occured: %d\n", MaxNbf ) ;
-//				printf( "  number of frame is %f\n", NbNbf ) ;
-//				printf( "  (total of frame's NbFramePerSecon is %f )\n", TotalNbf ) ;
-				printf( "  Average frame rate was %d\n", TotalNbf/NbNbf ) ;
-				printf( "%s\n", error ) ;
+				printf( "* Frame speed status:/n" ) ;
+//				printf( "  Minimal frame rate occured: %d/n", MinNbf ) ;
+				printf( "  Maximal frame rate occured: %d/n", MaxNbf ) ;
+//				printf( "  number of frame is %f/n", NbNbf ) ;
+//				printf( "  (total of frame's NbFramePerSecon is %f )/n", TotalNbf ) ;
+				printf( "  Average frame rate was %d/n", TotalNbf/NbNbf ) ;
+				printf( "%s/n", error ) ;
 			}
 #endif
-			printf( "%s\n", error )	;
-			printf( "\nOK.\n" ) ;
+			printf( "%s/n", error )	;
+			printf( "/nOK./n" ) ;
 			break ;
 	}
 	RestoreDiskEnv() ;
@@ -1443,7 +1443,7 @@ void	main( int argc, UBYTE *argv[] )
 
 		drive[0] = 'A' + DriveCDR ;
 		strcpy( PathFla, drive ) ;
-		strcat( PathFla, "\\LBA\\FLA\\" ) ;
+		strcat( PathFla, "//LBA//FLA//" ) ;
 	}
 	else	TheEnd(PROGRAM_OK, "No CD")	;
 
@@ -1451,7 +1451,7 @@ void	main( int argc, UBYTE *argv[] )
 		TheEnd(PROGRAM_OK, "Type INSTALL")	;
 
 #else
-	strcpy( PathFla, "FLA\\" ) ;	// version cdrom sur hd (fla only)
+	strcpy( PathFla, "FLA//" ) ;	// version cdrom sur hd (fla only)
 #endif
 
 #endif

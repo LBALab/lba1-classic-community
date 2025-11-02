@@ -1,0 +1,66 @@
+# LIB_SVGA - SVGA Graphics Library
+# Mixed C and Assembly library for SVGA video modes
+
+# Source files (from MAKEFILE OBJETS1-7)
+set(LIB_SVGA_SOURCES
+    # OBJETS1
+    INITMODE.C
+    INITSVGA.ASM
+    GRAPH_A.ASM
+    # OBJETS2
+    S_TEXT.C
+    S_STRING.ASM
+    S_MOUSE.C
+    MASK_A.ASM
+    FONT_A.ASM
+    # OBJETS3
+    S_SCREEN.ASM
+    S_BLOCK.ASM
+    S_BLOCK2.ASM
+    S_PAL.ASM
+    # OBJETS4
+    S_PLOT.ASM
+    S_BOX.ASM
+    S_LINE.ASM
+    S_POLY.ASM
+    S_FILLV.ASM
+    # OBJETS5
+    S_MOUSEA.ASM
+    RECT.C
+    ZOOM.ASM
+    MASKGPH.C
+    GRAPHMSK.ASM
+    # OBJETS6
+    S_PHYS.ASM
+    TEXTURE.ASM
+    S_BLOCK3.ASM
+    LBM.C
+    PCX.C
+    # OBJETS7
+    S_DLL.C
+    VESA.ASM
+    GIF.C
+)
+
+# Create static library
+add_library(LIB_SVGA STATIC ${LIB_SVGA_SOURCES})
+
+# Explicitly set language for source files with uppercase extensions
+foreach(src ${LIB_SVGA_SOURCES})
+    get_filename_component(ext ${src} EXT)
+    if(ext STREQUAL ".C")
+        set_source_files_properties(${src} PROPERTIES LANGUAGE C)
+    elseif(ext STREQUAL ".ASM")
+        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
+    endif()
+endforeach()
+
+# Include current directory for headers
+target_include_directories(LIB_SVGA PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+
+# Set library output name and linker language
+set_target_properties(LIB_SVGA PROPERTIES
+    OUTPUT_NAME "LIB_SVGA"
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    LINKER_LANGUAGE C
+)

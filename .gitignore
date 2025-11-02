@@ -4,3 +4,5 @@
 *.ERR
 SOURCES/LBA0.EXE
 tags
+.DS_Store
+build

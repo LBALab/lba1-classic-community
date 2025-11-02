@@ -6,17 +6,17 @@
 		.model SMALL, SYSCALL
 		.data
 
-	include	lib_svga\svga.ash
+	include lib_svga/svga.ash
 
-	extrn	NoLanguage	TabVerticG	:WORD
-	extrn	NoLanguage	TabCoulG	:WORD
-	extrn	NoLanguage	TabCoulD	:WORD
-	extrn	NoLanguage	Ymin		:WORD
-	extrn	NoLanguage	Ymax		:WORD
+	extrn TabVerticG	:WORD
+	extrn TabCoulG	:WORD
+	extrn TabCoulD	:WORD
+	extrn Ymin		:WORD
+	extrn Ymax		:WORD
 
 EVEN
 
-		public	NoLanguage	TabText
+		public TabText
 
 TabText		dw	32*3	dup(00)
 
@@ -34,22 +34,22 @@ ptrlig		dd	0000
 ptrmap		dd	0000
 ptrtab		dd	0000
 
-		public	NoLanguage	LYmin
-		public	NoLanguage	LYmax
+		public LYmin
+		public LYmax
 
 LYmin		dd 0000
 LYmax		dd 0000
 
-	extrn	NoLanguage	TabGauche:WORD
-	extrn	NoLanguage	TabDroite:WORD
-	extrn	NoLanguage	TabX0:WORD
-	extrn	NoLanguage	TabY0:WORD
-	extrn	NoLanguage	TabX1:WORD
-	extrn	NoLanguage	TabY1:WORD
+	extrn TabGauche:WORD
+	extrn TabDroite:WORD
+	extrn TabX0:WORD
+	extrn TabY0:WORD
+	extrn TabX1:WORD
+	extrn TabY1:WORD
 
-	extrn	NoLanguage	TabPoly:WORD
+	extrn TabPoly:WORD
 
-	extrn	NoLanguage	P_SinTab:WORD
+	extrn P_SinTab:WORD
 
 TAB_GAUCHE	equ	960*0
 TAB_DROITE	equ	960*1
@@ -60,17 +60,17 @@ TAB_Y1		equ	960*5
 
 		.code
 
-		public	 NoLanguage	FillTextPoly
-		public	 NoLanguage	FillTextPolyNoClip
-;		public	 NoLanguage	M_FillTextPoly
-		public	 NoLanguage	FillTextPolyShade
+		public FillTextPoly
+		public FillTextPolyNoClip
+;		public M_FillTextPoly
+		public FillTextPolyShade
 
-		public	 NoLanguage	AsmTexturedTriangleNoClip
-		public	 NoLanguage	AsmGouraudTriangleNoClip
+		public AsmTexturedTriangleNoClip
+		public AsmGouraudTriangleNoClip
 
-		public	 NoLanguage	AsmFillProp
-		public	 NoLanguage	AsmFillPropNoClip
-;		public	 NoLanguage	M_AsmFillProp
+		public AsmFillProp
+		public AsmFillPropNoClip
+;		public M_AsmFillProp
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;                        █▀▀▀█ █▀▀▀█ █     █  ▄▀ ██▀▀▀

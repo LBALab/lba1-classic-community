@@ -1,6 +1,6 @@
-#include "lib_sys\adeline.h"
-#include "lib_sys\lib_sys.h"
-#include "lib_svga\lib_svga.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
+#include "lib_svga/lib_svga.h"
 
 #include <stdio.h>
 #include <stdlib.h>

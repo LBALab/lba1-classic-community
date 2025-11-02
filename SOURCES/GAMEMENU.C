@@ -2308,7 +2308,7 @@ WORD	DoGameMenu( UWORD *ptrmenu )
 /*	okazou
 		if( Key == K_S )
 		{
-			Save( "f:\\projet\\lba\\datas\\initplas.ma", BufSpeak, 16*1024 ) ;
+			Save( "f://projet//lba//datas//initplas.ma", BufSpeak, 16*1024 ) ;
 		}
 */
 

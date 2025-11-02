@@ -1,5 +1,5 @@
 #ifdef USE_AIL32
-#include "lib_midi\ail32.h"      // Audio Interface Library API function header
+#include "lib_midi/ail32.h"      // Audio Interface Library API function header
 #include "ail.h"      // Audio Interface Library API function header
 #endif
 
