@@ -50,6 +50,7 @@
         "MAIN.C": "cpp",
         "OBJECT.C": "cpp",
         "FIRE.C": "cpp",
-        "FUNC.C": "cpp"
+        "FUNC.C": "cpp",
+        "GRILLE_A.C": "cpp"
     }
 }
