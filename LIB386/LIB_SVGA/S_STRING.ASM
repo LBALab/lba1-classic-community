@@ -278,8 +278,8 @@ Font8X8	db	0, 0, 0, 0, 0, 0, 0, 0
 
 				.code
 
-			public	NoLanguage	 AffString
-			public	NoLanguage	 CoulText
+			public AffString
+			public CoulText
 
 ;═════════════════════════════════════════════════════════════════════════════
 ;			Text( x, y, pttext )

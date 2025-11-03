@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#include "adeline.h"
-#include "lib_sys.h"
-#include "lib_samp\lib_wave.h"
+#include "ADELINE.H"
+#include "LIB_SYS.H"
+#include "LIB_SAMP/LIB_WAVE.H"
 
 #define	RECOVER_AREA	500
 

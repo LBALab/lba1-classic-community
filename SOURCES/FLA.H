@@ -1,16 +1,16 @@
-#include "\projet\lib386\lib_X\lib_X.h"
+#include "/projet/lib386/lib_X/lib_X.h"
 
 #define MAX_SAMPLES_FLA 255
-#define NOM_FICHIER_DEF_CONFIGURATION "C:\\ADELINE.DEF"
+#define NOM_FICHIER_DEF_CONFIGURATION "C://ADELINE.DEF"
 
 #ifdef	ONE_GAME_DIRECTORY
-#define PATH_FICHIER_SAMPLE "FLA\\"
+#define PATH_FICHIER_SAMPLE "FLA//"
 #else
-#define PATH_FICHIER_SAMPLE "F:\\projet\\lba\\samples\\flasamp\\"
+#define PATH_FICHIER_SAMPLE "F://projet//lba//samples//flasamp//"
 #endif
 
 #define NOM_FICHIER_TEMPORAIRE "Fla_"
-#define NOM_FICHIER_FRAME_TEMPORAIRE "C:\\_Frame.tmp"
+#define NOM_FICHIER_FRAME_TEMPORAIRE "C://_Frame.tmp"
 
 #define FLI 2
 #define FLA 3

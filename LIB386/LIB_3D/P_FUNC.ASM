@@ -3,11 +3,11 @@
 
 		.model  SMALL, SYSCALL
 
-		include P_define.ash
+		include P_DEFINE.ASH
 
 		.data
 
-		include lib_sys\lib_sys.ash
+		include LIB_SYS/LIB_SYS.ASH
 
 Comment @
 
@@ -40,33 +40,33 @@ SqrTab  dw      0807Fh,0817Dh,08279h,08374h,0846Ch,08562h,08657h,0874Ah
 
 ALIGN 4
 
-		public	NoLanguage Distance
-		public	NoLanguage Sqr
+		public Distance
+		public Sqr
 
 Distance	dd	0000
 
-		public	NoLanguage	EX0
-		public	NoLanguage	EY0
+		public EX0
+		public EY0
 
 EX0		dd	0000
 EY0		dd	0000
 
-		extrn   nolanguage P_SinTab:WORD
+		extrn P_SinTab:WORD
 
 ;*══════════════════════════════════════════════════════════════════════════*
 		.code
 
-		public	NoLanguage	Rot2D
-		public  NoLanguage      Distance2D
-		public  NoLanguage      Distance3D
-		public	NoLanguage	GetAngle
-		public	NoLanguage	RegleTrois32
-		public	NoLanguage	BoundRegleTrois
-		public	NoLanguage	InitRealValue
-		public	NoLanguage	InitRealAngle
-		public	NoLanguage	InitRealAngleConst
-		public	NoLanguage	GetRealValue
-		public	NoLanguage	GetRealAngle
+		public Rot2D
+		public Distance2D
+		public Distance3D
+		public GetAngle
+		public RegleTrois32
+		public BoundRegleTrois
+		public InitRealValue
+		public InitRealAngle
+		public InitRealAngleConst
+		public GetRealValue
+		public GetRealAngle
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;	     █▀▀▀█ █▀▀▀▀ █▀▀▀█ █           ▀▀█▀▀  █    █▄ ▄█ █▀▀▀▀

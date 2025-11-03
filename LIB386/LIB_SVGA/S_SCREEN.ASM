@@ -16,8 +16,8 @@ Diff	dd	?
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	Cls
-			public	NoLanguage	CopyScreen
+			public Cls
+			public CopyScreen
 
 ;----------------------------------------------------------------------------
 ;			Cls()

@@ -19,12 +19,12 @@
 /*-------------------------------------------------------------------------*/
 
 #ifdef  LORAN
-#include "lib_sys\adeline.h"
-#include "lib_sys\lib_sys.h"
-#include "lib_svga\lib_svga.h"
-#include "lib_menu\lib_menu.h"
-#include "lib_cd\lib_cd.h"
-#include "lib_3d\lib_3d.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
+#include "lib_svga/lib_svga.h"
+#include "lib_menu/lib_menu.h"
+#include "lib_cd/lib_cd.h"
+#include "lib_3d/lib_3d.h"
 
 #include        <stdlib.h>
 #include        <string.h>
@@ -37,7 +37,7 @@
 #endif
 #ifdef  LORAN
 //================================================================= L O R A N
-#define	PathConfigFile	"c:\\adeline.def"
+#define	PathConfigFile	"c://adeline.def"
 #define	CDROM 1
 
 LONG	Island	;
@@ -74,13 +74,13 @@ WORD    QuickMessage = FALSE ;
 #define PATH_TXT        ""
 #define PATH_NAR        ""
 #else
-#define PATH_TXT        "f:\\projet\\lba\\text\\"
-#define PATH_NAR        "f:\\projet\\lba\\samples\\dial\\"
+#define PATH_TXT        "f://projet//lba//text//"
+#define PATH_NAR        "f://projet//lba//samples//dial//"
 #endif
 
 #ifdef	CDROM
-#define	PATH_NAR_CD	"\\LBA\\VOX\\"
-#define	PATH_NAR_HD	"VOX\\"
+#define	PATH_NAR_CD	"//LBA//VOX//"
+#define	PATH_NAR_HD	"VOX//"
 #define	MAX_FILE_VOICE	42	// SYS CRE GAM 0 1 2 3 4 5 6 7 8 9 10 * MaxLang
 #define	EXT_NAR		".VOX"
 #define	FROM_HD		0

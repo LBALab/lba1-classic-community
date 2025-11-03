@@ -45,12 +45,9 @@ $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
 	@echo $(OBJETS1) > clibmak.rsp
 	@$(WL) $(LIBFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp
-	@prntitre M "$(LIB) OK"
 
 .asm.obj:
-	@PRNTITRE M "$*.ASM"
 	@$(ASM) $(AFLAGS) $*.ASM
 
 .c.obj:
-	@PRNTITRE M "$*.C"
 	@$(CC) $(CFLAGS) $*

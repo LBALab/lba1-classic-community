@@ -31,13 +31,13 @@ LFLAGS = /c /q /b /n
 AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 
-OBJETS1  = InitMode.obj InitSvga.obj Graph_A.obj
+OBJETS1  = InitMode.obj Graph_A.obj
 OBJETS2  = S_Text.obj S_string.obj S_Mouse.Obj Mask_A.obj Font_A.obj
 OBJETS3  = S_Screen.obj S_Block.obj S_Block2.obj S_Pal.obj
 OBJETS4  = S_Plot.obj S_Box.obj S_Line.obj S_Poly.obj S_FillV.obj
 OBJETS5  = S_MouseA.obj Rect.obj Zoom.obj MaskGph.obj GraphMsk.obj
 OBJETS6  = S_Phys.obj texture.obj s_block3.obj Lbm.obj Pcx.obj
-OBJETS7  = S_Dll.obj vesa.obj Gif.obj
+OBJETS7  = S_Dll.obj Gif.obj
 
 !ifeq WATCOM9 yes
 LIB      = LB9_SVGA
@@ -57,12 +57,9 @@ $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5) $(OBJETS6) $(
 
 	@$(WL) $(LIBFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp
-	@prntitre M "$(LIB) OK"
 
 .asm.obj:
-	@PRNTITRE M "$*.ASM"
 	@$(ASM) $(AFLAGS) $*.ASM
 
 .c.obj:
-	@PRNTITRE M "$*.C"
 	@$(CC) $(CFLAGS) $*

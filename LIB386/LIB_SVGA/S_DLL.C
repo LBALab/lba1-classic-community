@@ -3,8 +3,8 @@
 			      (c) Adeline 1993
  *──────────────────────────────────────────────────────────────────────────*/
 
-#include "lib_sys\adeline.h"
-#include "lib_sys\lib_sys.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
 #include	<stdlib.h>
 #include	<stdio.h>
 #include	<dos.h>
@@ -29,7 +29,7 @@ LONG	SvgaInitDLL(char *driverpathname)
 	dll = FILE_read(driverpathname, NULL);
 	if (dll==NULL)
 	{
-		printf("%s Could not load driver '%s'.\n", SvgaError, driverpathname );
+		printf("%s Could not load driver '%s'./n", SvgaError, driverpathname );
 		return FALSE ;
 	}
 
@@ -39,7 +39,7 @@ LONG	SvgaInitDLL(char *driverpathname)
 
 	if (drvr==NULL)
 	{
-		printf("%s Invalid DLL image.\n", SvgaError );
+		printf("%s Invalid DLL image./n", SvgaError );
 		return FALSE ;
 	}
 

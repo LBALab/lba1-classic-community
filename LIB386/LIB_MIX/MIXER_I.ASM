@@ -11,17 +11,17 @@
 
 		.DATA
 
-		PUBLIC	NoLanguage	Mixer_listfcts
-		PUBLIC	NoLanguage	Mixer_Driver_Enable
+		PUBLIC Mixer_listfcts
+		PUBLIC Mixer_Driver_Enable
 
 Mixer_listfcts		dd	0
 Mixer_Driver_Enable	dd	0
 
 		.CODE
 
-		PUBLIC	NoLanguage	MixerAskVars
-		PUBLIC	NoLanguage	MixerChangeVolume
-		PUBLIC	NoLanguage	MixerGetVolume
+		PUBLIC MixerAskVars
+		PUBLIC MixerChangeVolume
+		PUBLIC MixerGetVolume
 
 ;----------------------------------------------------------------------------
 ;----------------------------------------------------------------------------

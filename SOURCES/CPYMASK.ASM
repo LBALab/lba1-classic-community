@@ -7,7 +7,7 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 comment @
 		DWORD	TabOffset[]
 			Brick:
@@ -27,12 +27,12 @@ NbPix		dd	0
 
 save_esi	dd	?
 
-extrn		NoLanguage	Screen:DWORD
+extrn Screen:DWORD
 
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CopyMask
+			public CopyMask
 
 ;----------------------------------------------------------------------------
 CopyMask		proc	uses esi edi ebx ebp,\

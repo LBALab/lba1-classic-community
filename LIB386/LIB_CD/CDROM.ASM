@@ -18,16 +18,16 @@ comment @
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			.data
-		public	NoLanguage	LeadOut
-		public	NoLanguage	LowTrack
-		public	NoLanguage	HigTrack
-		public	NoLanguage	BufferData
-		public	NoLanguage	CptTimeOut
-		public	NoLanguage	DriveCDR
+		public LeadOut
+		public LowTrack
+		public HigTrack
+		public BufferData
+		public CptTimeOut
+		public DriveCDR
 
-                public	NoLanguage	FileCD_Start
-		public	NoLanguage	FileCD_Sect
-		public	NoLanguage	FileCD_Size
+                public FileCD_Start
+		public FileCD_Sect
+		public FileCD_Size
 
 TIME_OUT	equ	10
 

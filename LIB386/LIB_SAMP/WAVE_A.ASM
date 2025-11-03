@@ -377,7 +377,7 @@ else
 
 endif
 
-public	Nolanguage	PlayRate
+public PlayRate
 
 ListVars		equ	$
 
@@ -424,7 +424,7 @@ endif
 
 INT_number              dd      0Dh		; By default 0Dh
 
-public	Nolanguage	BufferHalf
+public BufferHalf
 
 BufferHalf              dd      ?
 
@@ -450,8 +450,8 @@ save_3                  dd      ?
 save_4                  dd      ?
 
 
-public	Nolanguage	BUFFER_DMA
-public	Nolanguage	CURRENT_BUFFER
+public BUFFER_DMA
+public CURRENT_BUFFER
 
 
 ifdef   RAM_CARD
@@ -727,9 +727,9 @@ endif
 ;*--------------------------------------------------------------------------*
 
 ifdef	GUS
-		PUBLIC	Nolanguage	UpdateBuffer
-		PUBLIC	Nolanguage	DoUpdate
-		PUBLIC	Nolanguage	Critical
+		public UpdateBuffer
+		public DoUpdate
+		public Critical
 endif
 
 ;*--------------------------------------------------------------------------*
@@ -3750,15 +3750,15 @@ endif
 
 ifdef	GUS
 
-extrn	Nolanguage	resetcard:PROC
+extrn resetcard:PROC
 
 ;*--------------------------------------------------------------------------*
 
-extrn	Nolanguage	CloseCard:PROC
+extrn CloseCard:PROC
 
 ;*--------------------------------------------------------------------------*
 
-extrn	Nolanguage	StartDMACard:PROC
+extrn StartDMACard:PROC
 
 endif
 

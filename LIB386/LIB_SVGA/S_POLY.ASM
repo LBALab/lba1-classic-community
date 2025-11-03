@@ -9,24 +9,24 @@
 
 		include	svga.ash
 
-		public	 NoLanguage	TabPoly
-		public	 NoLanguage	TabVerticD
-		public	 NoLanguage	TabVerticG
-		public	 NoLanguage	TabCoulG
-		public	 NoLanguage	TabCoulD
-		public	 NoLanguage	TabGauche
-		public	 NoLanguage	TabDroite
-		public	 NoLanguage	TabX0
-		public	 NoLanguage	TabY0
-		public	 NoLanguage	TabX1
-		public	 NoLanguage	TabY1
+		public TabPoly
+		public TabVerticD
+		public TabVerticG
+		public TabCoulG
+		public TabCoulD
+		public TabGauche
+		public TabDroite
+		public TabX0
+		public TabY0
+		public TabX1
+		public TabY1
 
-		public	 NoLanguage	Xmin
-		public	 NoLanguage	Ymin
-		public	 NoLanguage	Xmax
-		public	 NoLanguage	Ymax
-		public	 NoLanguage	NbPolyPoints
-		public	 NoLanguage	TypePoly
+		public Xmin
+		public Ymin
+		public Xmax
+		public Ymax
+		public NbPolyPoints
+		public TypePoly
 
 ;-------------------------------------------------------------------------
 
@@ -82,10 +82,10 @@ offtabpoly	dd	offset	TabPoly
 ;--------------------------------------------------------------------------
 		.code
 
-		public	 NoLanguage	ComputePoly
-		public	 NoLanguage	ComputePoly_A
-		public	 NoLanguage	ComputeSphere
-		public	 NoLanguage	ComputeSphere_A
+		public ComputePoly
+		public ComputePoly_A
+		public ComputeSphere
+		public ComputeSphere_A
 
 ;*══════════════════════════════════════════════════════════════════════════*
 ;                     ██▀▀▀ █▀▀▀█ █   █ █▀▀▀▀ █▀▀▀█ █▀▀▀▀

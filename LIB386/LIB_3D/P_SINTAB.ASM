@@ -5,7 +5,7 @@
 
 EVEN
 
-		public	NoLanguage	P_SinTab
+		public P_SinTab
 
 comment	#
 

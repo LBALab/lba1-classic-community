@@ -2,13 +2,13 @@
 #include <string.h>
 #include <process.h>
 
-#include "lib_sys\adeline.h"
-#include "lib_sys\lib_sys.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
 
-#include "lib_midi\lib_midi.h"
-#include "lib_samp\lib_wave.h"
-#include "lib_mix\lib_mix.h"
-#include "lib_svga\lib_svga.h"
+#include "lib_midi/lib_midi.h"
+#include "lib_samp/lib_wave.h"
+#include "lib_mix/lib_mix.h"
+#include "lib_svga/lib_svga.h"
 
 
 char	Driver[_MAX_PATH] ;
@@ -61,7 +61,7 @@ void	InitAdelineSystem( char *name, LONG inits )
 	char	*defname ;
 	char	*rien="" ;
 
-	printf( "\nCopyright (c) Adeline Software International 1994, All Rights Reserved.\n\n" );
+	printf( "/nCopyright (c) Adeline Software International 1994, All Rights Reserved./n/n" );
 
 	*PathConfigFile = 0 ;
 
@@ -76,26 +76,26 @@ void	InitAdelineSystem( char *name, LONG inits )
 	{
 		if(!*name)
 		{
-			printf("Error: Empty configuration filename. Go kill the programmer! (Tell him to talk to Serge as well...)\n\n");
+			printf("Error: Empty configuration filename. Go kill the programmer! (Tell him to talk to Serge as well...)/n/n");
 			exit(1);
 		}
 		if(!FileSize( defname ))
 		{
 			if (defname)
 			{
-				printf( "Warning: Cannot find configuration file %s as defined in the environment.\n", defname) ;
-				printf( "         Using local configuration file %s.\n\n", name ) ;
+				printf( "Warning: Cannot find configuration file %s as defined in the environment./n", defname) ;
+				printf( "         Using local configuration file %s./n/n", name ) ;
 			}
 			if(!FileSize( name ))
 			{
-				printf( "Error: Cannot find configuration file %s.\n\n", name ) ;
+				printf( "Error: Cannot find configuration file %s./n/n", name ) ;
 				exit( 1 ) ;
 			}
 		}
 		else
 			name = defname ;
 
-		printf("Please wait, loading drivers using %s...\n\n", name );
+		printf("Please wait, loading drivers using %s.../n/n", name );
 	}
 	else
 	{
@@ -111,20 +111,20 @@ void	InitAdelineSystem( char *name, LONG inits )
 
 	if(inits & INIT_MIDI)
 	{
-		printf("Initialising Midi device. Please wait...\n\n");
+		printf("Initialising Midi device. Please wait.../n/n");
 
 		midiptr = Def_ReadString( name, "MidiExec" ) ;
 		if( midiptr )
 			if ((*midiptr!=0) AND stricmp(midiptr, "NoExec"))
 			{
 				spawnl(P_WAIT, midiptr, midiptr, NULL);
-				printf("\n");
+				printf("/n");
 			}
 
 		ptr = Def_ReadString( name, "MidiDriver" ) ;
 		if( !ptr )
 		{
-			printf( "Warning %s: 'MidiDriver' missing\n", name ) ;
+			printf( "Warning %s: 'MidiDriver' missing/n", name ) ;
 			ptr = rien ;
 		}
 
@@ -144,7 +144,7 @@ void	InitAdelineSystem( char *name, LONG inits )
 			{
 				if (!Def_ReadValue2( name, *ptridentifier, ptrvar++ ))
 				{
-					printf( "Error %s: '%s' missing\n", name, *ptridentifier ) ;
+					printf( "Error %s: '%s' missing/n", name, *ptridentifier ) ;
 					exit( 1 ) ;
 				}
 
@@ -157,7 +157,7 @@ void	InitAdelineSystem( char *name, LONG inits )
 		ptr = Def_ReadString( name, "MidiType" ) ;
 		if( !ptr )
 		{
-			printf( "Warning %s: 'MidiType' missing\n", name ) ;
+			printf( "Warning %s: 'MidiType' missing/n", name ) ;
 			ptr = rien ;
 		}
 
@@ -169,14 +169,14 @@ void	InitAdelineSystem( char *name, LONG inits )
 
 	if(inits & INIT_SVGA)
 	{
-		printf("Initialising SVGA device. Please wait...\n\n");
+		printf("Initialising SVGA device. Please wait.../n/n");
 
 		if(!(inits & INIT_VESA))
 		{
 			ptr = Def_ReadString( name, "SvgaDriver" ) ;
 			if( !ptr )
 			{
-				printf( "Warning %s: 'SvgaDriver' missing\n", name ) ;
+				printf( "Warning %s: 'SvgaDriver' missing/n", name ) ;
 				ptr = rien ;
 			}
 
@@ -186,24 +186,24 @@ void	InitAdelineSystem( char *name, LONG inits )
 				if( !SvgaInitDLL( Driver ) )	exit( 1 ) ;
 			}
 			else
-				printf( "Built-in VESA Super VGA Driver\n\n" ) ;
+				printf( "Built-in VESA Super VGA Driver/n/n" ) ;
 
 		}
 	}
 	else if (inits & INIT_MCGA)
-				printf( "Built-in MCGA Driver\n\n" ) ;
+				printf( "Built-in MCGA Driver/n/n" ) ;
 
 //··········································································
 // mixer device
 
 	if(inits & INIT_MIXER)
 	{
-		printf("Initialising Mixer device. Please wait...\n\n");
+		printf("Initialising Mixer device. Please wait.../n/n");
 
 		ptr = Def_ReadString( name, "MixerDriver" ) ;
 		if( !ptr )
 		{
-			printf( "Warning %s: 'MixerDriver' missing\n", name ) ;
+			printf( "Warning %s: 'MixerDriver' missing/n", name ) ;
 			ptr = rien ;
 		}
 
@@ -223,7 +223,7 @@ void	InitAdelineSystem( char *name, LONG inits )
 			{
 				if (!Def_ReadValue2( name, *ptridentifier, ptrvar++ ))
 				{
-					printf( "Error %s: '%s' missing\n", name, *ptridentifier ) ;
+					printf( "Error %s: '%s' missing/n", name, *ptridentifier ) ;
 					exit( 1 ) ;
 				}
 				ptridentifier++;
@@ -236,20 +236,20 @@ void	InitAdelineSystem( char *name, LONG inits )
 
 	if(inits & INIT_WAVE)
 	{
-		printf("Initialising Wave device. Please wait...\n\n");
+		printf("Initialising Wave device. Please wait.../n/n");
 
 		ptr = Def_ReadString( name, "WaveExec" ) ;
 		if( ptr )
 			if ((*ptr!=0) AND stricmp(ptr, "NoExec") AND stricmp(ptr, midiptr))
 			{
 				spawnl(P_WAIT, ptr, ptr, NULL);
-				printf("\n");
+				printf("/n");
 			}
 
 		ptr = Def_ReadString( name, "WaveDriver" ) ;
 		if( !ptr )
 		{
-			printf( "Warning %s: 'WaveDriver' missing\n", name ) ;
+			printf( "Warning %s: 'WaveDriver' missing/n", name ) ;
 			ptr = rien ;
 		}
 
@@ -269,7 +269,7 @@ void	InitAdelineSystem( char *name, LONG inits )
 			{
 				if (!Def_ReadValue2( name, *ptridentifier, ptrvar++ ))
 				{
-					printf( "Error %s: '%s' missing\n", name, *ptridentifier ) ;
+					printf( "Error %s: '%s' missing/n", name, *ptridentifier ) ;
 					exit( 1 ) ;
 				}
 				ptridentifier++;
@@ -290,8 +290,8 @@ void	InitAdelineSystem( char *name, LONG inits )
 
 	if (VESA_Error)
 	{
-		printf( "Error: SVGA card BIOS does not support VESA extensions.\n") ;
-		printf( "       Please refer to your SVGA card documentation for installing VESA driver.\n") ;
+		printf( "Error: SVGA card BIOS does not support VESA extensions./n") ;
+		printf( "       Please refer to your SVGA card documentation for installing VESA driver./n") ;
 		exit( 1 ) ;
 	}
 

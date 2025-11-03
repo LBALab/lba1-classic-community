@@ -1,11 +1,11 @@
-#include	"lib_sys\adeline.h"
-#include	"lib_sys\lib_sys.h"
-#include	"lib_svga\lib_svga.h"
-#include	"lib_menu\lib_menu.h"
+#include	"lib_sys/adeline.h"
+#include	"lib_sys/lib_sys.h"
+#include	"lib_svga/lib_svga.h"
+#include	"lib_menu/lib_menu.h"
 
 #include	<stdio.h>
 #include	<stdlib.h>
-#include	<sys\types.h>
+#include	<sys/types.h>
 #include	<direct.h>
 #include	<string.h>
 #include	<dos.h>
@@ -171,7 +171,7 @@ void	ScanDirs( UBYTE *selection )
 	for( n=0; n<NbDirs; n++ )
 	{
 		strcpy( path, IndexDirs[n] ) ;
-		strcat( path, "\\" ) ;
+		strcat( path, "//" ) ;
 		strcat( path, selection ) ;
 		if( ThereIsFiles( path ) )
 		{
@@ -465,7 +465,7 @@ WORD	FileSelector(	UBYTE *titre,
 		{
 			_splitpath( SelectorPathname, SDrive, SDir, SName, SExt ) ;
 			strcpy( SelectorPathname, SearchPathname ) ;
-			strcat( SelectorPathname, "\\" ) ;
+			strcat( SelectorPathname, "//" ) ;
 			strcat( SelectorPathname, SName ) ;
 			strcat( SelectorPathname, SExt ) ;
 

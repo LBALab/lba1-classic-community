@@ -7,7 +7,7 @@
 ;----------------------------------------------------------------------------
 				.data
 ;----------------------------------------------------------------------------
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
 
 FULL_OPTIMIZE	equ	1
@@ -35,8 +35,8 @@ BufferClip	db	512	dup(?)
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	AffGraph
-			public	NoLanguage	GetDxDyGraph
+			public AffGraph
+			public GetDxDyGraph
 
 ;----------------------------------------------------------------------------
 AffGraph		proc	uses esi edi ebx ebp,\

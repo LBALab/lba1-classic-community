@@ -3,7 +3,7 @@
 
 	.CODE
 
-	public	NoLanguage	HQR_GiveIndex
+	public HQR_GiveIndex
 
 HQR_GiveIndex	proc ,\
 		index:DWORD, nbindex:DWORD, ptrlist:DWORD

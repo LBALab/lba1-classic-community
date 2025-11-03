@@ -5,6 +5,34 @@ We are releasing this code with preservation in mind, as this piece of work was 
 
 The engine uses Assembly code and was originally compiled with non-open source libraries which have been excluded from the project. 
 
+### Build using CMake and OpenWatcom 2
+
+This project supports building for multiple platforms:
+- **DOS** (32-bit protected mode with DOS/4GW) → `LBAD.EXE`
+- **Windows 9x/NT** (Win32 PE executable) → `LBAW.exe`
+
+#### Quick Start
+
+**Build both platforms at once:**
+```bash
+mkdir build
+cd build
+cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/openwatcom.cmake -DBUILD_DOS=ON -DBUILD_WIN9X=ON ..
+cmake --build . --config Release
+```
+
+**Test DOS version:**
+```bash
+dosbox-x build/bin/LBAD.EXE
+```
+
+**Test Windows version:**
+```bash
+wine build/bin/LBAW.exe
+```
+
+For detailed platform information, see [BUILD_PLATFORMS.md](BUILD_PLATFORMS.md)
+
 ### Licence
 This source code is licensed under the [GNU General Public License](https://github.com/2point21/lba1-classic-community/blob/main/LICENSE).
 

@@ -7,14 +7,14 @@
 
 				.data
 
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CopyBlock
-			public	NoLanguage	SaveBlock
-			public	NoLanguage	RestoreBlock
+			public CopyBlock
+			public SaveBlock
+			public RestoreBlock
 
 ;----------------------------------------------------------------------------
 ;			CopyBlock( x0, y0, x1, y1, *src, xd, yd, *dst )

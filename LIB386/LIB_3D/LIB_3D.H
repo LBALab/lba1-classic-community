@@ -35,6 +35,8 @@ typedef struct {	WORD	Xp ;
 			WORD	Zrot ;   } T_LIST_POINT ;
 
 
+extern		WORD 	P_SinTab[] ;
+
 extern		WORD	AnimMasterRot ;
 extern		WORD	AnimStepAlpha, AnimStepBeta, AnimStepGamma ;
 extern		WORD	AnimStepX, AnimStepY, AnimStepZ ;

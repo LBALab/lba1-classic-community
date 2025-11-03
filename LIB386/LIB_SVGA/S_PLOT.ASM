@@ -11,8 +11,8 @@
 
 				.code
 
-			public	 NoLanguage	Plot
-			public	 NoLanguage	GetPlot
+			public Plot
+			public GetPlot
 
 ;----------------------------------------------------------------------------
 ;			Plot( x, y, coul )

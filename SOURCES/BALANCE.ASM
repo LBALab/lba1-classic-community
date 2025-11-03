@@ -5,12 +5,12 @@
 
 		.data
 
-		extrn	NoLanguage P_SinTab:WORD
+		extrn P_SinTab:WORD
 
 		.code
 
-		public	NoLanguage	Balance
-		public	NoLanguage	BalanceWord
+		public Balance
+		public BalanceWord
 
 
 Balance		PROC uses ebx,\

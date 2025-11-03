@@ -11,13 +11,13 @@ EVEN
 CptPixl		dw	0
 CptLine		dw	0
 
-			include	lib_svga\svga.ash
+			include lib_svga/svga.ash
 
 
 ;----------------------------------------------------------------------------
 				.code
 
-			public	NoLanguage	CopyBlockOnBlack
+			public CopyBlockOnBlack
 
 ;----------------------------------------------------------------------------
 ;			ptsrc -> ptdst

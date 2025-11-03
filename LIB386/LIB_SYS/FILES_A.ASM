@@ -10,9 +10,9 @@
 
 				.code
 
-			public	NoLanguage	Touch
-			extrn	NoLanguage	OpenRead:PROC
-			extrn	NoLanguage	Close:PROC
+			public Touch
+			extrn OpenRead:PROC
+			extrn Close:PROC
 
 ;----------------------------------------------------------------------------
 Touch			proc	,\

@@ -32,9 +32,9 @@ AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 .SILENT
 
-OBJETS1  = FILES.obj MALLOC.obj LOADMALL.obj LOADSAVE.obj DEF_FILE.obj
-OBJETS2  = System.obj Timer_a.obj Timer.obj Buffer_A.obj DIVERS.obj
-OBJETS3  = Keyb.obj Keyboard.obj Expand.obj HQ_ress.obj hqr.obj
+OBJETS1  = FILES.obj LOADMALL.obj LOADSAVE.obj DEF_FILE.obj
+OBJETS2  = System.obj Buffer_A.obj DIVERS.obj
+OBJETS3  = Expand.obj HQ_ress.obj hqr.obj
 OBJETS4  = DllLoad.obj Adeline.obj HQ_mem.obj HQ_r_m.obj Files_A.obj
 
 !ifeq WATCOM9 yes
@@ -51,12 +51,9 @@ $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4)
 
 	@$(WL) $(LFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp
-	@prntitre G "$(LIB)"
 
 .c.obj :
-	PRNTITRE M "$*.C"
 	$(CC) $^& $(CFLAGS)
 
 .asm.obj :
-	PRNTITRE M "$*.ASM"
 	$(ASM) $(AFLAGS) $^&.ASM

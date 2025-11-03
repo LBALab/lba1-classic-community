@@ -6,7 +6,7 @@
 ;═══════════════════════════════════════════════════════════════════════
 		.data
 
-		public	NoLanguage	BinGphMouse
+		public BinGphMouse
 
 BinGphMouse	LABEL	WORD
 

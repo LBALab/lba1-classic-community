@@ -1,4 +1,4 @@
-#include	"defines.h"
+#include	"DEFINES.H"
 
 /* define _FAR before including any definitions, so it can be used */
 #ifdef __DOS__
@@ -9,23 +9,6 @@
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
-
-#include	"ambiance.def"
-#include	"diskfunc.def"
-#include	"extra.def"
-#include	"fiche.def"
-#include	"flipbox.def"
-#include	"gamemenu.def"
-#include	"gerelife.def"
-#include	"geretrak.def"
-#include	"grille.def"
-#include	"holomap.def"
-#include	"incrust.def"
-#include	"message.def"
-#include 	"msg_cust.def"
-#include	"object.def"
-#include	"perso.def"
-#include	"playfla.def"
 
 /* prototype */
 
@@ -105,6 +88,18 @@ extern	LONG	Version_US ;
 
 extern	WORD	FlagWindowsFilenameSaving;
 
+extern void ChangeBalance(short ,unsigned char ,unsigned char ,unsigned char );
+extern void LoadNextFrameFla(void);
+extern void DrawNextFrameFla(void);
+extern short InitFla(char *);
+extern void ClearFla(void);
+extern void GestionPalette(void);
+extern void PlayAnimFla(char *);
+extern void CutPoint(unsigned char *);
+extern short SearchFla(unsigned char *,unsigned char *,long ,unsigned char *);
+extern void PlayDiskFla(unsigned char *);
+
+
 /*-------- RESSOURCES ---------------------------------------------*/
 
 extern	T_HQR_HEADER	*HQR_Samples ;
@@ -133,6 +128,11 @@ extern	UBYTE	Pathname[] ;
 
 extern	UBYTE	FliPathname[_MAX_PATH] ;
 
+extern void GetDiskEnv(unsigned char *);
+extern void RestoreDiskEnv(void);
+extern short LoadScene(short );
+
+
 /*-------- SCRIPT.C ---------------------------------------------*/
 
 extern	UBYTE	FicName[] ;
@@ -144,6 +144,13 @@ extern	UBYTE	*PtrFicName ;
 
 extern	WORD	NbPhysBox ;
 extern	WORD	NbOptPhysBox ;
+
+extern void AddOptBox(short ,short ,short ,short );
+extern void AddPhysBox(short ,short ,short ,short );
+extern void FlipOptList(void);
+extern void FlipBoxes(void);
+extern void ClsBoxes(void);
+
 
 /*-------- LIB_SVGA ---------------------------------------------*/
 
@@ -195,6 +202,13 @@ extern	UBYTE	ListFlagInventory[] ;
 
 extern	UBYTE	*ListMove[] ;
 
+extern void DoFuncLife(T_OBJET *);
+extern short DoTest(void);
+extern void DoLife(short );
+
+extern void DoTrack(short );
+
+
 /*--------- holomap ----------------------------*/
 
 //extern	T_HOLO_OBJ	ListHoloObj[MAX_HOLO_OBJ] ;
@@ -203,11 +217,78 @@ extern	UBYTE	*ListMove[] ;
 extern	T_HOLO_POS	*ListHoloPos ; // [MAX_HOLO_POS] ;
 extern	UBYTE	TabHoloPos[] ;
 
+extern void ComputeCoorMapping(void);
+extern void ComputeCoorGlobe(void);
+extern int z_sort(void const *, void const *);
+extern void ComputeGlobeProj(void);
+extern void DrawHoloMap(short ,short ,short );
+extern void DrawListPos(short ,short ,short ,short );
+extern long SearchNextArrow(long );
+extern long SearchPrevArrow(long );
+extern void SetHoloPos(unsigned char );
+extern void ClrHoloPos(unsigned char );
+extern void DrawTitle(short ,short ,short );
+extern void DrawCurseur(void);
+extern void InitHoloDatas(void);
+extern void HoloMap(void);
+extern void DrawHoloObj(unsigned char *,short ,short ,short );
+extern short *GiveTrajPtr(long );
+extern void HoloTraj(short );
+
+
 /*--------- menus -----------------------------*/
 
 extern	WORD	GameChoice ;
 extern	WORD	GameNbChoices ;
 extern	WORD	GameListChoice[] ;
+
+extern void Init3DGame(void);
+extern void DrawFire(short ,short ,short ,short ,short );
+extern void WaitReleaseSpace(void);
+extern void DrawObj3D(short ,short ,short ,short ,short ,short ,unsigned char *);
+extern void DrawCadre(short ,short ,short ,short );
+extern void DrawComportement(short ,short ,short );
+extern void DrawInfoMenu(short ,short );
+extern void DrawMenuComportement(short );
+extern void MenuComportement(void);
+extern void Draw3dObject(short ,short ,short *,short ,short );
+extern void DrawOneInventory(short );
+extern void DrawListInventory(void);
+extern void Inventory(void);
+extern void DoFoundObj(short );
+extern void ExtInitMcga(void);
+extern void ExtInitSvga(void);
+extern void TestRestoreModeSVGA(long );
+extern void CopyBlockPhysMCGA(long ,long ,long ,long );
+extern short PlayerGameList(unsigned char **,unsigned char *, short, short );
+extern short FindPlayerFile(void);
+extern void SaveGame(void);
+extern void LoadGame(void);
+extern void DrawOneString(short ,short ,unsigned char *,short );
+extern void DrawSingleString(short ,short ,unsigned char *);
+extern void DrawOneLetter(short ,short ,short );
+extern void DrawAllLetters(void);
+extern short InputPlayerName(short, short );
+extern short ChoosePlayerName(short, short, short );
+extern void DrawOneChoice(short ,short ,short ,short ,short );
+extern void InfoWallCollisionDamage();
+extern void DrawGameMenu(unsigned short *,short );
+extern void SetVolumes(long ,long ,long ,long ,long );
+extern short DoGameMenu(unsigned short *);
+extern long OptionsMenu(void);
+extern void VolumeOptions(void);
+extern void SavedGameManagement(void);
+extern void AdvancedOptions(void);
+extern long MainGameMenu(void);
+extern long QuitMenu(short );
+extern void GameAskChoice(short );
+extern void GameOver(void);
+extern void Credits(void);
+extern void RessPict(short );
+extern void TimerPause(short );
+extern void AdelineLogo(void);
+extern void MenuDemo(void);
+
 
 /*--------- perso ----------------------------*/
 
@@ -297,6 +378,20 @@ extern	WORD	SaveNbFourLeafClover ;
 
 extern  WORD	WallColDamageEnabled ;	// 0: disabled, 1: enabled
 
+
+extern void InitGameLists(void);
+extern void InitGame(int ,unsigned char **);
+extern void Introduction(void);
+extern long MainLoop(void);
+extern void ReadVolumeSettings(void);
+extern void WriteVolumeSettings(void);
+extern void InitProgram(void);
+extern void TheEnd(short ,unsigned char *);
+extern int _FAR Critical_Error_Handler(unsigned int ,unsigned int ,unsigned int _FAR *);
+extern void Message(unsigned char *,short );
+extern void main(int ,unsigned char **);
+
+
 /*--------- Extra objs ----------------------------*/
 
 extern	T_EXTRA	ListExtra[] ;
@@ -305,9 +400,43 @@ extern	T_EXTRA	ListExtra[] ;
 extern	T_HQR_HEADER	*HQRPtrSpriteExtra ;
 extern	WORD	*PtrZvExtra ;
 
+extern void InitFly(T_EXTRA *,short ,short ,short ,short );
+extern void BounceExtra(T_EXTRA *,short ,short ,short );
+extern short ExtraBonus(short ,short ,short ,short ,short ,short ,short );
+extern short ExtraExplo(short ,short ,short );
+extern short SearchBonusKey(void);
+extern short ExtraSearch(short ,short ,short ,short ,short ,short ,short ,short );
+extern short ExtraSearchKey(short ,short ,short ,short ,short ,short );
+extern short ExtraCheckObjCol(T_EXTRA *,short );
+extern short ExtraCheckExtraCol(T_EXTRA *,short );
+extern unsigned char FullWorldColBrick(short ,short ,short ,short ,short ,short );
+extern void ClearScreenMinMax(void);
+extern void AdjustScreenMax(void);
+extern void Aff2DShape(short *,short ,short ,short ,short ,short );
+extern void AffSpecial(short ,short ,short );
+extern void InitSpecial(short ,short ,short ,short );
+extern long CoulRetourBalle(T_EXTRA *);
+extern void ClearExtra(void);
+extern short ThrowExtra(short ,short ,short ,short ,short ,short ,short ,short ,short ,short );
+extern void GiveExtraBonus(T_OBJET *);
+extern void ZoneGiveExtraBonus(T_ZONE *);
+extern void GereExtras(void);
+
+
+extern void ThrowMagicBall(short ,short ,short ,short ,short ,short ,unsigned char );
+extern void GereAnimAction(T_OBJET *,short );
+extern short SearchAnim(unsigned char ,short );
+extern short SearchBody(unsigned char ,short );
+
+
 /*---------------- incrust display ----------------*/
 
 extern	T_INCRUST_DISP	ListIncrustDisp[] ;
+
+extern void InitIncrustDisp(short ,short ,short ,short ,short ,short ,short );
+extern void ChangeIncrustPos(short ,short ,short ,short );
+extern void DrawBulle(short );
+
 
 /*-------- Moteur 3D ---------------------------------------------*/
 
@@ -328,6 +457,36 @@ extern	T_SORT	ListTri[] ;
 
 extern	WORD	NumObjFollow ;
 
+extern void InitObject(short );
+extern void StartInitObj(short );
+extern void StartInitAllObjs(void);
+extern void LoadFicPerso(void);
+extern void InitPerso(void);
+extern void SetComportement(short );
+extern void RestartPerso(void);
+extern void ClearFlagsCube(void);
+extern void ClearScene(void);
+extern void ChangeCube(void);
+extern void HitObj(short ,short ,short ,short );
+extern long CheckZvOnZv(short ,short );
+extern short CheckObjCol(short );
+extern void CheckCarrier(short );
+extern long CheckValidObjPos(short );
+extern void InitBody(unsigned char ,short );
+extern void InitSprite(short ,short );
+extern short InitAnim(unsigned char ,short ,unsigned char ,short );
+extern void ReajustPos(unsigned char );
+extern void ReceptionObj(void);
+extern void DoCornerReajust(short ,short ,short ,short );
+extern void DoCornerReajustTwinkel(short ,short ,short ,short );
+extern void DoAnim(short );
+extern void ManualRealAngle(T_OBJET *);
+extern void ClearRealAngle(T_OBJET *);
+extern void DoDir(short );
+extern void AffScene(long );
+extern void CheckZoneSce(T_OBJET *,short );
+
+
 /*--------- ambiance ----------------------------*/
 
 extern	WORD	SampleAmbiance[] ;
@@ -340,6 +499,28 @@ extern	WORD	SecondMin ;
 extern	WORD	CubeJingle ;
 extern	UBYTE	*PtrXmi ;
 extern	WORD	NumXmi ;
+
+extern unsigned long HQ_MixSample(short ,short ,short ,short ,short );
+extern void HQ_StopSample(void);
+extern void HQ_StopOneSample(short );
+extern short GiveBalance(short ,short ,long ,unsigned long *,unsigned long *);
+extern void HQ_3D_MixSample(short ,short ,short ,short ,short ,short );
+extern void HQ_ChangeBalanceSamples(short ,short );
+extern void GereAmbiance(void);
+extern void FadePal(unsigned char ,unsigned char ,unsigned char ,unsigned char *,short );
+extern void FadeToBlack(unsigned char *);
+extern void WhiteFade(void);
+extern void FadeWhiteToPal(unsigned char *);
+extern void FadeToPal(unsigned char *);
+extern void SetBlackPal(void);
+extern void FadePalToPal(unsigned char *,unsigned char *);
+extern void FadeToRed(unsigned char *);
+extern void FadeRedToPal(unsigned char *);
+extern void FadeMusicMidi(unsigned long );
+extern void StopMusicMidi(void);
+extern void PlayMusic(short );
+extern void PlayMidiFile(short );
+
 
 /*-------- Brick ISO ---------------------------------------------*/
 
@@ -372,10 +553,58 @@ extern	WORD	CubeClip ;
 extern	WORD	CubeClipX, CubeClipY, CubeClipZ ;
 
 extern	WORD	FlagAffGrille ;
+
+extern long LoadUsedBrick(unsigned long );
+extern long InitGrille(unsigned short );
+extern void FreeGrille(void);
+extern unsigned char *GetAdrColonneMap(long ,long );
+extern unsigned char *GetAdrColonneCube(long ,long );
+extern void GetShadow(short ,short ,short );
+extern unsigned long CreateMaskGph(unsigned char *,unsigned char *);
+extern void MixteMapToCube(unsigned char *);
+extern void CopyMapToCube(void);
+extern void InitBufferCube(void);
+extern void DrawOverBrick(short ,short ,short );
+extern void DrawOverBrick3(short ,short ,short );
+extern void AffBrickBlock(long ,long ,long ,long ,long );
+extern void AffGrille(void);
+extern void IncrustGrm(short );
+
 /*--------- Message ---------------------------------------------*/
 
 extern	WORD	NumObjSpeak ;
 extern	LONG	FlagSpeak ;
 
+extern void TimeBar(unsigned long ,unsigned long );
+extern void InitLanguage(void);
+extern long FindText(long );
+extern void InitDial(long );
+extern void ClearDial(void);
+extern void GetNextWord(char *,char *);
+extern void PushCar(long ,long ,long );
+extern void AffOneCar(long ,long ,long ,long );
+extern void AffAllCar(void);
+extern void CoulDial(long ,long ,long );
+extern void TestCoulDial(short );
+extern long GetText(long );
+extern void AffFleche(void);
+extern void InitDialWindow(void);
+extern void SecondInitDialWindow(void);
+extern void NormalWinDial(void);
+extern void BigWinDial(void);
+extern void CommonOpenDial(long );
+extern void OpenDial(long );
+extern void OpenDialNoWindow(long );
+extern void GetNextLine(void);
+extern void InitEndPage(void);
+extern long NextDialCar(void);
+extern void CloseDial(void);
+extern void Dial(long );
+extern void MyDial(short );
+extern char *GetMultiText(long ,char *);
+extern char* GetCurrentListLanguage();
 
+/*--------- custom text ---------------------------------------------*/
+
+extern char* GetCustomizedMultiText(LONG numParam);
 
