@@ -5,8 +5,9 @@
 # Platform-specific files moved to LIB_SYS_DOS/LIB_SYS_WIN:
 #   - TIMER.C, TIMER_A.ASM (timer implementation)
 #   - KEYB.C, KEYBOARD.ASM (keyboard implementation)
-# MALLOC.C contains both DosMalloc (platform-specific, in lib_sys_platform.h)
-# and Malloc/Free (general purpose, stays in LIB_SYS)
+#   - MALLOC.C (platform-specific memory management - in LIB_SYS_DOS/LIB_SYS_WIN)
+# Note: MALLOC.C provides Malloc/Free/SmartMalloc/Mshrink functions
+#       DOS version is in LIB_SYS_DOS, Windows version is in LIB_SYS_WIN
 set(LIB_SYS_SOURCES
     # OBJETS1 - File handling
     FILES.C
@@ -27,8 +28,6 @@ set(LIB_SYS_SOURCES
     HQ_MEM.C
     HQ_R_M.C
     FILES_A.ASM
-    # Memory management (Malloc/Free - general purpose)
-    MALLOC.C
 )
 
 # Create static library

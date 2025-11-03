@@ -1,13 +1,16 @@
-/* MALLOC.C - Cross-platform memory allocation */
-
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "ADELINE.H"
 #include "LIB_SYS.H"
 
 #ifdef DEBUG_MALLOC
 LONG ModeTraceMalloc = FALSE;
 #endif
+
+/* Only compile these functions for non-DOS platforms */
+/* DOS builds use the full DPMI implementation from LIB_SYS_DOS/MALLOC.C */
+#ifndef __DOS__
 
 void *Malloc(LONG lenalloc)
 {
@@ -50,3 +53,5 @@ void *Mshrink(void *buffer, ULONG taille)
 	new_buffer = realloc(buffer, taille);
 	return new_buffer ? new_buffer : buffer;
 }
+
+#endif /* !__DOS__ */

@@ -1,0 +1,60 @@
+# name the compiler
+!ifdef %HOME
+!ifeq WATCOM9 yes
+CC = c:\compil\watcom\bin\wcc386p
+WL = c:\compil\watcom\binb\wlib
+!else
+CC = c:\compil\watcom10\binb\wcc386
+WL = c:\compil\watcom10\binb\wlib
+!endif
+!else
+!ifeq WATCOM9 yes
+CC = f:\compil\watcom\bin\wcc386p
+WL = f:\compil\watcom\binb\wlib
+!else
+CC = f:\compil\watcom10\binb\wcc386
+WL = f:\compil\watcom10\binb\wlib
+!endif
+!endif
+
+CC = wcc386
+WL = wlib
+ASM = ml
+
+!ifeq WATCOM9 yes
+CFLAGS = /oeaxt /zp2 /4s /zq /s /DWATCOM9
+!else
+CFLAGS = /onatx /oh /oi /ei /zp2 /6s /fp6 /s /wx /wcd=131 /wcd=202 /wcd=303 /wcd=308
+!endif
+LFLAGS = /c /q /b /n
+#AFLAGS = /m2 /mx /z /p /q /t /jMASM51 /jQUIRKS
+AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
+
+.SILENT
+
+OBJETS1  = MALLOC.obj
+OBJETS2  = Timer_a.obj Timer.obj
+OBJETS3  = Keyb.obj Keyboard.obj
+
+!ifeq WATCOM9 yes
+LIB      = LB9_SYS_DOS
+!else
+LIB      = LIB_SYS_DOS
+!endif
+
+$(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3)
+	@echo $(OBJETS1) > clibmak.rsp
+	@echo $(OBJETS2) >> clibmak.rsp
+	@echo $(OBJETS3) >> clibmak.rsp
+
+	@$(WL) $(LFLAGS) $(LIB) @clibmak.rsp
+	@del clibmak.rsp
+	@prntitre G "$(LIB)"
+
+.c.obj :
+	PRNTITRE M "$*.C"
+	$(CC) $^& $(CFLAGS)
+
+.asm.obj :
+	PRNTITRE M "$*.ASM"
+	$(ASM) $(AFLAGS) $^&.ASM

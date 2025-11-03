@@ -70,37 +70,6 @@ file(GLOB_RECURSE ALL_C_FILES "${CMAKE_SOURCE_DIR}/LIB386/*.C" "${CMAKE_SOURCE_D
 file(GLOB_RECURSE ALL_H_FILES "${CMAKE_SOURCE_DIR}/LIB386/*.H" "${CMAKE_SOURCE_DIR}/LIB386/*.h" 
                                 "${CMAKE_SOURCE_DIR}/SOURCES/*.H" "${CMAKE_SOURCE_DIR}/SOURCES/*.h")
 
-# Patch ASH files: Remove NoLanguage keyword
-foreach(ash_file ${ALL_ASH_FILES})
-    execute_process(
-        COMMAND sed -i.bak "s/extrn[[:space:]]*NoLanguage[[:space:]]*/extrn /g" "${ash_file}"
-        OUTPUT_QUIET ERROR_QUIET
-    )
-endforeach()
-
-# Patch ASM files: Remove NoLanguage variants and fix include paths
-foreach(asm_file ${ALL_ASM_FILES})
-    execute_process(
-        COMMAND sed -i.bak 
-            -e "s/extrn[[:space:]]*NoLanguage[[:space:]]*/extrn /gi"
-            -e "s/public[[:space:]]*NoLanguage[[:space:]]*/public /gi"
-            -e "s/include[[:space:]]*\\([^\\]*\\)\\\\\\([^\\]*\\)/include \\1\\/\\2/gi"
-            "${asm_file}"
-        OUTPUT_QUIET ERROR_QUIET
-    )
-endforeach()
-
-# Patch C/H files: Fix backslash include paths
-foreach(file ${ALL_C_FILES} ${ALL_H_FILES})
-    execute_process(
-        COMMAND sed -i.bak "s/\\([\"<]\\)\\([^\"<>]*\\)\\\\\\([^\"<>]*\\)\\([>\"]\\)/\\1\\2\\/\\3\\4/g" "${file}"
-        OUTPUT_QUIET ERROR_QUIET
-    )
-endforeach()
-
-# Clean up .bak files
-execute_process(COMMAND find "${CMAKE_SOURCE_DIR}" -name "*.bak" -type f -delete OUTPUT_QUIET ERROR_QUIET)
-
 list(LENGTH ALL_ASM_FILES NUM_ASM)
 list(LENGTH ALL_ASH_FILES NUM_ASH)
 list(LENGTH ALL_C_FILES NUM_C)
