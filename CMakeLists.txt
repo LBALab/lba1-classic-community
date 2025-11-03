@@ -7,12 +7,12 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 set(CMAKE_C_SOURCE_FILE_EXTENSIONS C;c)
 set(CMAKE_ASM_MASM_SOURCE_FILE_EXTENSIONS ASM;asm)
 
-#------------------------------------------------------------------------------
-# Build Target Selection
-# Build options: DOS (DOS/4GW), Windows 9x, or BOTH
-#------------------------------------------------------------------------------
+# Target Platform
 option(BUILD_DOS "Build DOS version (LBAD.EXE)" ON)
 option(BUILD_WIN9X "Build Windows 9x version (LBAW.exe)" ON)
+
+# Enable debug tools
+# add_definitions(-DDEBUG_TOOLS)
 
 if(NOT BUILD_DOS AND NOT BUILD_WIN9X)
     message(FATAL_ERROR "At least one platform must be enabled (BUILD_DOS or BUILD_WIN9X)")
