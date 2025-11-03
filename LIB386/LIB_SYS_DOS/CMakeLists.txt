@@ -7,13 +7,16 @@ set(SYS_DOS_C_SOURCES
     TIMER.C
     KEYB.C
     MALLOC.C
+    # converted from assembly
+    KEYBOARD.C
+    TIMER_A.C
 )
 
 # Assembly source files
 set(SYS_DOS_ASM_SOURCES
-    TIMER_A.ASM
-    KEYBOARD.ASM
-    HARDERR.ASM
+    #TIMER_A.ASM
+    #KEYBOARD.ASM
+    #HARDERR.ASM
 )
 
 # Compile C sources

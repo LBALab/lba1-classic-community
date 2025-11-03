@@ -8,3 +8,4 @@ tags
 build/
 build-dos/
 build-win9x/
+.vscode/settings.json
