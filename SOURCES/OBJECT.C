@@ -2985,7 +2985,7 @@ void	AffScene( LONG flagflip )
 						   ClipXmin, ClipYmin, Screen ) ;
 				}
 
-//DrawZV( &ListObjet[numobj] ) ;
+				DrawZV( &ListObjet[numobj] ) ;
 
 			}
 		}
