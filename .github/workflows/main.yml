@@ -18,7 +18,7 @@ jobs:
           arch: x86
 
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Open Watcom environment
         run: |
@@ -47,7 +47,7 @@ jobs:
           Pop-Location
 
       - name: Upload the build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lba1
           path: SOURCES/LBA0.exe
