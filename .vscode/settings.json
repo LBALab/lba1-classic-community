@@ -48,6 +48,7 @@
         "CPYMASK.C": "cpp",
         "PERSO copy.C": "cpp",
         "MAIN.C": "cpp",
-        "OBJECT.C": "cpp"
+        "OBJECT.C": "cpp",
+        "FIRE.C": "cpp"
     }
 }

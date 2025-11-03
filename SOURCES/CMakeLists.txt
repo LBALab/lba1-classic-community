@@ -24,6 +24,7 @@ set(LBA_C_SOURCES
     ADFLI_A.C
     BALANCE.C
     CPYMASK.C
+    FIRE.C
 )
 
 set(LBA_ASM_SOURCES
@@ -31,7 +32,7 @@ set(LBA_ASM_SOURCES
     FUNC.ASM
     #CPYMASK.ASM
     #BALANCE.ASM
-    FIRE.ASM
+    #FIRE.ASM
     #ADFLI_A.ASM
     MCGA.ASM
 )
