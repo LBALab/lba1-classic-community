@@ -45,9 +45,14 @@ jobs:
           Push-Location "$env:GITHUB_WORKSPACE\SOURCES"
           wmake
           Pop-Location
+          
+      - name: Copy Community Text
+        run: Copy-Item "$env:GITHUB_WORKSPACE\SOURCES\Assets\Text\*.csv" "$env:GITHUB_WORKSPACE\SOURCES"
 
       - name: Upload the build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: lba1
-          path: SOURCES/LBA0.exe
+          path: |
+            SOURCES/LBA0.exe
+            SOURCES/*.csv
