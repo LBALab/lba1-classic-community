@@ -21,12 +21,14 @@ set(LBA_C_SOURCES
     HOLOMAP.C
     PLAYFLA.C
     MSG_CUST.C
+    # converted from asm
     ADFLI_A.C
     BALANCE.C
     CPYMASK.C
     FIRE.C
     FUNC.C
     GRILLE_A.C
+    MCGA.C
 )
 
 set(LBA_ASM_SOURCES
@@ -36,7 +38,7 @@ set(LBA_ASM_SOURCES
     #BALANCE.ASM
     #FIRE.ASM
     #ADFLI_A.ASM
-    MCGA.ASM
+    #MCGA.ASM
 )
 
 # Common libraries

@@ -51,6 +51,7 @@
         "OBJECT.C": "cpp",
         "FIRE.C": "cpp",
         "FUNC.C": "cpp",
-        "GRILLE_A.C": "cpp"
+        "GRILLE_A.C": "cpp",
+        "MCGA.C": "cpp"
     }
 }
