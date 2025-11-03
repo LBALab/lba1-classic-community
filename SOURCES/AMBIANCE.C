@@ -1,6 +1,6 @@
 
-#include	"c_extern.h"
-#include	"Balance.h"
+#include	"C_EXTERN.H"
+#include	"BALANCE.H"
 
 #ifdef	CDROM
 extern	LONG	FlagVoiceCD ;

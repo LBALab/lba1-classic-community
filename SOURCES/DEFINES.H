@@ -57,16 +57,16 @@
 #include	<conio.h>
 #include	<stdio.h>
 
-#include 	"lib_sys/adeline.h"
-#include 	"lib_sys/lib_sys.h"
-#include 	"lib_svga/lib_svga.h"
-#include 	"lib_3D/lib_3D.h"
-#include 	"lib_mix/lib_mix.h"
-#include 	"lib_samp/lib_wave.h"
-#include 	"lib_midi/lib_midi.h"
-#include 	"lib_cd/lib_cd.h"
+#include 	"LIB_SYS/ADELINE.H"
+#include 	"LIB_SYS/LIB_SYS.H"
+#include 	"LIB_SVGA/LIB_SVGA.H"
+#include 	"LIB_3D/LIB_3D.H"
+#include 	"LIB_MIX/LIB_MIX.H"
+#include 	"LIB_SAMP/LIB_WAVE.H"
+#include 	"LIB_MIDI/LIB_MIDI.H"
+#include 	"LIB_CD/LIB_CD.H"
 
-#include 	"common.h"
+#include 	"COMMON.H"
 
 /*---------------- macros ------------------*/
 
