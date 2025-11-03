@@ -1,13 +1,7 @@
 # LIB_SYS - System Library
 # Mixed C and Assembly library for system functions
 
-# Source files (from MAKEFILE OBJETS1-4)
-# Platform-specific files moved to LIB_SYS_DOS/LIB_SYS_WIN:
-#   - TIMER.C, TIMER_A.ASM (timer implementation)
-#   - KEYB.C, KEYBOARD.ASM (keyboard implementation)
-#   - MALLOC.C (platform-specific memory management - in LIB_SYS_DOS/LIB_SYS_WIN)
-# Note: MALLOC.C provides Malloc/Free/SmartMalloc/Mshrink functions
-#       DOS version is in LIB_SYS_DOS, Windows version is in LIB_SYS_WIN
+# Source files for LIB_SYS
 set(LIB_SYS_SOURCES
     # OBJETS1 - File handling
     FILES.C
