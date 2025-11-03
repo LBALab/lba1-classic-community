@@ -2984,8 +2984,9 @@ void	AffScene( LONG flagflip )
 					CopyBlock( ClipXmin, ClipYmin, ClipXmax, ClipYmax, Log,
 						   ClipXmin, ClipYmin, Screen ) ;
 				}
-
+#ifdef	DEBUG_TOOLS
 				DrawZV( &ListObjet[numobj] ) ;
+#endif
 
 			}
 		}
