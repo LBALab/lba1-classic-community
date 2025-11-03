@@ -73,11 +73,9 @@ $(LIBS):
 	@cd $(CURDIR)
 
 .c.obj :
-	PRNTITRE M "$*.C"
 	$(CC) $^& $(CFLAGS)
 
 .asm.obj :
-	PRNTITRE M "$*.ASM"
 	$(ASM) $(AFLAGS) $^&.ASM
 
 clean: .SYMBOLIC

@@ -49,12 +49,9 @@ $(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3)
 
 	@$(WL) $(LFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp
-	@prntitre G "$(LIB)"
 
 .c.obj :
-	PRNTITRE M "$*.C"
 	$(CC) $^& $(CFLAGS)
 
 .asm.obj :
-	PRNTITRE M "$*.ASM"
 	$(ASM) $(AFLAGS) $^&.ASM
