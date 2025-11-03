@@ -1,133 +1,172 @@
 #include "C_EXTERN.H"
 
-typedef struct {
-	UBYTE DeltaX;
-	UBYTE DeltaY;
-	UBYTE HotX;
-	UBYTE HotY;
-} Struc_Mask_Header;
 
-void CopyMask(LONG nummask, LONG x, LONG y, void *bankmask, void *src)
+void CopyMask(LONG nummask, LONG x, LONG y, void *bankmask, void *screen)
 {
-	ULONG *pTabOffLine;
-	ULONG *pBankMask;
-	Struc_Mask_Header *maskHeader;
-	UBYTE *maskData;
-	UINT screenWidth;
-	UINT xMin, yMin, xMax, yMax;
-	UINT marginTop, marginLeft, marginRight, marginBottom;
-	UINT deltaX, deltaY;
-	UINT initialOffset;
-	UBYTE *screen;
-	UBYTE *source;
-	UINT lineOffset;
-	UINT yIdx, xIdx;
-	UBYTE numberOfBlocks;
-	UINT numberOfZeroToJump;
-	UINT numberOfPixelToCopy;
+	UBYTE *pMask;
+	UBYTE *pSrc;
+	UBYTE *pDest;
+	LONG dx, dy;
+	LONG x1, y1;
+	LONG n;
+	UBYTE NbBlock;
+	ULONG *pTabOffLine = (ULONG *)&TabOffLine;
+	ULONG *pBank = (ULONG *)bankmask;
 
-	pTabOffLine = (ULONG *)&TabOffLine;
-	screenWidth = pTabOffLine[1];
-
-	if (y < 0)
-		y = 0;
-
-	pBankMask = (ULONG *)bankmask;
-	maskHeader = (Struc_Mask_Header *)((UBYTE *)bankmask + pBankMask[nummask]);
-	xMin = maskHeader->HotX + x;
-	yMin = maskHeader->HotY + y;
-	maskData = (UBYTE *)maskHeader + sizeof(Struc_Mask_Header); /* Skip header */
-
-	/* Test Clipping */
-	xMax = maskHeader->DeltaX + xMin - 1;
-	yMax = maskHeader->DeltaY + yMin - 1;
-
-	marginTop = 0;
-	marginLeft = 0;
-	marginRight = 0;
-	marginBottom = 0;
-
-	if (xMin < ClipXmin || yMin < ClipYmin || xMax > ClipXmax || yMax > ClipYmax)
+	pMask = (UBYTE *)bankmask + pBank[nummask];
+	pSrc = (UBYTE *)screen;
+	
+	dx = pMask[0];
+	dy = pMask[1];
+	x += pMask[2];
+	y += pMask[3];
+	
+	pMask += 4;
+	
+	x1 = dx + x - 1;
+	y1 = dy + y - 1;
+	
+	if ((x < ClipXmin) || (y < ClipYmin) || (x1 > ClipXmax) || (y1 > ClipYmax))
 	{
-		/* ClippingMask: */
-		if (xMin > ClipXmax || yMin > ClipYmax || xMax < ClipXmin || yMax < ClipYmin)
+		UBYTE *pSrcLine;
+		UBYTE *pDestLine;
+		LONG OffsetBegin = 0;
+		LONG NbPix, pixLeft, offset;
+		
+		if ((x > ClipXmax) || (y > ClipYmax) || (x1 < ClipXmin) || (y1 < ClipYmin))
 		{
 			return;
 		}
-
-		if (yMin < ClipYmin)
+		
+		if (y < ClipYmin)
 		{
-			/* Clipping top */
-			marginTop = ClipYmin - yMin;
+			for (n = ClipYmin - y; n > 0; n--)
+			{
+				NbBlock = *pMask;
+				pMask += NbBlock + 1;
+			}
+			y = ClipYmin;
 		}
-		/* Clipping bottom */
-		/* PasHaut: */
-		if (yMax > ClipYmax)
+		
+		if (y1 > ClipYmax)
 		{
-			marginBottom = yMax - ClipYmax;
+			y1 = ClipYmax;
 		}
-		/* Clipping left */
-		/* PasBas: */
-		if (xMin < ClipXmin)
+		
+		if (x < ClipXmin)
 		{
-			marginLeft = ClipXmin - xMin;
+			OffsetBegin = ClipXmin - x;
 		}
-		/* Clipping right */
-		/* PasGauche: */
-		if (xMax > ClipXmax)
+		
+		NbPix = x1 - x - OffsetBegin + 1;
+		if (x1 > ClipXmax)
 		{
-			marginRight = xMax - ClipXmax;
+			NbPix -= x1 - ClipXmax;
+		}
+		
+		n = pTabOffLine[y] + x + OffsetBegin;
+		pSrcLine = pSrc + n;
+		pDestLine = Log + n;
+		
+		for (dy = y1 - y + 1; dy; dy--)
+		{
+			offset = OffsetBegin;
+			pixLeft = NbPix;
+			
+			pSrc = pSrcLine;
+			pDest = pDestLine;
+			
+			NbBlock = *pMask++;
+			
+			while ((NbBlock > 1) && (pixLeft > 0))
+			{
+				n = *pMask++;
+				NbBlock--;
+				
+				if (offset)
+				{
+					offset -= n;
+					
+					if (offset < 0)
+					{
+						pSrc -= offset;
+						pDest -= offset;
+						pixLeft += offset;
+						offset = 0;
+					}
+				}
+				else if (n)
+				{
+					pDest += n;
+					pSrc += n;
+					pixLeft -= n;
+				}
+				
+				if (pixLeft > 0)
+				{
+					n = *pMask++;
+					NbBlock--;
+					
+					if (offset)
+					{
+						offset -= n;
+						if (offset <= 0)
+						{
+							n = -offset;
+							offset = 0;
+						}
+					}
+					
+					if (!offset && n > 0)
+					{
+						if (n > pixLeft)
+						{
+							n = pixLeft;
+						}
+						pixLeft -= n;
+						
+						memcpy(pDest, pSrc, n);
+						pDest += n;
+						pSrc += n;
+					}
+				}
+			}
+			
+			pMask += NbBlock;
+			pDestLine += Screen_X;
+			pSrcLine += Screen_X;
 		}
 	}
-
-	/* Calculate Offset Screen */
-	deltaX = xMax - xMin + 1; /* (deltaX) */
-	initialOffset = pTabOffLine[yMin] + xMin;
-	screen = (UBYTE *)Log + initialOffset;
-	source = (UBYTE *)src + initialOffset;
-	deltaY = yMax - yMin + 1; /* NbLine (deltaY) */
-	lineOffset = screenWidth - deltaX;
-	
-	for (yIdx = 0; yIdx < deltaY; yIdx++)
+	else
 	{
-		/* NextLine: */
-		numberOfBlocks = *maskData; /* Nb Block for this line */
-		maskData++;
-		xIdx = 0;
-
-		do
+		n = pTabOffLine[y] + x;
+		pDest = Log + n;
+		pSrc += n;
+		dx = Screen_X - dx;
+		
+		for (; dy; dy--)
 		{
-			/* SameLine: */
-			numberOfZeroToJump = *maskData; /* Nb Zero to Jump */
-			maskData++;
-			screen += numberOfZeroToJump; /* Incrust on Log */
-			source += numberOfZeroToJump; /* And on PtSrc */
-			numberOfBlocks--;
-			if (numberOfBlocks == 0)
+			NbBlock = *pMask++;
+			while (NbBlock)
 			{
-				break;
-			}
-
-			xIdx += numberOfZeroToJump;
-
-			numberOfPixelToCopy = *maskData; /* Nb Zero to Write */
-			maskData++;
-			do
-			{
-				/* loopb: */
-				if (xIdx >= marginLeft && xIdx < deltaX - marginRight && yIdx >= marginTop && yIdx < deltaY - marginBottom)
+				n = *pMask++;
+				pDest += n;
+				pSrc += n;
+				NbBlock--;
+				
+				if (NbBlock)
 				{
-					*screen = *source;
+					n = *pMask++;
+					
+					memcpy(pDest, pSrc, n);
+					pDest += n;
+					pSrc += n;
+					NbBlock--;
 				}
-				xIdx++;
-				source++;
-				screen++;
-				--numberOfPixelToCopy;
-			} while (numberOfPixelToCopy);
-			numberOfBlocks--;
-		} while (numberOfBlocks);
-
-		screen += lineOffset;
-		source += lineOffset;
+			}
+			
+			pDest += dx;
+			pSrc += dx;
+		}
 	}
 }
