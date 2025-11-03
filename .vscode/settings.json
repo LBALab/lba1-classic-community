@@ -49,6 +49,7 @@
         "PERSO copy.C": "cpp",
         "MAIN.C": "cpp",
         "OBJECT.C": "cpp",
-        "FIRE.C": "cpp"
+        "FIRE.C": "cpp",
+        "FUNC.C": "cpp"
     }
 }
