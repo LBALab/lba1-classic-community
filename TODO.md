@@ -33,7 +33,7 @@
 ## Rendering
 - [ ] Software Renderer ASM to C
 - [ ] Hardware Renderer (OpenGL/Vulkan/DirectX)
-- [ ] 
+- [ ] Toggle between Software and Hardware Renderer
 
 ## General
 - [ ] Sample
