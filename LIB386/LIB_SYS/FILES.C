@@ -21,8 +21,8 @@
 #include <stdlib.h>
 #include <fcntl.h>
 
-#include "adeline.h"
-#include "lib_sys.h"
+#include "ADELINE.H"
+#include "LIB_SYS.H"
 
 
 /*--------------------------------------------------------------------------*/

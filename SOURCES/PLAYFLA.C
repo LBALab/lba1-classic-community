@@ -2,7 +2,7 @@
 // *                     P L A Y F L A . C			*
 // * 			 (c) Adeline 1994			*
 // **************************************************************
-#include	"c_extern.h"
+#include	"C_EXTERN.H"
 
 typedef	struct	{	ULONG	SizeFile ;
 			ULONG	CompressedSizeFile ;

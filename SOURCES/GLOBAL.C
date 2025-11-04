@@ -36,15 +36,16 @@ WORD	FlagFade = FALSE ;
 WORD	Bulle = TRUE ;
 WORD	FlagBlackPal = FALSE ;
 
-#ifdef	CDROM
-WORD	FlaFromCD = TRUE ;
-#else
-#ifdef	MAGOUILLE_FLA_HD
-WORD	FlaFromCD = TRUE ;	// magouille fla sur HD
-#else
-WORD	FlaFromCD = FALSE ;
-#endif
-#endif
+// #ifdef	CDROM
+// WORD	FlaFromCD = TRUE ;
+// #else
+// #ifdef	MAGOUILLE_FLA_HD
+// WORD	FlaFromCD = TRUE ;	// magouille fla sur HD
+// #else
+// WORD	FlaFromCD = FALSE ;
+// #endif
+// #endif
+WORD	FlaFromCD = TRUE ; // otherwise is floppy fla_gif
 
 UBYTE	PathFla[_MAX_PATH] ;
 
