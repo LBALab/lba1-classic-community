@@ -10,10 +10,12 @@ set(LIB_SYS_SOURCES
     DEF_FILE.C
     # OBJETS2 - System and buffers
     SYSTEM.C
-    BUFFER_A.ASM
+    BUFFER_A.C
+    #BUFFER_A.ASM
     DIVERS.C
     # OBJETS3 - HQR resources and expansion
-    EXPAND.ASM
+    EXPAND.C
+    #EXPAND.ASM
     HQ_RESS.C
     HQR.ASM
     # OBJETS4 - DLL loading and memory management
@@ -21,7 +23,6 @@ set(LIB_SYS_SOURCES
     ADELINE.C
     HQ_MEM.C
     HQ_R_M.C
-    FILES_A.ASM
 )
 
 # Create static library
