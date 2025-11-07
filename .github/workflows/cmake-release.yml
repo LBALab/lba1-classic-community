@@ -30,31 +30,46 @@ jobs:
           echo "Downloading and installing Open Watcom for macOS..."
           cd /tmp
           
-          # Download the archive
-          curl -L -o watcom.tar.gz https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
+          # List available assets to find the correct filename
+          echo "Checking available OpenWatcom releases..."
+          curl -s https://api.github.com/repos/open-watcom/open-watcom-v2/releases/tags/Current-build | \
+            grep "browser_download_url.*osx" || echo "No macOS assets found"
+          
+          # Try the correct asset name (likely has .tar.gz extension)
+          echo "Downloading from GitHub releases..."
+          curl -L -o watcom.tar.gz \
+            https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/open-watcom-2_0-c-osx-x64 \
+            --fail || \
+          curl -L -o watcom.tar.gz \
+            https://github.com/open-watcom/open-watcom-v2/releases/download/Current-build/ow-snapshot.tar.gz \
+            --fail || \
+          {
+            echo "ERROR: Could not download OpenWatcom"
+            echo "Available assets in Current-build release:"
+            curl -s https://api.github.com/repos/open-watcom/open-watcom-v2/releases/tags/Current-build | \
+              grep "browser_download_url" | grep -i "osx\|mac" || echo "No macOS assets found"
+            exit 1
+          }
           
           echo "Downloaded file info:"
           file watcom.tar.gz
           ls -lh watcom.tar.gz
           
+          # Verify we got a real archive (should be > 10MB)
+          FILE_SIZE=$(stat -f%z watcom.tar.gz)
+          if [ "$FILE_SIZE" -lt 1000000 ]; then
+            echo "ERROR: Downloaded file is too small ($FILE_SIZE bytes)"
+            echo "File contents:"
+            head -20 watcom.tar.gz
+            exit 1
+          fi
+          
           # Create installation directory
           sudo mkdir -p /opt/watcom
           
-          # Try to extract - the file might be gzipped tar or just tar
-          echo "Attempting to extract..."
-          if file watcom.tar.gz | grep -q "gzip compressed"; then
-            echo "Extracting gzipped tar..."
-            sudo tar -xzf watcom.tar.gz -C /opt/watcom
-          elif file watcom.tar.gz | grep -q "POSIX tar archive"; then
-            echo "Extracting tar..."
-            sudo tar -xf watcom.tar.gz -C /opt/watcom
-          elif file watcom.tar.gz | grep -q "Zip archive"; then
-            echo "Extracting zip..."
-            sudo unzip -q watcom.tar.gz -d /opt/watcom
-          else
-            echo "Unknown file format, trying tar anyway..."
-            sudo tar -xzf watcom.tar.gz -C /opt/watcom || sudo tar -xf watcom.tar.gz -C /opt/watcom
-          fi
+          # Extract the archive
+          echo "Extracting archive..."
+          sudo tar -xzf watcom.tar.gz -C /opt/watcom
           
           echo "Checking installation..."
           ls -la /opt/watcom
