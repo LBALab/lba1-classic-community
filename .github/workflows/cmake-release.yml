@@ -1,0 +1,175 @@
+name: CMake Release Build
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'  # Triggers on version tags like v1.0.0
+  workflow_dispatch:  # Allows manual trigger
+    inputs:
+      version:
+        description: 'Release version (e.g., 1.0.0)'
+        required: true
+        default: '1.0.0'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for changelog generation
+
+      - name: Setup Open Watcom v2.0
+        uses: open-watcom/setup-watcom@v0
+        with:
+          version: "2.0-64"
+          location: https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-linux-x64
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build dos2unix
+
+      - name: Setup Open Watcom environment
+        run: |
+          echo "WATCOM=/opt/watcom" >> $GITHUB_ENV
+          echo "PATH=/opt/watcom/binl64:/opt/watcom/binl:$PATH" >> $GITHUB_ENV
+          echo "INCLUDE=/opt/watcom/lh" >> $GITHUB_ENV
+          echo "EDPATH=/opt/watcom/eddat" >> $GITHUB_ENV
+          echo "WIPFC=/opt/watcom/wipfc" >> $GITHUB_ENV
+
+      - name: Verify Open Watcom installation
+        run: |
+          echo "Checking Open Watcom installation..."
+          which wcc386 || echo "wcc386 not found in PATH"
+          which wasm || echo "wasm not found in PATH"
+          which wlink || echo "wlink not found in PATH"
+          ls -la /opt/watcom/binl64/ || echo "binl64 not found"
+          ls -la /opt/watcom/binl/ || echo "binl not found"
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "push" ] && [ -n "${{ github.ref_name }}" ]; then
+            # Tag push: use tag name (remove 'v' prefix if present)
+            VERSION="${{ github.ref_name }}"
+            VERSION="${VERSION#v}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual trigger: use input version
+            VERSION="${{ github.event.inputs.version }}"
+          else
+            # Fallback: use project version from CMakeLists.txt
+            VERSION=$(grep "VERSION" CMakeLists.txt | head -1 | sed 's/.*VERSION \([0-9.]*\).*/\1/')
+          fi
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Building version: $VERSION"
+
+      - name: Configure CMake
+        run: |
+          cmake -B build -G Ninja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_DOS=ON \
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/openwatcom-dos4gw.cmake
+
+      - name: Build DOS executable
+        run: |
+          cmake --build build --target LBAD --verbose
+
+      - name: Prepare release artifacts
+        run: |
+          mkdir -p release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}
+          
+          # Copy executable
+          cp build/bin/LBAD.exe release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}/
+          
+          # Copy CSV files if they exist
+          if [ -d "SOURCES/assets" ]; then
+            cp SOURCES/assets/*.csv release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}/ 2>/dev/null || true
+          fi
+          
+          # Copy documentation
+          cp README.md release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}/ || true
+          cp LICENSE release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}/ || true
+          
+          # Create a version info file
+          cat > release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}/VERSION.txt << EOF
+          LBA1 Classic Community Edition
+          Version: ${{ steps.version.outputs.VERSION }}
+          Build Date: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          Commit: ${{ github.sha }}
+          Branch: ${{ github.ref_name }}
+          EOF
+          
+          # Create ZIP archive
+          cd release
+          zip -r lba1-classic-dos-${{ steps.version.outputs.VERSION }}.zip lba1-classic-dos-${{ steps.version.outputs.VERSION }}
+          cd ..
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get the previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag found, generating full changelog"
+            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
+          else
+            echo "Generating changelog from $PREV_TAG to HEAD"
+            CHANGELOG=$(git log ${PREV_TAG}..HEAD --pretty=format:"- %s (%h)" --no-merges)
+          fi
+          
+          # Save changelog to file
+          cat > CHANGELOG.md << EOF
+          ## What's Changed
+          
+          $CHANGELOG
+          
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${{ github.ref_name }}
+          EOF
+          
+          # Output for GitHub release
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: lba1-classic-dos-${{ steps.version.outputs.VERSION }}
+          path: release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}.zip
+          retention-days: 30
+
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          name: LBA1 Classic v${{ steps.version.outputs.VERSION }}
+          body: ${{ steps.changelog.outputs.CHANGELOG }}
+          draft: false
+          prerelease: false
+          files: |
+            release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release (Manual)
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v1
+        with:
+          name: LBA1 Classic v${{ steps.version.outputs.VERSION }}
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          body: |
+            ## Manual Release
+            
+            ${{ steps.changelog.outputs.CHANGELOG }}
+            
+            This release was created manually via workflow dispatch.
+          draft: true
+          prerelease: false
+          files: |
+            release/lba1-classic-dos-${{ steps.version.outputs.VERSION }}.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
