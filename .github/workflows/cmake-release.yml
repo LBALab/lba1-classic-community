@@ -55,7 +55,7 @@ jobs:
         run: |
           # Set environment variables for DOS cross-compilation
           echo "WATCOM=/opt/watcom" >> $GITHUB_ENV
-          echo "PATH=/opt/watcom/binl64:/opt/watcom/binl:$PATH" >> $GITHUB_ENV
+          echo "PATH=/usr/local/bin:/opt/watcom/binl64:/opt/watcom/binl:$PATH" >> $GITHUB_ENV
           echo "INCLUDE=/opt/watcom/h" >> $GITHUB_ENV  # DOS headers, not lh (Linux headers)
           echo "EDPATH=/opt/watcom/eddat" >> $GITHUB_ENV
           
@@ -70,12 +70,13 @@ jobs:
             exit 1
           fi
 
-      - name: Verify Open Watcom
+      - name: Verify build tools
         run: |
-          echo "Verifying installation..."
-          which wcc386 && wcc386 -? || echo "wcc386 not found"
-          which wasm && wasm -? || echo "wasm not found"
-          which wlink && wlink -? || echo "wlink not found"
+          echo "Verifying build tools..."
+          which jwasm && jwasm -? || echo "ERROR: jwasm not found"
+          which wcc386 && wcc386 -? || echo "ERROR: wcc386 not found"
+          which wasm && wasm -? || echo "ERROR: wasm not found"
+          which wlink && wlink -? || echo "ERROR: wlink not found"
 
       - name: Determine version
         id: version
@@ -99,6 +100,7 @@ jobs:
           cmake -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_DOS=ON \
+            -DCMAKE_ASM_MASM_COMPILER=/usr/local/bin/jwasm \
             -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/openwatcom.cmake
 
       - name: Build DOS executable
