@@ -1,35 +1,32 @@
 #include "lib_sys/adeline.h"
 #include "lib_sys/lib_sys.h"
 
-#pragma	library	("/gussdk21/libs/ultra0wc.lib");
+#pragma library("/gussdk21/libs/ultra0wc.lib");
 
 #include "forte.h"
 #include "gf1proto.h"
 #include "extern.h"
 #include "ultraerr.h"
 
+extern void NewIRQ(void);
 
-extern	void	NewIRQ(void);
+extern void *BUFFER_DMA;
 
+extern ULONG R_BUFFER_CARD;
+extern ULONG MID_R_BUFFER_CARD;
+extern ULONG CURRENT_R_BUFFER_CARD;
 
-extern	void	*BUFFER_DMA;
+extern ULONG L_BUFFER_CARD;
+extern ULONG MID_L_BUFFER_CARD;
+extern ULONG CURRENT_L_BUFFER_CARD;
 
-extern	ULONG	R_BUFFER_CARD;
-extern	ULONG	MID_R_BUFFER_CARD;
-extern	ULONG	CURRENT_R_BUFFER_CARD;
+extern LONG BUFFER_SIZE;
+extern UWORD PlayRate;
 
-extern	ULONG	L_BUFFER_CARD;
-extern	ULONG	MID_L_BUFFER_CARD;
-extern	ULONG	CURRENT_L_BUFFER_CARD;
-
-extern	LONG	BUFFER_SIZE;
-extern	UWORD	PlayRate;
-
-
-void	ResetCard(void)
+void ResetCard(void)
 {
-	ULTRA_CFG	config;
-	UBYTE		RMode, LMode;
+	ULTRA_CFG config;
+	UBYTE RMode, LMode;
 
 	/* Get the ULTRASND environment string parameters */
 	UltraGetCfg(&config);
@@ -43,8 +40,8 @@ void	ResetCard(void)
 	CURRENT_R_BUFFER_CARD = MID_R_BUFFER_CARD;
 
 	/* Reset memory on the card to 0 */
-	UltraDownload(BUFFER_DMA, DMA_8|DMA_CVT_2, R_BUFFER_CARD, BUFFER_SIZE, TRUE);
-	UltraDownload(BUFFER_DMA, DMA_8|DMA_CVT_2, MID_R_BUFFER_CARD, BUFFER_SIZE, TRUE);
+	UltraDownload(BUFFER_DMA, DMA_8 | DMA_CVT_2, R_BUFFER_CARD, BUFFER_SIZE, TRUE);
+	UltraDownload(BUFFER_DMA, DMA_8 | DMA_CVT_2, MID_R_BUFFER_CARD, BUFFER_SIZE, TRUE);
 
 	/* Get a chunk of memory on the card */
 	UltraMemAlloc(BUFFER_SIZE << 1, &L_BUFFER_CARD);
@@ -52,8 +49,8 @@ void	ResetCard(void)
 	CURRENT_L_BUFFER_CARD = MID_L_BUFFER_CARD;
 
 	/* Reset memory on the card to 0 */
-	UltraDownload(BUFFER_DMA, DMA_8|DMA_CVT_2, L_BUFFER_CARD, BUFFER_SIZE, TRUE);
-	UltraDownload(BUFFER_DMA, DMA_8|DMA_CVT_2, MID_L_BUFFER_CARD, BUFFER_SIZE, TRUE);
+	UltraDownload(BUFFER_DMA, DMA_8 | DMA_CVT_2, L_BUFFER_CARD, BUFFER_SIZE, TRUE);
+	UltraDownload(BUFFER_DMA, DMA_8 | DMA_CVT_2, MID_L_BUFFER_CARD, BUFFER_SIZE, TRUE);
 
 	/* set Balance for each voice */
 	UltraSetBalance(0, 7);
@@ -69,9 +66,9 @@ void	ResetCard(void)
 
 	/* get voices ready... */
 	RMode = UltraPrimeVoice(0, R_BUFFER_CARD, R_BUFFER_CARD,
-				R_BUFFER_CARD + (BUFFER_SIZE << 1), 0x20 | 0x08 | 0x04);
+							R_BUFFER_CARD + (BUFFER_SIZE << 1), 0x20 | 0x08 | 0x04);
 	LMode = UltraPrimeVoice(1, L_BUFFER_CARD, MID_L_BUFFER_CARD,
-				L_BUFFER_CARD + (BUFFER_SIZE << 1), 0x20 | 0x08 | 0x04);
+							L_BUFFER_CARD + (BUFFER_SIZE << 1), 0x20 | 0x08 | 0x04);
 
 	/* Plug in our IRQ handler for wave events */
 	UltraWaveHandler(NewIRQ);
@@ -81,7 +78,7 @@ void	ResetCard(void)
 	UltraGoVoice(1, LMode);
 }
 
-void	StartDMACard(void)
+void StartDMACard(void)
 {
-	UltraDownload(BUFFER_DMA, DMA_8|DMA_CVT_2, CURRENT_R_BUFFER_CARD, BUFFER_SIZE, FALSE);
+	UltraDownload(BUFFER_DMA, DMA_8 | DMA_CVT_2, CURRENT_R_BUFFER_CARD, BUFFER_SIZE, FALSE);
 }

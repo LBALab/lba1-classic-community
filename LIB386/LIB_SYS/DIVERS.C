@@ -7,9 +7,9 @@
 #include "adeline.h"
 #include "lib_sys.h"
 
-char	ItoaTempoString[40] ;		/* c'est 17 le max je crois */
+char ItoaTempoString[40]; /* c'est 17 le max je crois */
 
-char	*Itoa( LONG value )
+char *Itoa(LONG value)
 {
-	return itoa( value, ItoaTempoString, 10 ) ;
+	return itoa(value, ItoaTempoString, 10);
 }

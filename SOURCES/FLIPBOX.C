@@ -1,4 +1,4 @@
-#include	"defines.h"
+#include "defines.h"
 
 /*══════════════════════════════════════════════════════════════════════════*
 		█▀▀▀▀ █      █    █▀▀▀█       █▀▀█  █▀▀▀█ ▀▄ ▄▀
@@ -7,134 +7,138 @@
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-extern	UBYTE	*Screen ;		/* background clean */
+extern UBYTE *Screen; /* background clean */
 
-
-typedef	struct
+typedef struct
 {
-	WORD	x0 ;
-	WORD 	y0 ;
-	WORD	x1 ;
-	WORD	y1 ;	}	T_PHYSBOX ;
+	WORD x0;
+	WORD y0;
+	WORD x1;
+	WORD y1;
+} T_PHYSBOX;
 
+T_PHYSBOX NewListBox[MAX_OBJETS + MAX_EXTRAS];
+T_PHYSBOX OptListBox[(MAX_OBJETS + MAX_EXTRAS) * 2];
 
-T_PHYSBOX	NewListBox[MAX_OBJETS+MAX_EXTRAS] ;
-T_PHYSBOX	OptListBox[(MAX_OBJETS+MAX_EXTRAS)*2] ;
-
-WORD	NbPhysBox = 0 ;
-WORD	NbOptPhysBox = 0 ;
+WORD NbPhysBox = 0;
+WORD NbOptPhysBox = 0;
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	AddOptBox( WORD x0, WORD y0, WORD x1, WORD y1 )
+void AddOptBox(WORD x0, WORD y0, WORD x1, WORD y1)
 {
-	T_PHYSBOX	*ptr ;
-	WORD		cx0, cy0, cx1, cy1 ;
-	WORD		n ;
-	LONG		totalsurface ;
-	LONG		surfacecommune ;
-	LONG		surfacetest ;
+	T_PHYSBOX *ptr;
+	WORD cx0, cy0, cx1, cy1;
+	WORD n;
+	LONG totalsurface;
+	LONG surfacecommune;
+	LONG surfacetest;
 
-	surfacetest = (x1-x0) * (y1-y0) ;
-	ptr = OptListBox ;
-	for( n=0; n<NbOptPhysBox; n++, ptr++ )
+	surfacetest = (x1 - x0) * (y1 - y0);
+	ptr = OptListBox;
+	for (n = 0; n < NbOptPhysBox; n++, ptr++)
 	{
-		cx0 = min(ptr->x0,x0) ;
-		cx1 = max(ptr->x1,x1) ;
-		cy0 = min(ptr->y0,y0) ;
-		cy1 = max(ptr->y1,y1) ;
+		cx0 = min(ptr->x0, x0);
+		cx1 = max(ptr->x1, x1);
+		cy0 = min(ptr->y0, y0);
+		cy1 = max(ptr->y1, y1);
 
-		surfacecommune = (LONG)(cx1-cx0) * (cy1-cy0) ;
-		totalsurface = surfacetest + (ptr->x1-ptr->x0) * (ptr->y1-ptr->y0) ;
+		surfacecommune = (LONG)(cx1 - cx0) * (cy1 - cy0);
+		totalsurface = surfacetest + (ptr->x1 - ptr->x0) * (ptr->y1 - ptr->y0);
 
-		if( surfacecommune < totalsurface )
+		if (surfacecommune < totalsurface)
 		{
-			ptr->x0 = cx0 ;
-			ptr->y0 = cy0 ;
-			ptr->x1 = cx1 ;
-			ptr->y1 = cy1 ;
-			return ;
+			ptr->x0 = cx0;
+			ptr->y0 = cy0;
+			ptr->x1 = cx1;
+			ptr->y1 = cy1;
+			return;
 		}
 	}
-	ptr->x0 = x0 ;
-	ptr->y0 = y0 ;
-	ptr->x1 = x1 ;
-	ptr->y1 = y1 ;
-	NbOptPhysBox++ ;
+	ptr->x0 = x0;
+	ptr->y0 = y0;
+	ptr->x1 = x1;
+	ptr->y1 = y1;
+	NbOptPhysBox++;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	AddPhysBox( WORD x0, WORD y0, WORD x1, WORD y1 )
+void AddPhysBox(WORD x0, WORD y0, WORD x1, WORD y1)
 {
-	T_PHYSBOX	*ptr ;
+	T_PHYSBOX *ptr;
 
-	if( x0 < 0 )	x0 = 0 ;
-	if( x1 > 639 )	x1 = 639 ;
-	if( y0 < 0 )	y0 = 0 ;
-	if( y1 > 479 )	y1 = 479 ;
-	if( x1 < x0 )	return ;
-	if( y1 < y0 )	return ;
+	if (x0 < 0)
+		x0 = 0;
+	if (x1 > 639)
+		x1 = 639;
+	if (y0 < 0)
+		y0 = 0;
+	if (y1 > 479)
+		y1 = 479;
+	if (x1 < x0)
+		return;
+	if (y1 < y0)
+		return;
 
-	ptr = &NewListBox[NbPhysBox] ;
-	ptr->x0 = x0 ;
-	ptr->y0 = y0 ;
-	ptr->x1 = x1 ;
-	ptr->y1 = y1 ;
-	NbPhysBox++ ;
+	ptr = &NewListBox[NbPhysBox];
+	ptr->x0 = x0;
+	ptr->y0 = y0;
+	ptr->x1 = x1;
+	ptr->y1 = y1;
+	NbPhysBox++;
 
-	AddOptBox( x0, y0, x1, y1 ) ;
+	AddOptBox(x0, y0, x1, y1);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	FlipOptList()
+void FlipOptList()
 {
-	WORD		n ;
-	T_PHYSBOX	*ptr ;
+	WORD n;
+	T_PHYSBOX *ptr;
 
 	/* regenere optlistbox pour clear log
 				puis phys a la prochaine boucle*/
-	ptr = NewListBox ;
-	NbOptPhysBox = 0 ;
-	for( n=0; n<NbPhysBox; n++,ptr++ )
+	ptr = NewListBox;
+	NbOptPhysBox = 0;
+	for (n = 0; n < NbPhysBox; n++, ptr++)
 	{
-		AddOptBox(	ptr->x0, ptr->y0, ptr->x1, ptr->y1 ) ;
+		AddOptBox(ptr->x0, ptr->y0, ptr->x1, ptr->y1);
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	FlipBoxes()
+void FlipBoxes()
 {
-	WORD		n ;
-	T_PHYSBOX	*ptr ;
+	WORD n;
+	T_PHYSBOX *ptr;
 
 	/* copie liste optimisée vers phys */
-	ptr = OptListBox ;
-	for( n=0; n<NbOptPhysBox; n++,ptr++ )
+	ptr = OptListBox;
+	for (n = 0; n < NbOptPhysBox; n++, ptr++)
 	{
-		CopyBlockPhys( ptr->x0, ptr->y0, ptr->x1, ptr->y1 ) ;
+		CopyBlockPhys(ptr->x0, ptr->y0, ptr->x1, ptr->y1);
 	}
 
-	FlipOptList() ;
+	FlipOptList();
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	ClsBoxes()
+void ClsBoxes()
 {
-	WORD	n ;
-	T_PHYSBOX	*ptr ;
+	WORD n;
+	T_PHYSBOX *ptr;
 
 	/* efface ecran logique (copy depuis Screen org) */
-	ptr = OptListBox ;
-	for( n=0; n<NbOptPhysBox; n++,ptr++ )
+	ptr = OptListBox;
+	for (n = 0; n < NbOptPhysBox; n++, ptr++)
 	{
-		CopyBlock(	ptr->x0, ptr->y0, ptr->x1, ptr->y1, Screen,
-				ptr->x0, ptr->y0, Log ) ;
+		CopyBlock(ptr->x0, ptr->y0, ptr->x1, ptr->y1, Screen,
+				  ptr->x0, ptr->y0, Log);
 
-/*		Box(	ptr->x0, ptr->y0, ptr->x1, ptr->y1, 0 ) ;	*/
+		/*		Box(	ptr->x0, ptr->y0, ptr->x1, ptr->y1, 0 ) ;	*/
 	}
 }
-

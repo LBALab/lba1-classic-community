@@ -1,110 +1,109 @@
-#include	"lib_sys/adeline.h"
-#include	"lib_sys/lib_sys.h"
-#include	"lib_svga/lib_svga.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
+#include "lib_svga/lib_svga.h"
 
-#include	"lib_menu.h"
+#include "lib_menu.h"
 
-#include	<stdlib.h>
-#include	<stdio.h>
-#include	<string.h>
-#include	<dos.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <dos.h>
 
-#ifndef	WATCOM9
-#include	<mem.h>
+#ifndef WATCOM9
+#include <mem.h>
 #endif
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-
-T_CLICK_BOX	*GetPtrLcb( T_MENU *ptrmenu, WORD handle )
+T_CLICK_BOX *GetPtrLcb(T_MENU *ptrmenu, WORD handle)
 {
-	WORD		n, nblcb ;
-	T_CLICK_BOX	*ptrlcb ;
+	WORD n, nblcb;
+	T_CLICK_BOX *ptrlcb;
 
-	nblcb = ptrmenu->NbBox ;
-	ptrlcb = ptrmenu->PtrMallocList ;
+	nblcb = ptrmenu->NbBox;
+	ptrlcb = ptrmenu->PtrMallocList;
 
-	for( n=0; n<nblcb; n++ )
+	for (n = 0; n < nblcb; n++)
 	{
-		if( ptrlcb->Handle == handle )
+		if (ptrlcb->Handle == handle)
 		{
-			return ptrlcb ;
+			return ptrlcb;
 		}
-		ptrlcb++ ;
+		ptrlcb++;
 	}
-	return 0L ;
+	return 0L;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	OrButtonFlagIfTrue( T_MENU *ptrmenu, WORD handle, WORD flags, WORD test )
+void OrButtonFlagIfTrue(T_MENU *ptrmenu, WORD handle, WORD flags, WORD test)
 {
-	WORD	n, nblcb ;
-	T_CLICK_BOX	*ptrlcb ;
+	WORD n, nblcb;
+	T_CLICK_BOX *ptrlcb;
 
-	if( test != 0 )
+	if (test != 0)
 	{
-		nblcb = ptrmenu->NbBox ;
-		ptrlcb = ptrmenu->PtrMallocList ;
-		for( n=0; n<nblcb; n++ )
+		nblcb = ptrmenu->NbBox;
+		ptrlcb = ptrmenu->PtrMallocList;
+		for (n = 0; n < nblcb; n++)
 		{
-			if( ptrlcb->Handle == handle )
+			if (ptrlcb->Handle == handle)
 			{
-				ptrlcb->Flags |= flags ;
-				return ;
+				ptrlcb->Flags |= flags;
+				return;
 			}
-			ptrlcb++ ;
+			ptrlcb++;
 		}
 	}
 }
 
-void	SwitchButton( T_MENU *ptrmenu, WORD handle )
+void SwitchButton(T_MENU *ptrmenu, WORD handle)
 {
-	WORD	n, nblcb ;
-	T_CLICK_BOX	*ptrlcb ;
+	WORD n, nblcb;
+	T_CLICK_BOX *ptrlcb;
 
-	nblcb = ptrmenu->NbBox ;
-	ptrlcb = ptrmenu->PtrMallocList ;
+	nblcb = ptrmenu->NbBox;
+	ptrlcb = ptrmenu->PtrMallocList;
 
-	for( n=0; n<nblcb; n++ )
+	for (n = 0; n < nblcb; n++)
 	{
-		if( ptrlcb->Handle == handle )
+		if (ptrlcb->Handle == handle)
 		{
-			ptrlcb->Flags ^= FLAG_PUSHED ;
-/*			if( flagaff )
-			{
-				DrawBox( ptrmenu, n, NO_FLAG, TRUE ) ;
-			}
-*/
-			return ;
+			ptrlcb->Flags ^= FLAG_PUSHED;
+			/*			if( flagaff )
+						{
+							DrawBox( ptrmenu, n, NO_FLAG, TRUE ) ;
+						}
+			*/
+			return;
 		}
-		ptrlcb++ ;
+		ptrlcb++;
 	}
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	ChangeButtonFlags( T_MENU *ptrmenu, WORD handle, WORD flags, WORD flagaff )
+void ChangeButtonFlags(T_MENU *ptrmenu, WORD handle, WORD flags, WORD flagaff)
 {
-	WORD	n, nblcb ;
-	T_CLICK_BOX	*ptrlcb ;
+	WORD n, nblcb;
+	T_CLICK_BOX *ptrlcb;
 
-	nblcb = ptrmenu->NbBox ;
-	ptrlcb = ptrmenu->PtrMallocList ;
+	nblcb = ptrmenu->NbBox;
+	ptrlcb = ptrmenu->PtrMallocList;
 
-	for( n=0; n<nblcb; n++ )
+	for (n = 0; n < nblcb; n++)
 	{
-		if( ptrlcb->Handle == handle )
+		if (ptrlcb->Handle == handle)
 		{
-			ptrlcb->Flags = flags ;
-			if( flagaff )
+			ptrlcb->Flags = flags;
+			if (flagaff)
 			{
-				DrawBox( ptrmenu, n, NO_FLAG, TRUE ) ;
+				DrawBox(ptrmenu, n, NO_FLAG, TRUE);
 			}
-			return ;
+			return;
 		}
-		ptrlcb++ ;
+		ptrlcb++;
 	}
 }
 
@@ -132,26 +131,26 @@ WORD	GetButtonFlags( T_MENU *ptrmenu, WORD handle )
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	ChangeButtonString( T_MENU *ptrmenu, WORD handle, UBYTE *string, WORD flagaff )
+void ChangeButtonString(T_MENU *ptrmenu, WORD handle, UBYTE *string, WORD flagaff)
 {
-	WORD	n, nblcb ;
-	T_CLICK_BOX	*ptrlcb ;
+	WORD n, nblcb;
+	T_CLICK_BOX *ptrlcb;
 
-	nblcb = ptrmenu->NbBox ;
-	ptrlcb = ptrmenu->PtrMallocList ;
+	nblcb = ptrmenu->NbBox;
+	ptrlcb = ptrmenu->PtrMallocList;
 
-	for( n=0; n<nblcb; n++ )
+	for (n = 0; n < nblcb; n++)
 	{
-		if( ptrlcb->Handle == handle )
+		if (ptrlcb->Handle == handle)
 		{
-			ptrlcb->PtrString = string ;
-			if( flagaff )
+			ptrlcb->PtrString = string;
+			if (flagaff)
 			{
-				DrawBox( ptrmenu, n, NO_FLAG, TRUE ) ;
+				DrawBox(ptrmenu, n, NO_FLAG, TRUE);
 			}
-			return ;
+			return;
 		}
-		ptrlcb++ ;
+		ptrlcb++;
 	}
 }
 
@@ -179,311 +178,328 @@ UBYTE*	GetButtonString( T_MENU *ptrmenu, WORD handle )
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	InputString( T_MENU *ptrmenu, WORD handle, WORD maxcar )
+void InputString(T_MENU *ptrmenu, WORD handle, WORD maxcar)
 {
-	WORD		n, nblcb, numlcb ;
-	WORD		coul,x,y ;
-	LONG		x1,y1,x2,y2 ;
-	WORD		start,pc ;
-	WORD		exit ;
-	WORD		len ;
-	WORD		nbaffcar ;
-	WORD		carsizex ;
-	WORD		myclick, mykey ;
-	WORD		memoasciimode ;
+	WORD n, nblcb, numlcb;
+	WORD coul, x, y;
+	LONG x1, y1, x2, y2;
+	WORD start, pc;
+	WORD exit;
+	WORD len;
+	WORD nbaffcar;
+	WORD carsizex;
+	WORD myclick, mykey;
+	WORD memoasciimode;
 
-	UBYTE		car ;
-	UBYTE		string[256] ;
+	UBYTE car;
+	UBYTE string[256];
 
-	T_CLICK_BOX	*ptrlcb ;
+	T_CLICK_BOX *ptrlcb;
 
-	nblcb = ptrmenu->NbBox ;
-	ptrlcb = ptrmenu->PtrMallocList ;
-	for( n=0; n<nblcb; n++ )
+	nblcb = ptrmenu->NbBox;
+	ptrlcb = ptrmenu->PtrMallocList;
+	for (n = 0; n < nblcb; n++)
 	{
-		if( ptrlcb->Handle == handle )	break ;
-		ptrlcb++ ;
+		if (ptrlcb->Handle == handle)
+			break;
+		ptrlcb++;
 	}
-	if( n==nblcb )	return ;
+	if (n == nblcb)
+		return;
 
-	numlcb = n ;
-	strcpy( string, ptrlcb->PtrString ) ;
+	numlcb = n;
+	strcpy(string, ptrlcb->PtrString);
 
-	pc = -1 ;			/* pos curseur (-1 no cursor) */
-	start = 0 ;
+	pc = -1; /* pos curseur (-1 no cursor) */
+	start = 0;
 
-	x1 = ptrlcb->X1+3 ;
-	y1 = ptrlcb->Y1+3 ;
+	x1 = ptrlcb->X1 + 3;
+	y1 = ptrlcb->Y1 + 3;
 
-	x2 = ptrlcb->X2-3 ;
-	y2 = ptrlcb->Y2-3 ;
+	x2 = ptrlcb->X2 - 3;
+	y2 = ptrlcb->Y2 - 3;
 
-	nbaffcar = (carsizex=((x2 - x1)+1)/SizeCar) * (((y2-y1)+1)/SizeCar) ;
+	nbaffcar = (carsizex = ((x2 - x1) + 1) / SizeCar) * (((y2 - y1) + 1) / SizeCar);
 
-	if( ptrlcb->Flags & FLAG_RED )	coul = B_ROUGE+1 ;
-	else				coul = B_GRIS+1 ;
+	if (ptrlcb->Flags & FLAG_RED)
+		coul = B_ROUGE + 1;
+	else
+		coul = B_GRIS + 1;
 
-	memoasciimode = AsciiMode ;
-	AsciiMode = TRUE ;
-	CoulText( BLANC,-1 ) ;
+	memoasciimode = AsciiMode;
+	AsciiMode = TRUE;
+	CoulText(BLANC, -1);
 
-	ShowMouse( 0 ) ;
+	ShowMouse(0);
 
-	while( Click ) ;
+	while (Click)
+		;
 
-	exit = FALSE ;
-	while( !exit )
+	exit = FALSE;
+	while (!exit)
 	{
 		/* affichage */
 
-/*		DrawInputString( string, nbffcar, start, pc,	*/
+		/*		DrawInputString( string, nbffcar, start, pc,	*/
 
-		len = strlen( string ) ;
+		len = strlen(string);
 
-		if( pc-start >= nbaffcar )	start = pc - nbaffcar + 1 ;
-		if( pc < start )		start = pc ;
+		if (pc - start >= nbaffcar)
+			start = pc - nbaffcar + 1;
+		if (pc < start)
+			start = pc;
 
-		Vsync() ;
-		if( pc == -1 )
+		Vsync();
+		if (pc == -1)
 		{
-			x = x1+(len*SizeCar) ;
-			if( x>x2 )	x = x2 ;
-			Box( x1,y1,x,y2, 9 ) ;
+			x = x1 + (len * SizeCar);
+			if (x > x2)
+				x = x2;
+			Box(x1, y1, x, y2, 9);
 		}
 		else
 		{
-			Box( x1,y1,x2,y2, coul ) ;
+			Box(x1, y1, x2, y2, coul);
 		}
 
-		x = x1 ;
-		y = y1 ;
-		for( n=0; n<=len; n++ )
+		x = x1;
+		y = y1;
+		for (n = 0; n <= len; n++)
 		{
-			if( n < start )		continue ;
-			if( n == pc )
+			if (n < start)
+				continue;
+			if (n == pc)
 			{
-				Box(x,y,x+SizeCar-2,y+SizeCar-1,BLANC ) ;
-				x += SizeCar ;
-				if( x > x2-SizeCar-1 )
+				Box(x, y, x + SizeCar - 2, y + SizeCar - 1, BLANC);
+				x += SizeCar;
+				if (x > x2 - SizeCar - 1)
 				{
-					if( y > y2-SizeCar-1 )
+					if (y > y2 - SizeCar - 1)
 					{
-						break ;
+						break;
 					}
 					else
 					{
-						y += SizeCar ;
-						x = x1 ;
+						y += SizeCar;
+						x = x1;
 					}
 				}
 			}
 
-			Text( x,y, "%c", string[n] ) ;
-			x += SizeCar ;
-			if( x > x2-SizeCar-1 )
+			Text(x, y, "%c", string[n]);
+			x += SizeCar;
+			if (x > x2 - SizeCar - 1)
 			{
-				y += SizeCar ;
-				if( y > y2-SizeCar-1 )
+				y += SizeCar;
+				if (y > y2 - SizeCar - 1)
 				{
-					break ;
+					break;
 				}
 				else
 				{
-					x = x1 ;
+					x = x1;
 				}
 			}
 		}
-		CopyBlockPhys( ptrlcb->X1, ptrlcb->Y1, ptrlcb->X2, ptrlcb->Y2 ) ;
+		CopyBlockPhys(ptrlcb->X1, ptrlcb->Y1, ptrlcb->X2, ptrlcb->Y2);
 
 		/* input */
 
-		while( !(mykey=GetAscii()) AND (!(myclick=Click)) ) ;
+		while (!(mykey = GetAscii()) AND(!(myclick = Click)))
+			;
 
-		if( myclick )
+		if (myclick)
 		{
-			exit = TRUE ;
-			break ;
+			exit = TRUE;
+			break;
 		}
 
-		car = mykey & 255 ;
+		car = mykey & 255;
 
-		if( (car >= 32) AND (car < 255) )
+		if ((car >= 32) AND(car < 255))
 		{
-			if( pc == -1 )
+			if (pc == -1)
 			{
-				pc = 1 ;
-				string[0] = car ;
-				string[1] = 0 ;
+				pc = 1;
+				string[0] = car;
+				string[1] = 0;
 			}
 			else
 			{
-				if( len < maxcar )
-				{			/* insert */
-					memmove( &string[pc+1],&string[pc],strlen(&string[pc])+1 ) ;
-					string[pc] = car ;
-					pc++ ;
-					if( pc > len )	string[pc] = 0 ;
+				if (len < maxcar)
+				{ /* insert */
+					memmove(&string[pc + 1], &string[pc], strlen(&string[pc]) + 1);
+					string[pc] = car;
+					pc++;
+					if (pc > len)
+						string[pc] = 0;
 				}
 			}
 		}
 		else
 		{
-			switch( mykey )
+			switch (mykey)
 			{
 
 			case A_ESC:
-				exit = TRUE ;
-				break ;
+				exit = TRUE;
+				break;
 
 			case A_RETURN:
-				exit = TRUE ;
-				break ;
+				exit = TRUE;
+				break;
 
 			case A_END:
-				pc = len ;
-				break ;
+				pc = len;
+				break;
 
 			case A_HOME:
-				pc = 0 ;
-				break ;
+				pc = 0;
+				break;
 
 			case A_BACKSPACE:
-				if( pc == -1 )	pc = len ;
-				if( pc > 0 )
+				if (pc == -1)
+					pc = len;
+				if (pc > 0)
 				{
-					pc-- ;
-					memmove( &string[pc],&string[pc+1],strlen(&string[pc+1])+1 ) ;
+					pc--;
+					memmove(&string[pc], &string[pc + 1], strlen(&string[pc + 1]) + 1);
 				}
-				break ;
+				break;
 
 			case A_SUPPR:
-				if( pc == -1 )	pc = len ;
-				if( pc < len )
+				if (pc == -1)
+					pc = len;
+				if (pc < len)
 				{
-					memmove( &string[pc],&string[pc+1],strlen(&string[pc+1])+1 ) ;
+					memmove(&string[pc], &string[pc + 1], strlen(&string[pc + 1]) + 1);
 				}
-				break ;
+				break;
 
 			case A_LEFT:
-				if( pc == -1 )	pc = len-1 ;
-				else
-					if( pc > 0 )	pc-- ;
-				break ;
+				if (pc == -1)
+					pc = len - 1;
+				else if (pc > 0)
+					pc--;
+				break;
 
 			case A_RIGHT:
-				if( pc == -1 )	pc = 1 ;
-				else
-					if( pc < len )	pc++ ;
-				break ;
+				if (pc == -1)
+					pc = 1;
+				else if (pc < len)
+					pc++;
+				break;
 
 			case A_DOWN:
-				if( pc == -1 )
+				if (pc == -1)
 				{
-					if( carsizex < len )
-						pc = carsizex ;
+					if (carsizex < len)
+						pc = carsizex;
 					else
-						pc = 0 ;
+						pc = 0;
 				}
-				else
-					if( pc+carsizex < len )
-						pc += carsizex ;
-				break ;
+				else if (pc + carsizex < len)
+					pc += carsizex;
+				break;
 
 			case A_UP:
-				if( pc == -1 )	pc = 0 ;
-				else
-					if( pc-carsizex >= 0 )
-						pc -= carsizex ;
-				break ;
+				if (pc == -1)
+					pc = 0;
+				else if (pc - carsizex >= 0)
+					pc -= carsizex;
+				break;
 			}
 		}
-
 	}
 
-	if( (mykey==A_RETURN) OR (myclick) )
+	if ((mykey == A_RETURN) OR(myclick))
 	{
-		strcpy( ptrlcb->PtrString, string ) ;
+		strcpy(ptrlcb->PtrString, string);
 	}
 
-	DrawBox( ptrmenu, numlcb, NO_FLAG, TRUE ) ;
+	DrawBox(ptrmenu, numlcb, NO_FLAG, TRUE);
 
-	AsciiMode = memoasciimode ;
-	ShowMouse( 1 ) ;
+	AsciiMode = memoasciimode;
+	ShowMouse(1);
 
-	while( Key OR Click OR Fire ) AffMouse() ;
+	while (Key OR Click OR Fire)
+		AffMouse();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 /* fontions evoluées */
 
-void	Message( UBYTE *message, LONG flag )
+void Message(UBYTE *message, LONG flag)
 {
-	T_MENU	menu ;
-	WORD	len ;
+	T_MENU menu;
+	WORD len;
 
-	len = strlen(message)*SizeCar / (SizeCar+7) + 2 ;
+	len = strlen(message) * SizeCar / (SizeCar + 7) + 2;
 
-	if( !OpenMenu( &menu, len,2 ) )	return ;
-	AddText( &menu, 0,0, len,2, FLAG_CENTRE+FLAG_CONTOUR, message ) ;
+	if (!OpenMenu(&menu, len, 2))
+		return;
+	AddText(&menu, 0, 0, len, 2, FLAG_CENTRE + FLAG_CONTOUR, message);
 
-	DrawMenu( &menu, -1, -1 ) ;
+	DrawMenu(&menu, -1, -1);
 
-	if( flag )
+	if (flag)
 	{
-		ShowMouse( 1 ) ;
-		while( Click OR Fire OR Key ) ;
-		while( !Click AND !Fire AND !Key ) AffMouse() ;
-		while( Click OR Fire OR Key) ;
+		ShowMouse(1);
+		while (Click OR Fire OR Key)
+			;
+		while (!Click AND !Fire AND !Key)
+			AffMouse();
+		while (Click OR Fire OR Key)
+			;
 	}
 
-	CloseMenu( &menu ) ;
+	CloseMenu(&menu);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /* Confirm( "Voulez-vous vraiment ?", "OUI" (RETURN), "NON"(ESC) ) ; */
 
-LONG	Confirm( UBYTE *message, UBYTE *oui, UBYTE *non )
+LONG Confirm(UBYTE *message, UBYTE *oui, UBYTE *non)
 {
-	T_MENU	menu ;
-	WORD	len, select ;
+	T_MENU menu;
+	WORD len, select;
 
-	len = strlen(message)*SizeCar / (SizeCar+7) + 2 ;
+	len = strlen(message) * SizeCar / (SizeCar + 7) + 2;
 
-	if( !OpenMenu( &menu, len,3 ) )	return 2 ;
-	AddText( &menu, 0,0, len,2, FLAG_CENTRE+FLAG_CONTOUR, message ) ;
-	AddButton( &menu, 1, 0,2, len/2,1, FLAG_CENTRE+FLAG_RED, oui ) ;
-	AddButton( &menu, 2, len/2,2, len/2,1, FLAG_CENTRE, non ) ;
-	DrawMenu( &menu, -1, -1 ) ;
+	if (!OpenMenu(&menu, len, 3))
+		return 2;
+	AddText(&menu, 0, 0, len, 2, FLAG_CENTRE + FLAG_CONTOUR, message);
+	AddButton(&menu, 1, 0, 2, len / 2, 1, FLAG_CENTRE + FLAG_RED, oui);
+	AddButton(&menu, 2, len / 2, 2, len / 2, 1, FLAG_CENTRE, non);
+	DrawMenu(&menu, -1, -1);
 
-	ShowMouse( 1 ) ;
-	while( Click OR Fire OR Key ) 	AffMouse() ;
-	select = 0 ;
-	while( select < 1 )
+	ShowMouse(1);
+	while (Click OR Fire OR Key)
+		AffMouse();
+	select = 0;
+	while (select < 1)
 	{
-		AffMouse() ;
-		select = GereMenu( &menu ) ;
+		AffMouse();
+		select = GereMenu(&menu);
 
-		if( Fire & F_RETURN )
+		if (Fire & F_RETURN)
 		{
-			select = 1 ;
-			DrawBox( &menu, 1, FLAG_PUSHED, TRUE ) ;
+			select = 1;
+			DrawBox(&menu, 1, FLAG_PUSHED, TRUE);
 		}
-		if( Key == K_ESC )
+		if (Key == K_ESC)
 		{
-			select = 2 ;
-			DrawBox( &menu, 2, FLAG_PUSHED, TRUE ) ;
+			select = 2;
+			DrawBox(&menu, 2, FLAG_PUSHED, TRUE);
 		}
 	}
-	while( Click OR Fire OR Key ) 	AffMouse() ;
+	while (Click OR Fire OR Key)
+		AffMouse();
 
-	CloseMenu( &menu ) ;
+	CloseMenu(&menu);
 
-	return select ;
+	return select;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-
-
-
-

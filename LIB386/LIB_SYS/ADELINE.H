@@ -5,49 +5,24 @@
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#define	ULONG	unsigned long int
-#define	LONG	signed long int
-#define	UWORD	unsigned short int
-#define	WORD	signed short int
-#define	UBYTE	unsigned char
-#define	BYTE	signed char
-#define UINT	unsigned int
-#define INT		signed int
+#define ULONG unsigned long int
+#define LONG signed long int
+#define UWORD unsigned short int
+#define WORD signed short int
+#define UBYTE unsigned char
+#define BYTE signed char
+#define UINT unsigned int
+#define INT signed int
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#define	AND		&&
-#define	OR		||
+#define AND &&
+#define OR ||
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#define	TRUE	1
-#define	FALSE	0
+#define TRUE 1
+#define FALSE 0
 
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

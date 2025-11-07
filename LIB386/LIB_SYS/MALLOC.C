@@ -15,17 +15,19 @@ LONG ModeTraceMalloc = FALSE;
 void *Malloc(LONG lenalloc)
 {
 	void *ptr;
-	
-	if (lenalloc == -1) {
+
+	if (lenalloc == -1)
+	{
 		return 0; /* Query memory not supported */
 	}
-	
+
 	ptr = malloc(lenalloc);
-	
-	if (ptr == NULL) {
+
+	if (ptr == NULL)
+	{
 		printf("ERROR: MemoryNotAlloc (Malloc): Size = %d/n", lenalloc);
 	}
-	
+
 	return ptr;
 }
 
@@ -37,7 +39,8 @@ void *SmartMalloc(LONG lenalloc)
 
 void Free(void *buffer)
 {
-	if (buffer != NULL) {
+	if (buffer != NULL)
+	{
 		free(buffer);
 	}
 }
@@ -45,11 +48,12 @@ void Free(void *buffer)
 void *Mshrink(void *buffer, ULONG taille)
 {
 	void *new_buffer;
-	
-	if (buffer == NULL) {
+
+	if (buffer == NULL)
+	{
 		return NULL;
 	}
-	
+
 	new_buffer = realloc(buffer, taille);
 	return new_buffer ? new_buffer : buffer;
 }

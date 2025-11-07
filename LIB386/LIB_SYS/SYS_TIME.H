@@ -1,6 +1,6 @@
 /*===========================================================================
  * SYS_TIME.H - Platform-Independent Time API
- * 
+ *
  * Provides platform-independent time and date functions.
  * Platform-specific implementations are in PLATFORM/DOS/LIB_SYS/ etc.
  *===========================================================================*/

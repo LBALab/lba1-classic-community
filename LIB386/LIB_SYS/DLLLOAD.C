@@ -1,30 +1,30 @@
-//████████████████████████████████████████████████████████████████████████████
-//██                                                                        ██
-//██  DLLLOAD.C                                                             ██
-//██                                                                        ██
-//██  32-bit DLL driver loader                                              ██
-//██                                                                        ██
-//██  V1.00 of 16-Aug-92: Initial version for Watcom C                      ██
-//██  V1.01 of  1-May-93: Zortech C++ v3.1 compatibility added              ██
-//██  V1.02 of 16-Nov-93: Metaware High C/C++ v3.1 compatibility added      ██
-//██                                                                        ██
-//██  Project: 386FX Sound & Light(TM)                                      ██
-//██   Author: John Lemberger                                               ██
-//██                                                                        ██
-//██  C source compatible with Watcom C386 v9.0 or later                    ██
-//██                           Zortech C++ v3.1 or later                    ██
-//██                           MetaWare High C/C++ v3.1 or later            ██
-//██                                                                        ██
-//████████████████████████████████████████████████████████████████████████████
-//██                                                                        ██
-//██  Copyright (C) 1991-1993 Miles Design, Inc.                            ██
-//██                                                                        ██
-//██  Miles Design, Inc.                                                    ██
-//██  6702 Cat Creek Trail                                                  ██
-//██  Austin, TX 78731                                                      ██
-//██  (512) 345-2642 / FAX (512) 338-9630 / BBS (512) 454-9990              ██
-//██                                                                        ██
-//████████████████████████████████████████████████████████████████████████████
+// ████████████████████████████████████████████████████████████████████████████
+// ██                                                                        ██
+// ██  DLLLOAD.C                                                             ██
+// ██                                                                        ██
+// ██  32-bit DLL driver loader                                              ██
+// ██                                                                        ██
+// ██  V1.00 of 16-Aug-92: Initial version for Watcom C                      ██
+// ██  V1.01 of  1-May-93: Zortech C++ v3.1 compatibility added              ██
+// ██  V1.02 of 16-Nov-93: Metaware High C/C++ v3.1 compatibility added      ██
+// ██                                                                        ██
+// ██  Project: 386FX Sound & Light(TM)                                      ██
+// ██   Author: John Lemberger                                               ██
+// ██                                                                        ██
+// ██  C source compatible with Watcom C386 v9.0 or later                    ██
+// ██                           Zortech C++ v3.1 or later                    ██
+// ██                           MetaWare High C/C++ v3.1 or later            ██
+// ██                                                                        ██
+// ████████████████████████████████████████████████████████████████████████████
+// ██                                                                        ██
+// ██  Copyright (C) 1991-1993 Miles Design, Inc.                            ██
+// ██                                                                        ██
+// ██  Miles Design, Inc.                                                    ██
+// ██  6702 Cat Creek Trail                                                  ██
+// ██  Austin, TX 78731                                                      ██
+// ██  (512) 345-2642 / FAX (512) 338-9630 / BBS (512) 454-9990              ██
+// ██                                                                        ██
+// ████████████████████████████████████████████████████████████████████████████
 
 #include <dos.h>
 #include <io.h>
@@ -43,40 +43,40 @@
 // Entry table types
 //
 
-#define UNUSED_ENTRY       0
-#define BIT16_ENTRY        1
-#define CALL_GATE          2
-#define BIT32_ENTRY        3
-#define FORWARDER_ENTRY    4
-#define PARAMETER_TYPING   0x80
+#define UNUSED_ENTRY 0
+#define BIT16_ENTRY 1
+#define CALL_GATE 2
+#define BIT32_ENTRY 3
+#define FORWARDER_ENTRY 4
+#define PARAMETER_TYPING 0x80
 
 //
 // Fixup record source
 //
 
-#define BYTE_FIXUP          0x00
-#define BIT16_SELECTOR      0x02
-#define BIT16_POINTER       0x03
-#define BIT16_OFFSET        0x05
-#define BIT32_POINTER       0x06
-#define BIT32_OFFSET        0x07
-#define BIT32_RELATIVE      0x08
-#define FIXUP_ALIAS         0x10
-#define SRC_LIST_FLAG       0x20
+#define BYTE_FIXUP 0x00
+#define BIT16_SELECTOR 0x02
+#define BIT16_POINTER 0x03
+#define BIT16_OFFSET 0x05
+#define BIT32_POINTER 0x06
+#define BIT32_OFFSET 0x07
+#define BIT32_RELATIVE 0x08
+#define FIXUP_ALIAS 0x10
+#define SRC_LIST_FLAG 0x20
 
 //
 // Fixup record flags
 //
 
-#define INT_REF             0x00
-#define IMP_REF_BY_ORD      0x01
-#define IMP_REF_BY_NAME     0x02
-#define INT_REF_ENTRY_TBL   0x03
-#define ADDITIVE_FIXUP      0x04
-#define BIT32_TARGET        0x10
-#define BIT32_ADDITIVE      0x20
-#define BIT16_OBJECT        0x40
-#define BIT8_ORDINAL        0x80
+#define INT_REF 0x00
+#define IMP_REF_BY_ORD 0x01
+#define IMP_REF_BY_NAME 0x02
+#define INT_REF_ENTRY_TBL 0x03
+#define ADDITIVE_FIXUP 0x04
+#define BIT32_TARGET 0x10
+#define BIT32_ADDITIVE 0x20
+#define BIT16_OBJECT 0x40
+#define BIT8_ORDINAL 0x80
 
 typedef struct
 {
@@ -123,8 +123,7 @@ typedef struct
    ULONG numinstance_preload;
    ULONG numinstance_demand;
    ULONG heapsize;
-}
-LX_header_struct;
+} LX_header_struct;
 
 typedef struct
 {
@@ -134,115 +133,112 @@ typedef struct
    ULONG page_table_index;
    ULONG num_page_table_entries;
    ULONG reserved_space;
-}
-object_table_struct;
+} object_table_struct;
 
 typedef struct
 {
    ULONG page_data_offset;
-   UWORD  data_size;
-   UWORD  flags;
-}
-object_page_table_struct;
+   UWORD data_size;
+   UWORD flags;
+} object_page_table_struct;
 
 typedef struct
 {
-   UWORD  type_id;
-   UWORD  name_id;
+   UWORD type_id;
+   UWORD name_id;
    ULONG resource_size;
-   UWORD  object;
+   UWORD object;
    ULONG offset;
-}
-resource_table_struct;
+} resource_table_struct;
 
 static LONG disk_err = 0;
 
 #undef min
-#define min(a,b) ((a) < (b) ? (a) : (b))
+#define min(a, b) ((a) < (b) ? (a) : (b))
 
 /**********************************************************/
 static void *cdecl DLL_read(ULONG src, ULONG srcoff, ULONG flags,
-   void *dest, ULONG length)
+                            void *dest, ULONG length)
 {
    if (flags & DLLSRC_MEM)
-      {
-      memcpy(dest,(BYTE *) src+srcoff,length); 
-      return (void *) (srcoff+length);
-      }
+   {
+      memcpy(dest, (BYTE *)src + srcoff, length);
+      return (void *)(srcoff + length);
+   }
    else
-      {
-      lseek(src,(ULONG) srcoff,SEEK_SET);   // get LX header offset
-      read(src,dest,length);
+   {
+      lseek(src, (ULONG)srcoff, SEEK_SET); // get LX header offset
+      read(src, dest, length);
 
-      return (void *) (srcoff+length);
-      }
+      return (void *)(srcoff + length);
+   }
 }
 
 /**********************************************************/
 ULONG cdecl DLL_size(void *source, ULONG flags)
 {
-   BYTE cword[]="  /0";
+   BYTE cword[] = "  /0";
    void *src_ptr;
    LX_header_struct LX_hdr;
    object_table_struct object_table;
    ULONG lx;
    ULONG i;
    ULONG LX_offset;
-   ULONG module_size=0;
+   ULONG module_size = 0;
 
    if (flags & DLLSRC_MEM)
-      lx=(ULONG) source;
+      lx = (ULONG)source;
    else
-      {
-      lx=open((BYTE *) source,O_RDONLY | O_BINARY);
+   {
+      lx = open((BYTE *)source, O_RDONLY | O_BINARY);
 
-      if (lx==-1)                           // error opening file?
+      if (lx == -1) // error opening file?
          return 0;
-      }
+   }
 
    //
    // Get LX header offset
    //
 
-   src_ptr=DLL_read(lx, 0x03c, flags, &LX_offset, 4);
+   src_ptr = DLL_read(lx, 0x03c, flags, &LX_offset, 4);
 
    //
    // Check for valid LX marker
    //
 
-   src_ptr=DLL_read(lx,LX_offset, flags, cword, 2);
-   if (strcmp(cword,"LX"))
-      {
+   src_ptr = DLL_read(lx, LX_offset, flags, cword, 2);
+   if (strcmp(cword, "LX"))
+   {
       //
       // Error: Invalid LX file
       //
 
       close(lx);
       return 0;
-      }
+   }
 
    //
    // Read LX header (Tables not included)
    //
 
-   src_ptr=DLL_read(lx,LX_offset, flags, &LX_hdr, sizeof(LX_hdr));
+   src_ptr = DLL_read(lx, LX_offset, flags, &LX_hdr, sizeof(LX_hdr));
 
    //
    // Read object table; calculate memory needed
    //
 
-   src_ptr=(void *)(LX_offset+LX_hdr.object_table_off);
+   src_ptr = (void *)(LX_offset + LX_hdr.object_table_off);
 
-   for(i=0;i<LX_hdr.num_objects_in_module;i++)
-      {
-      src_ptr=DLL_read(lx,(ULONG)src_ptr, flags, &object_table, sizeof(object_table));
-      module_size+=object_table.virtual_size;
-      }
+   for (i = 0; i < LX_hdr.num_objects_in_module; i++)
+   {
+      src_ptr = DLL_read(lx, (ULONG)src_ptr, flags, &object_table, sizeof(object_table));
+      module_size += object_table.virtual_size;
+   }
 
    if (!(flags & DLLSRC_MEM))
-      {
+   {
       close(lx);
-      }
+   }
 
    // Add slack for paragraph alignment of each DATA Object
    //
@@ -256,180 +252,178 @@ void *cdecl DLL_load(void *source, ULONG flags, void *dll)
 {
    LX_header_struct LX_hdr;
    void *src_ptr;
-   void *object_table_pos,*object_page_table_pos,*fixup_page_table_pos;
+   void *object_table_pos, *object_page_table_pos, *fixup_page_table_pos;
    object_table_struct object_table;
    object_page_table_struct object_page_table;
-   BYTE cword[]="  /0";
+   BYTE cword[] = "  /0";
    UBYTE *dll_ptr;
-   UBYTE *object_ptr[10],*page_ptr[100];
-   UBYTE src,fix_flags,f_object;
+   UBYTE *object_ptr[10], *page_ptr[100];
+   UBYTE src, fix_flags, f_object;
    UBYTE *trg_val;
-   UWORD  srcoff,trgoff;
+   UWORD srcoff, trgoff;
    ULONG read_size, dll_size;
-   ULONG i,j,lx,page_count=0;
+   ULONG i, j, lx, page_count = 0;
    ULONG LX_offset;
    ULONG *fix_src_ptr;
-   ULONG page_offset,next_page_offset;
+   ULONG page_offset, next_page_offset;
 
    if (flags & DLLSRC_MEM)
-      lx=(ULONG) source;
+      lx = (ULONG)source;
    else
-      {
-      lx=open((BYTE *) source,O_RDONLY | O_BINARY);
-      if (lx==-1)                           // error opening file?
-	 return NULL;
-      }
+   {
+      lx = open((BYTE *)source, O_RDONLY | O_BINARY);
+      if (lx == -1) // error opening file?
+         return NULL;
+   }
 
    //
    // Allocate memory if not done by caller
    //
 
-   dll_size=DLL_size(source,flags);
+   dll_size = DLL_size(source, flags);
 
    if (flags & DLLMEM_ALLOC)
+   {
+      dll = DosMalloc(dll_size, NULL);
+
+      if (dll == NULL)
       {
-      dll=DosMalloc(dll_size, NULL);
+         if (!(flags & DLLSRC_MEM))
+            close(lx);
 
-      if (dll==NULL)
-	 {
-	 if (!(flags & DLLSRC_MEM))
-	    close(lx);
-
-	 return NULL;
-	 }
+         return NULL;
       }
+   }
 
-   memset(dll,0,dll_size);
+   memset(dll, 0, dll_size);
 
-   dll_ptr=dll;
+   dll_ptr = dll;
 
    //
    // Get LX header offset
    //
 
-   src_ptr=DLL_read(lx, 0x03c, flags, &LX_offset, 4);
+   src_ptr = DLL_read(lx, 0x03c, flags, &LX_offset, 4);
 
    //
    // Check for valid LX marker
    //
 
-   src_ptr=DLL_read(lx,LX_offset, flags, cword, 2);
-   if (strcmp(cword,"LX"))
-      {
+   src_ptr = DLL_read(lx, LX_offset, flags, cword, 2);
+   if (strcmp(cword, "LX"))
+   {
       //
       // Error: Invalid LX file
       //
 
       if (!(flags & DLLSRC_MEM))
-	 close(lx);
+         close(lx);
 
       return NULL;
-      }
+   }
 
    //
    // Read LX header (Tables not included)
    //
 
-   src_ptr=DLL_read(lx,LX_offset, flags, &LX_hdr, sizeof(LX_hdr));
+   src_ptr = DLL_read(lx, LX_offset, flags, &LX_hdr, sizeof(LX_hdr));
 
    //
    // Read object table
    //
 
-   src_ptr=(void *)(LX_offset+LX_hdr.object_table_off);
+   src_ptr = (void *)(LX_offset + LX_hdr.object_table_off);
 
-   for(i=0;i<LX_hdr.num_objects_in_module;i++)
-      {
-      src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-         &object_table, sizeof(object_table));
+   for (i = 0; i < LX_hdr.num_objects_in_module; i++)
+   {
+      src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                         &object_table, sizeof(object_table));
 
       //
       // Read in object page entries
       //
 
-      object_table_pos=src_ptr;
+      object_table_pos = src_ptr;
 
-      src_ptr=(void *)(LX_offset+LX_hdr.object_page_table_off);
-      for (j=0;j<object_table.num_page_table_entries;j++)
-         {
-         src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-            &object_page_table,sizeof(object_page_table));
+      src_ptr = (void *)(LX_offset + LX_hdr.object_page_table_off);
+      for (j = 0; j < object_table.num_page_table_entries; j++)
+      {
+         src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                            &object_page_table, sizeof(object_page_table));
 
          //
          // Read page data into DLL buffer
          //
 
-         if (j==0)   // Do if this is a new object
-            {
+         if (j == 0) // Do if this is a new object
+         {
             //
             // If this is the data object, paragraph-align it,
             // unless this is the first object in the file, then
-	    // the user is responsible for allocating a paragraph aligned
-	    // memory block.  JL & JM 12/30/93
+            // the user is responsible for allocating a paragraph aligned
+            // memory block.  JL & JM 12/30/93
             //
             // Modification made because UltraSound drivers did not load
             // properly
 
             if (object_table.object_flags & 0x02 &&
                 object_table.object_flags & 0x01)
-               {
-               if ((ULONG) dll_ptr & 0x0f && i!=0)
-                  dll_ptr += (0x10-((ULONG) dll & 0x0f));
-               }
-            object_ptr[i+1]=dll_ptr;            // Save object start position
+            {
+               if ((ULONG)dll_ptr & 0x0f && i != 0)
+                  dll_ptr += (0x10 - ((ULONG)dll & 0x0f));
             }
+            object_ptr[i + 1] = dll_ptr; // Save object start position
+         }
 
-         page_ptr[page_count++] = dll_ptr;      // Save the page start position
-         object_page_table_pos = src_ptr;       // Save place in table
+         page_ptr[page_count++] = dll_ptr; // Save the page start position
+         object_page_table_pos = src_ptr;  // Save place in table
 
-         read_size = min(object_table.virtual_size-(dll_ptr-object_ptr[i+1]),
-            object_page_table.data_size);
+         read_size = min(object_table.virtual_size - (dll_ptr - object_ptr[i + 1]),
+                         object_page_table.data_size);
 
-         src_ptr=(void *)(
-            (object_page_table.page_data_offset << LX_hdr.page_offset_shift)
-            +LX_hdr.data_pages_off);
-         src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,dll_ptr,read_size);
+         src_ptr = (void *)((object_page_table.page_data_offset << LX_hdr.page_offset_shift) + LX_hdr.data_pages_off);
+         src_ptr = DLL_read(lx, (ULONG)src_ptr, flags, dll_ptr, read_size);
 
          dll_ptr += read_size;
 
-         src_ptr=(void *)object_page_table_pos; // Restore place in table
-         }
-
-      src_ptr=(void *)object_table_pos;         // Restore place in table
+         src_ptr = (void *)object_page_table_pos; // Restore place in table
       }
+
+      src_ptr = (void *)object_table_pos; // Restore place in table
+   }
 
    //
    // Read fixup page table and perform fixups
    //
 
-   src_ptr = (void *) (LX_offset+LX_hdr.fixup_page_table_off);
-   src_ptr = DLL_read(lx,(ULONG) src_ptr,flags,
-         &page_offset,sizeof(page_offset));
+   src_ptr = (void *)(LX_offset + LX_hdr.fixup_page_table_off);
+   src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                      &page_offset, sizeof(page_offset));
 
-   for(i=0;i<LX_hdr.module_num_of_pages;i++)
+   for (i = 0; i < LX_hdr.module_num_of_pages; i++)
+   {
+      src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                         &next_page_offset, sizeof(next_page_offset));
+
+      if (page_offset != next_page_offset)
       {
-      src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-         &next_page_offset,sizeof(next_page_offset));
-
-      if (page_offset!=next_page_offset)
-         {
 
          //
          // Read object page entries
          //
 
-         fixup_page_table_pos=src_ptr;
-   
-         src_ptr=(void *)(page_offset+LX_offset+LX_hdr.fixup_record_table_off);
-         do
-            {
-            src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-               &src,1);
-            src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-               &fix_flags,1);
+         fixup_page_table_pos = src_ptr;
 
-            if (!(src&BIT32_OFFSET))
-               {
+         src_ptr = (void *)(page_offset + LX_offset + LX_hdr.fixup_record_table_off);
+         do
+         {
+            src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                               &src, 1);
+            src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                               &fix_flags, 1);
+
+            if (!(src & BIT32_OFFSET))
+            {
                //
                // Error: Non-32-bit offset fixup in table
                //
@@ -438,10 +432,10 @@ void *cdecl DLL_load(void *source, ULONG flags, void *dll)
                   close(lx);
 
                return NULL;
-               }
+            }
 
             if ((fix_flags & ADDITIVE_FIXUP) && !(fix_flags & BIT32_ADDITIVE))
-               {
+            {
                //
                // Error: Non-32-bit additive in table
                //
@@ -450,51 +444,50 @@ void *cdecl DLL_load(void *source, ULONG flags, void *dll)
                   close(lx);
 
                return NULL;
-               }
+            }
 
             if (src & SRC_LIST_FLAG)
-               {
+            {
                //
-	       // Error: Fixup list type not supported
+               // Error: Fixup list type not supported
                //
 
                if (!(flags & DLLSRC_MEM))
                   close(lx);
 
                return NULL;
-               }
+            }
             else
-               {
-               src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-                  &srcoff,2);
-               src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-                  &f_object,1);
-               src_ptr=DLL_read(lx,(ULONG)src_ptr,flags,
-                  &trgoff,2);
-   
+            {
+               src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                                  &srcoff, 2);
+               src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                                  &f_object, 1);
+               src_ptr = DLL_read(lx, (ULONG)src_ptr, flags,
+                                  &trgoff, 2);
+
                //
                // Perform fixup (if positive offset)
                //
-   
-               if ( (ULONG) srcoff <= LX_hdr.page_size )
-                  {
-                  fix_src_ptr=(ULONG *)(page_ptr[i]+srcoff);
-                  trg_val=object_ptr[f_object]+trgoff;
 
-                  *fix_src_ptr=(ULONG)trg_val;
-		  }
-	       }
+               if ((ULONG)srcoff <= LX_hdr.page_size)
+               {
+                  fix_src_ptr = (ULONG *)(page_ptr[i] + srcoff);
+                  trg_val = object_ptr[f_object] + trgoff;
 
-	    } while(src_ptr < (void *)(next_page_offset+LX_offset+LX_hdr.fixup_record_table_off));
+                  *fix_src_ptr = (ULONG)trg_val;
+               }
+            }
 
-	 src_ptr=(void *)fixup_page_table_pos;
-	 }
+         } while (src_ptr < (void *)(next_page_offset + LX_offset + LX_hdr.fixup_record_table_off));
 
-      page_offset=next_page_offset;
-
+         src_ptr = (void *)fixup_page_table_pos;
       }
-      if (!(flags & DLLSRC_MEM))
-	 close(lx);
+
+      page_offset = next_page_offset;
+   }
+   if (!(flags & DLLSRC_MEM))
+      close(lx);
 
    return dll;
 }
@@ -513,60 +506,61 @@ LONG cdecl FILE_size(BYTE *filename)
 
    disk_err = 0;
 
-   handle = open(filename,O_RDONLY | O_BINARY);
-   if (handle==-1)
-      {
+   handle = open(filename, O_RDONLY | O_BINARY);
+   if (handle == -1)
+   {
       disk_err = FILE_NOT_FOUND;
       return -1L;
-      }
+   }
 
    len = filelength(handle);
-   if (len==-1L) disk_err = CANT_READ_FILE;
+   if (len == -1L)
+      disk_err = CANT_READ_FILE;
 
    close(handle);
    return len;
 }
 
 /****************************************************************************/
-void * cdecl FILE_read(BYTE *filename, void *dest)
+void *cdecl FILE_read(BYTE *filename, void *dest)
 {
-   LONG i,handle;
+   LONG i, handle;
    LONG len;
    BYTE *buf, *mem;
 
    disk_err = 0;
 
    len = FILE_size(filename);
-   if (len==-1L)
-      {
+   if (len == -1L)
+   {
       disk_err = FILE_NOT_FOUND;
       return NULL;
-      }
+   }
 
-   buf = mem = (dest==NULL)? Malloc(len) : dest;
+   buf = mem = (dest == NULL) ? Malloc(len) : dest;
 
-   if (buf==NULL)
-      {
+   if (buf == NULL)
+   {
       disk_err = OUT_OF_MEMORY;
       return NULL;
-      }
+   }
 
-   handle = open(filename,O_RDONLY | O_BINARY);
-   if (handle==-1)
-      {
+   handle = open(filename, O_RDONLY | O_BINARY);
+   if (handle == -1)
+   {
       Free(mem);
       disk_err = FILE_NOT_FOUND;
       return NULL;
-      }
+   }
 
-   i = read(handle,buf,len);
+   i = read(handle, buf, len);
 
    if (i != len)
-      {
+   {
       Free(mem);
       disk_err = CANT_READ_FILE;
       return NULL;
-      }
+   }
 
    close(handle);
    return mem;
@@ -575,65 +569,64 @@ void * cdecl FILE_read(BYTE *filename, void *dest)
 /****************************************************************************/
 LONG cdecl FILE_write(BYTE *filename, void *buf, ULONG len)
 {
-   LONG i,handle;
+   LONG i, handle;
 
    disk_err = 0;
 
-   handle = open(filename,O_CREAT | O_RDWR | O_TRUNC | O_BINARY,
-      S_IREAD | S_IWRITE);
-   if (handle==-1)
-      {
+   handle = open(filename, O_CREAT | O_RDWR | O_TRUNC | O_BINARY,
+                 S_IREAD | S_IWRITE);
+   if (handle == -1)
+   {
       disk_err = CANT_WRITE_FILE;
       return 0;
-      }
+   }
 
-   i = write(handle,buf,len);
+   i = write(handle, buf, len);
    if (i == -1)
-      {
+   {
       disk_err = CANT_WRITE_FILE;
       return 0;
-      }
+   }
 
    if (i != len)
-      {
+   {
       disk_err = DISK_FULL;
       return 0;
-      }
+   }
 
    close(handle);
-   
+
    return 1;
 }
 
 /****************************************************************************/
 LONG cdecl FILE_append(BYTE *filename, void *buf, ULONG len)
 {
-   LONG i,handle;
+   LONG i, handle;
 
    disk_err = 0;
 
-   handle = open(filename,O_APPEND | O_RDWR | O_BINARY);
-   if (handle==-1)
-      {
+   handle = open(filename, O_APPEND | O_RDWR | O_BINARY);
+   if (handle == -1)
+   {
       disk_err = FILE_NOT_FOUND;
       return 0;
-      }
+   }
 
-   i = write(handle,buf,len);
+   i = write(handle, buf, len);
    if (i == -1)
-      {
+   {
       disk_err = CANT_WRITE_FILE;
       return 0;
-      }
+   }
 
    if (i != len)
-      {
+   {
       disk_err = DISK_FULL;
       return 0;
-      }
+   }
 
    close(handle);
 
    return 1;
 }
-

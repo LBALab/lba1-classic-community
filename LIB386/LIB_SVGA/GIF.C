@@ -25,35 +25,35 @@
 
 /*
 struct  ffblk   {
-    char        ff_reserved[21];
-    char        ff_attrib;
-    unsigned    ff_ftime;
-    unsigned    ff_fdate;
-    long        ff_fsize;
-    char        ff_name[13];
+	char        ff_reserved[21];
+	char        ff_attrib;
+	unsigned    ff_ftime;
+	unsigned    ff_fdate;
+	long        ff_fsize;
+	char        ff_name[13];
 };
 */
 
-#define UP_ARROW		328
-#define DOWN_ARROW      336
-#define LEFT_ARROW      331
-#define RIGHT_ARROW     333
-#define BACKSPACE         8
+#define UP_ARROW 328
+#define DOWN_ARROW 336
+#define LEFT_ARROW 331
+#define RIGHT_ARROW 333
+#define BACKSPACE 8
 
-void decoder(FILE* fd, WORD linewidth);
-WORD next_code(FILE* fd);
+void decoder(FILE *fd, WORD linewidth);
+WORD next_code(FILE *fd);
 
-//union REGS reg;
+// union REGS reg;
 
 struct
 {
-	char name[3]	;
-	char version[3]	;
-	short int xres	;
-	short int yres	;
+	char name[3];
+	char version[3];
+	short int xres;
+	short int yres;
 	unsigned short int packed;
-	char back_col_index	;
-	char aspect_ratio	;
+	char back_col_index;
+	char aspect_ratio;
 } gif_header;
 
 struct
@@ -65,14 +65,14 @@ struct
 
 struct
 {
-	short int start_col	;
-	short int start_row	;
-	short int width		;
-	short int height	;
-	char packed		;
+	short int start_col;
+	short int start_row;
+	short int width;
+	short int height;
+	char packed;
 } image_descriptor;
 
-char			ch, col_tab_flag, interlace_flag ;
+char ch, col_tab_flag, interlace_flag;
 
 /*
 buffer[64],
@@ -84,19 +84,19 @@ loc_sort_flag,
 sort_flag;
 */
 
-unsigned char bytes = 0, b1, display_line[640/*2049*/], file_buf[512] ;
+unsigned char bytes = 0, b1, display_line[640 /*2049*/], file_buf[512];
 
-//unsigned char last[4096], stack[4096] ;
-unsigned char *last, *stack ;
+// unsigned char last[4096], stack[4096] ;
+unsigned char *last, *stack;
 
 // unsigned char PALETTE[17]={0,1,2,3,4,5,20,7,56,57,58,59,60,61,62,63,0};
 
-short int		bits_left = 0, code_size, clear, col_tab_size,
-			linewidth, loc_col_tab_size,
-			newcodes, rows,
-			slot, top ;
+short int bits_left = 0, code_size, clear, col_tab_size,
+		  linewidth, loc_col_tab_size,
+		  newcodes, rows,
+		  slot, top;
 
-extern	short int	i, end, index ;
+extern short int i, end, index;
 /*
 mode,
 disp_height,
@@ -111,126 +111,126 @@ key,
 xres;
 */
 
-short unsigned int height, width ;
+short unsigned int height, width;
 
-//short unsigned int link[4096] ;
-short unsigned int *link ;
+// short unsigned int link[4096] ;
+short unsigned int *link;
 
-//FILE *fin		;
-//struct ffblk ffblk	;
+// FILE *fin		;
+// struct ffblk ffblk	;
 
-UBYTE	*PtBuff ;
-extern	UBYTE	*PtDest;
+UBYTE *PtBuff;
+extern UBYTE *PtDest;
 
 /*--------------------------------------------------------------------------*/
-void	line_out_gif( char *pt, WORD size )
+void line_out_gif(char *pt, WORD size)
 {
-	WORD	i	;
-	UBYTE	*pts	;
+	WORD i;
+	UBYTE *pts;
 
-	pts = pt	;
+	pts = pt;
 
-	PtDest = PtBuff + (rows*640)	;
+	PtDest = PtBuff + (rows * 640);
 
-	for ( i = 0 ; i < size ; i++ )	*PtDest++ = *pts++	;
+	for (i = 0; i < size; i++)
+		*PtDest++ = *pts++;
 
-	rows++		;
-/*
-	Box( 0, 0, 160, 7, 0 )		;
-	Text( 0, 0, "Ligne:%d", rows )	;
-	CopyBlockPhys( 0, 0, 160, 7 )	;
-*/
+	rows++;
+	/*
+		Box( 0, 0, 160, 7, 0 )		;
+		Text( 0, 0, "Ligne:%d", rows )	;
+		CopyBlockPhys( 0, 0, 160, 7 )	;
+	*/
 }
 /*--------------------------------------------------------------------------*/
 //	fd pointe deja sur le debut du gif sur disk
 //	Faire le Close a plus haut niveau !
 
-void	Read_Gif( FILE* fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers )
+void Read_Gif(FILE *fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers)
 {
-	char 		color	;
-	char		dummy	;
-	short int	finished ;
+	char color;
+	char dummy;
+	short int finished;
 
-	PtBuff = PtDest = screen	;
+	PtBuff = PtDest = screen;
 
 	// buffers doit faire au moins 16K
 
-	last  = buffers ;		// 4096
-	stack = buffers + 4096 ;	// 4096
-	link  = buffers + 8192 ;	// 8192
+	last = buffers;			// 4096
+	stack = buffers + 4096; // 4096
+	link = buffers + 8192;	// 8192
 
-	Read( fd, &gif_header, 13L )	;
+	Read(fd, &gif_header, 13L);
 
-//	color_flag	= (gif_header.packed & 0x80) >> 7	;
-//	color_res 	= (gif_header.packed & 0x70) >> 4	;
-//	sort_flag 	= (gif_header.packed & 0x08) >> 3	;
+	//	color_flag	= (gif_header.packed & 0x80) >> 7	;
+	//	color_res 	= (gif_header.packed & 0x70) >> 4	;
+	//	sort_flag 	= (gif_header.packed & 0x08) >> 3	;
 
-//	col_tab_size = (WORD)pow(2,(gif_header.packed & 0x07)+1.0);
+	//	col_tab_size = (WORD)pow(2,(gif_header.packed & 0x07)+1.0);
 
-	col_tab_size = (WORD)(2<<(gif_header.packed & 0x07)) ;
+	col_tab_size = (WORD)(2 << (gif_header.packed & 0x07));
 
 	if (col_tab_size > 0)
-		Read( fd, tabcol, col_tab_size *3L )	;
-/*      Si image en 16 couleurs
-	for ( i = 0 ; i < 16 ; i++ )
-	{
-		PALETTE[i] = ((color_table[i].red & 0x40) >> 1) |
-			((color_table[i].red & 0x80)	>> 5) 	|
-			((color_table[i].green & 0x40) >> 2) 	|
-			(color_table[i].green & 0x80) >> 6 	|
-			((color_table[i].blue & 0x40) >> 3) 	|
-			((color_table[i].blue &	0x80) >> 7)	;
-	}
-*/
-/*	Decalage en library automatique
-	for ( i = 0 ; i < 256 ; i++ )
-	{
-		color_table[i].red   >>=  2	;
-		color_table[i].green >>=  2	;
-		color_table[i].blue  >>=  2	;
-	}
-*/
-
-	rows = 0	;
-	finished = 0	;
-
-	while ( !finished )
-	{
-		Read( fd, &ch, 1L )	;
-
-		switch ( ch )
+		Read(fd, tabcol, col_tab_size * 3L);
+	/*      Si image en 16 couleurs
+		for ( i = 0 ; i < 16 ; i++ )
 		{
-			case ';':     /*End of .GIF data */
-				finished = 1	;
-				break		;
+			PALETTE[i] = ((color_table[i].red & 0x40) >> 1) |
+				((color_table[i].red & 0x80)	>> 5) 	|
+				((color_table[i].green & 0x40) >> 2) 	|
+				(color_table[i].green & 0x80) >> 6 	|
+				((color_table[i].blue & 0x40) >> 3) 	|
+				((color_table[i].blue &	0x80) >> 7)	;
+		}
+	*/
+	/*	Decalage en library automatique
+		for ( i = 0 ; i < 256 ; i++ )
+		{
+			color_table[i].red   >>=  2	;
+			color_table[i].green >>=  2	;
+			color_table[i].blue  >>=  2	;
+		}
+	*/
 
-			case '!':	  /* .GIF extension block - read and discard */
+	rows = 0;
+	finished = 0;
 
-				Read( fd, &dummy, 1L )		;
-				Read( fd, &i, 2L )		;
-				Read( fd, file_buf, (LONG)i )	;
-				break				;
+	while (!finished)
+	{
+		Read(fd, &ch, 1L);
 
-			case ',': 	/* read image description */
+		switch (ch)
+		{
+		case ';': /*End of .GIF data */
+			finished = 1;
+			break;
 
-				Read( fd, &image_descriptor, 9L )	;
-				width = image_descriptor.width		;
-				linewidth = min(640,width)		;
-				height = image_descriptor.height	;
-				col_tab_flag = (image_descriptor.packed & 0x80)   >> 7	;
-//				interlace_flag = (image_descriptor.packed & 0x40) >> 6	;
-//				loc_sort_flag = (image_descriptor.packed & 0x20)  >> 5	;
-				loc_col_tab_size = (WORD)pow(2,(image_descriptor.packed
-					& 0x07) + 1.0);
+		case '!': /* .GIF extension block - read and discard */
 
-				if (col_tab_flag == 1)
-					Read( fd,loc_color_table, loc_col_tab_size * 3L );
+			Read(fd, &dummy, 1L);
+			Read(fd, &i, 2L);
+			Read(fd, file_buf, (LONG)i);
+			break;
 
-				decoder( fd, width )	;
-				break			;
-			default:
-				finished = 1	;
-				break		;
+		case ',': /* read image description */
+
+			Read(fd, &image_descriptor, 9L);
+			width = image_descriptor.width;
+			linewidth = min(640, width);
+			height = image_descriptor.height;
+			col_tab_flag = (image_descriptor.packed & 0x80) >> 7;
+			//				interlace_flag = (image_descriptor.packed & 0x40) >> 6	;
+			//				loc_sort_flag = (image_descriptor.packed & 0x20)  >> 5	;
+			loc_col_tab_size = (WORD)pow(2, (image_descriptor.packed & 0x07) + 1.0);
+
+			if (col_tab_flag == 1)
+				Read(fd, loc_color_table, loc_col_tab_size * 3L);
+
+			decoder(fd, width);
+			break;
+		default:
+			finished = 1;
+			break;
 		}
 	}
 }
@@ -245,18 +245,18 @@ void	Read_Gif( FILE* fd, UBYTE *screen, UBYTE *tabcol, UBYTE *buffers )
 
 void Load_Gif(char *filename, UBYTE *screen, UBYTE *tabcol)
 {
-	FILE*	fd	;
-	UBYTE	*buffers ;
+	FILE *fd;
+	UBYTE *buffers;
 
-	fd = OpenRead( filename )	;
+	fd = OpenRead(filename);
 
-	buffers = Malloc( 16384 ) ;
+	buffers = Malloc(16384);
 
-	Read_Gif( fd, screen, tabcol, buffers )	;
+	Read_Gif(fd, screen, tabcol, buffers);
 
-	Free( buffers ) ;
+	Free(buffers);
 
-	Close(fd)			;
+	Close(fd);
 }
 /*--------------------------------------------------------------------------*/
 /*
@@ -267,82 +267,81 @@ void Load_Gif(char *filename, UBYTE *screen, UBYTE *tabcol)
   ╚═════════════════════════════════════════════════════════╝
 */
 
-void decoder( FILE* fd, WORD width )
+void decoder(FILE *fd, WORD width)
 {
-	short int code, fc=0, old_code=0, counter;
-	short int ch, size=0, ret	;
-	short int s_index=0	;
-	short int l_index=0	;
+	short int code, fc = 0, old_code = 0, counter;
+	short int ch, size = 0, ret;
+	short int s_index = 0;
+	short int l_index = 0;
 
-
-	Read( fd, &size, 1L )	;
-	code_size = size + 1	;
-	top = 1 << code_size	;
-	clear = 1 << size	;
-	end = clear + 1		;
+	Read(fd, &size, 1L);
+	code_size = size + 1;
+	top = 1 << code_size;
+	clear = 1 << size;
+	end = clear + 1;
 
 	slot = newcodes = end + 1;
-	counter = width		;
-	bits_left = 0		;
-	b1 = 0			;
-	bytes = 0		;
+	counter = width;
+	bits_left = 0;
+	b1 = 0;
+	bytes = 0;
 
 	while ((ch = next_code(fd)) != end)
 	{
 		if (ch == clear)
 		{
-			code_size = size + 1	;
-			slot = newcodes		;
-			top = 1 << code_size	;
-			ch = next_code(fd)	;
-			old_code = fc = ch	;
+			code_size = size + 1;
+			slot = newcodes;
+			top = 1 << code_size;
+			ch = next_code(fd);
+			old_code = fc = ch;
 			display_line[l_index++] = ch;
-			counter--		;
+			counter--;
 		}
 		else
 		{
-			code = ch	;
-			if ( code >= slot )
+			code = ch;
+			if (code >= slot)
 			{
-				code = old_code		;
-				stack[s_index++] = fc	;
+				code = old_code;
+				stack[s_index++] = fc;
 			}
-			while ( code >= newcodes )
+			while (code >= newcodes)
 			{
-				stack[s_index++] = last[code]	;
-				code = link[code]		;
+				stack[s_index++] = last[code];
+				code = link[code];
 			}
-			stack[s_index++] = code	;
-			if ( slot < top )
+			stack[s_index++] = code;
+			if (slot < top)
 			{
-				fc = code		;
-				last[slot] = code	;
-				link[slot++] = old_code	;
-				old_code = ch		;
+				fc = code;
+				last[slot] = code;
+				link[slot++] = old_code;
+				old_code = ch;
 			}
-			if ( slot >= top )
-				if ( code_size < 12 )
+			if (slot >= top)
+				if (code_size < 12)
 				{
-					top <<= 1	;
-					++code_size	;
+					top <<= 1;
+					++code_size;
 				}
-			while ( s_index > 0 )
+			while (s_index > 0)
 			{
-				display_line[l_index++] = stack[--s_index]	;
-				if ( --counter == 0 )
+				display_line[l_index++] = stack[--s_index];
+				if (--counter == 0)
 				{
-					line_out_gif( display_line, linewidth )	;
-					if ( rows >= height )
-						return	;
+					line_out_gif(display_line, linewidth);
+					if (rows >= height)
+						return;
 
-					l_index = 0	;
-					counter = width	;
+					l_index = 0;
+					counter = width;
 				}
 			}
 		}
 	}
-	if ( counter != linewidth )
-		line_out_gif( display_line, linewidth-counter );
+	if (counter != linewidth)
+		line_out_gif(display_line, linewidth - counter);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -359,43 +358,44 @@ void decoder( FILE* fd, WORD width )
 	WORD	bits_left
 */
 
-WORD next_code( FILE* fd )
+WORD next_code(FILE *fd)
 {
-	short int flag=0	;
-	unsigned long int code	;
+	short int flag = 0;
+	unsigned long int code;
 
-	if ( bits_left == 0 )	flag = 1;	/* BUG	*/
+	if (bits_left == 0)
+		flag = 1; /* BUG	*/
 
-	code = (b1 >> (8 - bits_left))	;
+	code = (b1 >> (8 - bits_left));
 
-	while ( code_size > bits_left )
+	while (code_size > bits_left)
 	{
-		if ( bytes <= 0 )
+		if (bytes <= 0)
 		{
-			index = 0			;
-			Read( fd, &bytes, 1L )		;
-			Read( fd, file_buf, (LONG)bytes );
+			index = 0;
+			Read(fd, &bytes, 1L);
+			Read(fd, file_buf, (LONG)bytes);
 		}
 
-		b1 = file_buf[index++]	;
+		b1 = file_buf[index++];
 
 		if (flag == 1)
 		{
 			/* code = (b1 >> (8 - bits_left))	;			SUPER BUG*/
-			code = b1			;
-			flag = 0			;	/* BUG	*/
+			code = b1;
+			flag = 0; /* BUG	*/
 		}
-		else	code |= (b1 << bits_left);
+		else
+			code |= (b1 << bits_left);
 
-		bits_left += 8	;
-		--bytes		;
+		bits_left += 8;
+		--bytes;
 	}
 
-	bits_left -= code_size	;
+	bits_left -= code_size;
 
-	code &= ( 0xFFF >> (12 - code_size))	;
+	code &= (0xFFF >> (12 - code_size));
 
-	return((WORD)(code))	;
+	return ((WORD)(code));
 }
 /*--------------------------------------------------------------------------*/
-

@@ -1,108 +1,109 @@
-#include	"c_extern.h"
+#include "c_extern.h"
 
 /*══════════════════════════════════════════════════════════════════════════*
-     █    ██▄ █ █▀▀▀▀ █▀▀▀█ █   █ ██▀▀▀ ▀▀█▀▀       █▀▀▀▄  █    ██▀▀▀ █▀▀▀█
-     ██   ██▀██ ██    ██▀█▀ ██  █ ▀▀▀▀█   ██        ██  █  ██   ▀▀▀▀█ ██▀▀▀
-     ▀▀   ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀   ▀▀  ▀▀▀▀▀ ▀▀▀▀   ▀▀   ▀▀▀▀▀ ▀▀
+	 █    ██▄ █ █▀▀▀▀ █▀▀▀█ █   █ ██▀▀▀ ▀▀█▀▀       █▀▀▀▄  █    ██▀▀▀ █▀▀▀█
+	 ██   ██▀██ ██    ██▀█▀ ██  █ ▀▀▀▀█   ██        ██  █  ██   ▀▀▀▀█ ██▀▀▀
+	 ▀▀   ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀   ▀▀  ▀▀▀▀▀ ▀▀▀▀   ▀▀   ▀▀▀▀▀ ▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	InitIncrustDisp(	WORD type,
-				WORD num,
-				WORD x, WORD y,
-				WORD info,
-				WORD move,
-				WORD timeout	)
+void InitIncrustDisp(WORD type,
+					 WORD num,
+					 WORD x, WORD y,
+					 WORD info,
+					 WORD move,
+					 WORD timeout)
 {
-	T_INCRUST_DISP	*ptrdisp ;
-	WORD	n ;
+	T_INCRUST_DISP *ptrdisp;
+	WORD n;
 
-	ptrdisp = ListIncrustDisp ;
+	ptrdisp = ListIncrustDisp;
 
-	for( n=0; n<MAX_INCRUST_DISP; n++, ptrdisp++ )
+	for (n = 0; n < MAX_INCRUST_DISP; n++, ptrdisp++)
 	{
-		if( ptrdisp->Num == -1 )	/* slot libre */
+		if (ptrdisp->Num == -1) /* slot libre */
 		{
-			ptrdisp->Num = num ;
+			ptrdisp->Num = num;
 
-			ptrdisp->X = x ;
-			ptrdisp->Y = y ;
+			ptrdisp->X = x;
+			ptrdisp->Y = y;
 
-			ptrdisp->Type = type ;
-			ptrdisp->Info = info ;
+			ptrdisp->Type = type;
+			ptrdisp->Info = info;
 
-			ptrdisp->Move = move ;
+			ptrdisp->Move = move;
 
-			ptrdisp->TimerEnd = TimerRef + 50 * timeout ;
+			ptrdisp->TimerEnd = TimerRef + 50 * timeout;
 
-			return ;
+			return;
 		}
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	ChangeIncrustPos( WORD xp0, WORD yp0, WORD xp1, WORD yp1 )
+void ChangeIncrustPos(WORD xp0, WORD yp0, WORD xp1, WORD yp1)
 {
-	T_INCRUST_DISP	*ptrdisp ;
-	WORD	n ;
-	WORD	dx, dy ;
+	T_INCRUST_DISP *ptrdisp;
+	WORD n;
+	WORD dx, dy;
 
-        dx = xp1 - xp0 ;
-	dy = yp1 - yp0 ;
+	dx = xp1 - xp0;
+	dy = yp1 - yp0;
 
-	ptrdisp = ListIncrustDisp ;
+	ptrdisp = ListIncrustDisp;
 
-	for( n=0; n<MAX_INCRUST_DISP; n++, ptrdisp++ )
+	for (n = 0; n < MAX_INCRUST_DISP; n++, ptrdisp++)
 	{
-		if( ptrdisp->Type == INCRUST_NUM )
+		if (ptrdisp->Type == INCRUST_NUM)
 		{
-			ptrdisp->X += dx ;
-			ptrdisp->Y += dy ;
+			ptrdisp->X += dx;
+			ptrdisp->Y += dy;
 		}
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	LastNumBulle = -1 ;
-WORD	SpriteBulle = 91 ;
+WORD LastNumBulle = -1;
+WORD SpriteBulle = 91;
 
-void	DrawBulle( WORD numobj )
+void DrawBulle(WORD numobj)
 {
-	LONG	dx, dy ;
+	LONG dx, dy;
 
-	ProjettePoint(	ListObjet[numobj].PosObjX - WorldXCube,
-			ListObjet[numobj].PosObjY + ListObjet[numobj].Ymax - WorldYCube,
-			ListObjet[numobj].PosObjZ - WorldZCube ) ;
+	ProjettePoint(ListObjet[numobj].PosObjX - WorldXCube,
+				  ListObjet[numobj].PosObjY + ListObjet[numobj].Ymax - WorldYCube,
+				  ListObjet[numobj].PosObjZ - WorldZCube);
 
-	if( LastNumBulle != numobj )
+	if (LastNumBulle != numobj)
 	{
-		SpriteBulle ^= 1 ;
-		LastNumBulle = numobj ;
+		SpriteBulle ^= 1;
+		LastNumBulle = numobj;
 	}
 
-	GetDxDyGraph( 0, &dx, &dy, HQR_Get(HQRPtrSpriteExtra, SpriteBulle ) ) ;
+	GetDxDyGraph(0, &dx, &dy, HQR_Get(HQRPtrSpriteExtra, SpriteBulle));
 
-	if( SpriteBulle == 90 )	ScreenXmin = Xp + 10 ;
-	else			ScreenXmin = Xp - 10 - dx ;
+	if (SpriteBulle == 90)
+		ScreenXmin = Xp + 10;
+	else
+		ScreenXmin = Xp - 10 - dx;
 
-	ScreenYmin = Yp - 20 ;
+	ScreenYmin = Yp - 20;
 
+	ScreenXmax = ScreenXmin + dx - 1;
+	ScreenYmax = ScreenYmin + dy - 1;
 
-	ScreenXmax = ScreenXmin + dx -1 ;
-	ScreenYmax = ScreenYmin + dy -1 ;
+	SetClip(ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax);
 
-	SetClip( ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax ) ;
-
-	AffGraph( 0, ScreenXmin, ScreenYmin, HQR_Get(HQRPtrSpriteExtra, SpriteBulle) ) ;
-	if( ClipXmin <= ClipXmax
-	AND ClipYmin <= ClipYmax )
+	AffGraph(0, ScreenXmin, ScreenYmin, HQR_Get(HQRPtrSpriteExtra, SpriteBulle));
+	if (ClipXmin <= ClipXmax
+						AND ClipYmin <= ClipYmax)
 	{
-		CopyBlockPhys( ClipXmin, ClipYmin, ClipXmax, ClipYmax ) ;
+		CopyBlockPhys(ClipXmin, ClipYmin, ClipXmax, ClipYmax);
 	}
 
-	UnSetClip() ;
+	UnSetClip();
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/

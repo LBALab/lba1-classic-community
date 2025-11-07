@@ -1,74 +1,72 @@
 
 //----------------------------------------------------------------------------
-extern  WORD    BufferData[]    ;
-extern  WORD    DriveCDR        ;//     Lettre drive 0=A 1=B etc. apres InitCDR
-extern  ULONG   LeadOut         ;
-extern  UBYTE   LowTrack, HigTrack      ;
-extern	LONG	FileCD_Start	;
-extern	LONG	FileCD_Sect	;
-extern	LONG	FileCD_Size	;
+extern WORD BufferData[];
+extern WORD DriveCDR; //     Lettre drive 0=A 1=B etc. apres InitCDR
+extern ULONG LeadOut;
+extern UBYTE LowTrack, HigTrack;
+extern LONG FileCD_Start;
+extern LONG FileCD_Sect;
+extern LONG FileCD_Size;
 
 //----------------------------------------------------------------------------
 //      Initialiser le lesteur de cdrom, si pas verif alors chaine vide
-LONG    InitCDR( char *nameid )         ;
+LONG InitCDR(char *nameid);
 
 //      Jouer seulement une track précise
-LONG    PlayTrackCDR( LONG track )      ;
+LONG PlayTrackCDR(LONG track);
 
 //      Arreter le PlayTrackCDR
-void    StopCDR()                       ;
+void StopCDR();
 
 //      Verouiller ou déverouiller la porte du lecteur
-void    LockCDR()                       ;
-void    UnLockCDR()                     ;
+void LockCDR();
+void UnLockCDR();
 
 //      Reset, Init ou suite a une erreur par exemple
-void    ResetCDR()                      ;
+void ResetCDR();
 
 //      Ejecter le cdrom quand c'est possible ( pas toujours motorisé )
-void    EjectCDR()                      ;
+void EjectCDR();
 
 //      Fermer tiroir electrique quand c'est possible ( pas toujours motorisé )
-void    CloseTrayCDR()                  ;
+void CloseTrayCDR();
 
 //      Reprends une track apres un stopCDR
-void    ResumeCDR()                     ;
+void ResumeCDR();
 
 //-------------------------------------- Fonction bas niveau
 
 //      Return pointeur sur Copyright File name ( pas forcement file )
-char    *GetCopyrightName()             ;
+char *GetCopyrightName();
 
 //      Conversion Red to Hsg ( belle jambe non ;-) )
-LONG    Red2Hsg( LONG value )           ;
+LONG Red2Hsg(LONG value);
 
 //      Return la taille d'une track en HSG
-LONG    GetLengthTrackCDR( LONG track ) ;
+LONG GetLengthTrackCDR(LONG track);
 
 //      Return secteur depart Track
-LONG    StartTrackCDR( LONG track )     ;
+LONG StartTrackCDR(LONG track);
 
 //      Return status of CD Drive
-LONG    StatusCDR()                     ;
+LONG StatusCDR();
 
 //      Return Track currently play or 0
-LONG    GetMusicCDR()                   ;
+LONG GetMusicCDR();
 
 //      Change volume selon chanel
-void    ControlCDR( WORD chan0, WORD vol0, WORD chan1, WORD vol1 )      ;
+void ControlCDR(WORD chan0, WORD vol0, WORD chan1, WORD vol1);
 
 //      Return position de la tete
-LONG    LocateHeadCDR()                 ;
+LONG LocateHeadCDR();
 
 //      Play a part of cd
-LONG    PlayCDR( LONG debut, LONG duree );
+LONG PlayCDR(LONG debut, LONG duree);
 
 //      Lecture data
-LONG    ReadLongCDR( LONG start, LONG nbsect, void *buffer ) ;
+LONG ReadLongCDR(LONG start, LONG nbsect, void *buffer);
 
 //	Get Directory Entry
-LONG	GetFileCDR( char *name )	;
+LONG GetFileCDR(char *name);
 
 //----------------------------------------------------------------------------
-
-

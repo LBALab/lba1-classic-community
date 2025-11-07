@@ -27,37 +27,43 @@ void SmallSort(void *objetlist, LONG nbobjets, LONG structsize)
 	UBYTE *pObj;
 	UBYTE *pNext;
 	UBYTE *pSmallest;
-	ULONG tmp[64];  // Changed from UBYTE tmp[256] - swap uses DWORDs
+	ULONG tmp[64]; // Changed from UBYTE tmp[256] - swap uses DWORDs
 	LONG n;
 	LONG numDwords;
 	ULONG *pSrc, *pDest, *pTmp;
-	
-	if (nbobjets <= 1) {
+
+	if (nbobjets <= 1)
+	{
 		return;
 	}
-	
+
 	pObj = (UBYTE *)objetlist;
 	nbobjets--;
-	numDwords = structsize >> 2;  // structsize / 4
-	
-	while (nbobjets > 0) {
+	numDwords = structsize >> 2; // structsize / 4
+
+	while (nbobjets > 0)
+	{
 		pSmallest = pObj;
 		pNext = pObj + structsize;
-		
-		for (n = nbobjets; n > 0; n--) {
-			if (*((WORD *)pNext) < *((WORD *)pSmallest)) {  // SIGNED comparison (jl)
+
+		for (n = nbobjets; n > 0; n--)
+		{
+			if (*((WORD *)pNext) < *((WORD *)pSmallest))
+			{ // SIGNED comparison (jl)
 				pSmallest = pNext;
 			}
 			pNext += structsize;
 		}
-		
-		if (pSmallest != pObj) {
+
+		if (pSmallest != pObj)
+		{
 			// Swap using DWORDs like the assembly version
 			pSrc = (ULONG *)pSmallest;
 			pDest = (ULONG *)pObj;
 			pTmp = tmp;
-			
-			for (n = numDwords; n > 0; n--) {
+
+			for (n = numDwords; n > 0; n--)
+			{
 				*pTmp = *pSrc;
 				*pSrc = *pDest;
 				*pDest = *pTmp;
@@ -66,7 +72,7 @@ void SmallSort(void *objetlist, LONG nbobjets, LONG structsize)
 				pTmp++;
 			}
 		}
-		
+
 		pObj += structsize;
 		nbobjets--;
 	}
@@ -77,35 +83,38 @@ void CopyBlockMCGA(LONG x0, LONG y0, LONG x1, LONG y1, UBYTE *src, LONG xd, LONG
 	UBYTE *esi, *edi;
 	LONG ebx, eax, edx, ebp;
 	LONG ecx;
-	
+
 	ebx = y0;
 	esi = src + ((ULONG *)(&TabOffLine))[ebx] + x0;
-	
+
 	edi = dst;
-	
+
 	ebx = y1 - y0 + 1;
 	eax = x1 - x0 + 1;
-	
+
 	edx = 320 - eax;
 	ebp = 640 - eax;
-	
-	while (ebx > 0) {
+
+	while (ebx > 0)
+	{
 		ecx = eax >> 2;
-		while (ecx > 0) {
+		while (ecx > 0)
+		{
 			*((ULONG *)edi) = *((ULONG *)esi);
 			esi += 4;
 			edi += 4;
 			ecx--;
 		}
-		
+
 		ecx = eax & 3;
-		while (ecx > 0) {
+		while (ecx > 0)
+		{
 			*edi = *esi;
 			esi++;
 			edi++;
 			ecx--;
 		}
-		
+
 		esi += ebp;
 		edi += edx;
 		ebx--;
@@ -118,61 +127,71 @@ void ShadeBox(LONG x0, LONG y0, LONG x1, LONG y1, LONG deccoul)
 	LONG eax, ebx, ecx, edx;
 	LONG esi, ebp;
 	UBYTE al, ah;
-	
+
 	eax = x0;
 	ebx = y0;
 	ecx = x1;
 	edx = y1;
-	
-	if (eax > ClipXmax || ecx < ClipXmin || ebx > ClipYmax || edx < ClipYmin) {
+
+	if (eax > ClipXmax || ecx < ClipXmin || ebx > ClipYmax || edx < ClipYmin)
+	{
 		return;
 	}
-	
-	if (eax < ClipXmin) {
+
+	if (eax < ClipXmin)
+	{
 		eax = ClipXmin;
 	}
-	if (ecx > ClipXmax) {
+	if (ecx > ClipXmax)
+	{
 		ecx = ClipXmax;
 	}
-	if (ebx < ClipYmin) {
+	if (ebx < ClipYmin)
+	{
 		ebx = ClipYmin;
 	}
-	if (edx > ClipYmax) {
+	if (edx > ClipYmax)
+	{
 		edx = ClipYmax;
 	}
-	
+
 	edi = Log + ((ULONG *)(&TabOffLine))[ebx] + eax;
-	
+
 	edx = edx - ebx + 1;
 	ebx = edx;
-	
+
 	edx = ecx - eax + 1;
-	
+
 	esi = Screen_X - edx;
-	
+
 	ecx = deccoul;
-	
-	while (ebx > 0) {
+
+	while (ebx > 0)
+	{
 		ebp = edx;
-		
-		while (ebp > 0) {
+
+		while (ebp > 0)
+		{
 			al = *edi;
 			ah = al;
 			al &= 0x0F;
 			ah &= 0xF0;
-			
-			if (al >= (UBYTE)ecx) {
+
+			if (al >= (UBYTE)ecx)
+			{
 				al -= (UBYTE)ecx;
 				al += ah;
 				*edi = al;
-			} else {
+			}
+			else
+			{
 				*edi = ah;
 			}
-			
+
 			edi++;
 			ebp--;
 		}
-		
+
 		edi += esi;
 		ebx--;
 	}

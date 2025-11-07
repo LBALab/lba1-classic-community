@@ -1,197 +1,196 @@
-#include 	"c_extern.h"
-#include 	"../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
+#include "c_extern.h"
+#include "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 
 /*══════════════════════════════════════════════════════════════════════════*
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-	LONG	MixMusic = 1 ;		// Flag Mixer for Music
-extern	LONG	MaxVolume ;		// Max Music Volume if no Mixer
+LONG MixMusic = 1;	   // Flag Mixer for Music
+extern LONG MaxVolume; // Max Music Volume if no Mixer
 
-#define	HAUTEUR_STANDARD	50
-#define	MENU_SPACE		6
+#define HAUTEUR_STANDARD 50
+#define MENU_SPACE 6
 
-#define	COUL_TEXT_MENU		15	// trouver blanc palette jeu
-#define	COUL_SELECT_MENU	68
-#define	COUL_INPUT_NAME		112
-#define	COUL_LETTER_INPUT	15
+#define COUL_TEXT_MENU 15 // trouver blanc palette jeu
+#define COUL_SELECT_MENU 68
+#define COUL_INPUT_NAME 112
+#define COUL_LETTER_INPUT 15
 
-WORD	LargeurMenu = 550 ;
+WORD LargeurMenu = 550;
 
-UWORD	GameMainMenu[] = {
-			0,	// selected
-			4,	// nb entries
-			200,	// y center
-			0,	// .dia num
-			0, 20,	// start a new game game
-			0, 21,	// continue game
-			0, 23,	// options
-			0, 22	// ret dos
-				}	;
-
-UWORD	GameQuitMenuWithoutSave[] = {
-			0,	// selected
-			2,	// nb entries
-			240,	// y center
-			0,	// .dia num
-			0, 28,	// continuer jeu
-			0, 27	// abandonner partie
+UWORD GameMainMenu[] = {
+	0,	   // selected
+	4,	   // nb entries
+	200,   // y center
+	0,	   // .dia num
+	0, 20, // start a new game game
+	0, 21, // continue game
+	0, 23, // options
+	0, 22  // ret dos
 };
 
-UWORD	GameQuitMenu[] = {
-			0,	// selected
-			4,	// nb entries
-			240,	// y center
-			0,	// .dia num
-			0, 28,	// continuer jeu
-			0, 950,	// load game
-			0, 951,	// save game
-			0, 27	// abandonner partie
-				} ;
+UWORD GameQuitMenuWithoutSave[] = {
+	0,	   // selected
+	2,	   // nb entries
+	240,   // y center
+	0,	   // .dia num
+	0, 28, // continuer jeu
+	0, 27  // abandonner partie
+};
 
-UWORD	GameOptionMenu[] = {
-			0,	// selected
-			4,	// nb entries
-			0,	// y from top.
-			0,	// .dia num
+UWORD GameQuitMenu[] = {
+	0,		// selected
+	4,		// nb entries
+	240,	// y center
+	0,		// .dia num
+	0, 28,	// continuer jeu
+	0, 950, // load game
+	0, 951, // save game
+	0, 27	// abandonner partie
+};
 
-			0, 24,  // annuler
-			0, 30,	// reglages volumes
-			0, 46,	// gestion saved game
-			0, 47	// advanced options
-				} ;
+UWORD GameOptionMenu[] = {
+	0, // selected
+	4, // nb entries
+	0, // y from top.
+	0, // .dia num
 
-UWORD	GameAdvancedMenu[] = {
-			0,	// selected
-			6,	// nb entries
-			0,	// y from top.
-			0,	// .dia num
+	0, 24, // annuler
+	0, 30, // reglages volumes
+	0, 46, // gestion saved game
+	0, 47  // advanced options
+};
 
-			0, 26,	// retour
-			0, 4,	// agressif auto/manuel
-			6, 31,	// niveau details
-			7, 32,	// ombres on/off
-			8, 33,	// zoom on/off
-			9, 34	// wall damage on/off
-				} ;
+UWORD GameAdvancedMenu[] = {
+	0, // selected
+	6, // nb entries
+	0, // y from top.
+	0, // .dia num
 
-UWORD	GameVolumeMenu[] = {
-			0,	// selected
-			7,	// nb entries
-			0,	// y from top.
-			0,	// .dia num
+	0, 26, // retour
+	0, 4,  // agressif auto/manuel
+	6, 31, // niveau details
+	7, 32, // ombres on/off
+	8, 33, // zoom on/off
+	9, 34  // wall damage on/off
+};
 
-			0, 26,  // retour prec
-			1, 10,	// type musvol / num text
-			2, 11,	// type sampvol
-			3, 12,	// type cdvol
-			4, 13,	// type linevol
-			5, 14,	// type mastervol
-			0, 16	// save settings
+UWORD GameVolumeMenu[] = {
+	0, // selected
+	7, // nb entries
+	0, // y from top.
+	0, // .dia num
 
-				}	;
+	0, 26, // retour prec
+	1, 10, // type musvol / num text
+	2, 11, // type sampvol
+	3, 12, // type cdvol
+	4, 13, // type linevol
+	5, 14, // type mastervol
+	0, 16  // save settings
 
-UWORD	SavedGameMenu[] = {
-			0,	// selected
+};
+
+UWORD SavedGameMenu[] = {
+	0, // selected
 #ifndef DISABLE_COPY_SAVED_GAME
-			3,	// nb entries
-#else		
-			2,	// nb entries
+	3, // nb entries
+#else
+	2, // nb entries
 #endif
-			0,	// y from top.
-			0,	// .dia num
+	0, // y from top.
+	0, // .dia num
 
-			0, 26,  // retour menu prec
+	0, 26, // retour menu prec
 #ifndef DISABLE_COPY_SAVED_GAME
-			0, 41,	// copier une sauvegarde
+	0, 41, // copier une sauvegarde
 #endif
-			0, 45	// détruire une sauvegarde
+	0, 45 // détruire une sauvegarde
 
-				} ;
+};
 
-UWORD	SavedConfirmMenu[] = {
-			0,	// selected
-			2,	// nb entries
-			240,	// y center.
-			0,	// .dia num
+UWORD SavedConfirmMenu[] = {
+	0,	 // selected
+	2,	 // nb entries
+	240, // y center.
+	0,	 // .dia num
 
-			0, 24,  // annuler
-			0, 48	// détruire une sauvegarde
+	0, 24, // annuler
+	0, 48  // détruire une sauvegarde
 
-				} ;
+};
 
-UWORD	GameChoiceMenu[] = {
-			0,	// selected
-			7,	// nb entries
-			0,	// y from top. byte 8(
-			0,	// .dia num
+UWORD GameChoiceMenu[] = {
+	0, // selected
+	7, // nb entries
+	0, // y from top. byte 8(
+	0, // .dia num
 
-			0, 0,
-			0, 1,
-			0, 2,
-			0, 3,
-			0, 4,
-			0, 5,
-			0, 6	}	;
+	0, 0,
+	0, 1,
+	0, 2,
+	0, 3,
+	0, 4,
+	0, 5,
+	0, 6};
 
-ULONG	TimerSample ;
+ULONG TimerSample;
 
 // save players games
 
-#define	MAX_PLAYER	200
+#define MAX_PLAYER 200
 #define AUTO_SAVE_NAME "AUTOSAVE"
 
-UBYTE	NumVersion = 0 ;
+UBYTE NumVersion = 0;
 
-#define	NB_CAR_H	14
-#define	NB_CAR_V	5
+#define NB_CAR_H 14
+#define NB_CAR_V 5
 
-#define	MAX_SIZE_PLAYER_NAME	29
+#define MAX_SIZE_PLAYER_NAME 29
 
-UBYTE	GamePathname[_MAX_PATH] ;
+UBYTE GamePathname[_MAX_PATH];
 
-//UBYTE	PlayerGameFile[_MAX_PATH] ;
+// UBYTE	PlayerGameFile[_MAX_PATH] ;
 
-UBYTE	PlayerName[MAX_SIZE_PLAYER_NAME+1] ;
+UBYTE PlayerName[MAX_SIZE_PLAYER_NAME + 1];
 
 /*──────────────────────────────────────────────────────────────────────────*/
 // UBYTE	TabInvOrder[] = {
 
-WORD	ListBetaGame[MAX_FLAGS_GAME] ;
+WORD ListBetaGame[MAX_FLAGS_GAME];
 
-#define	SIZE_INV_OBJ_X	75
-#define	SIZE_INV_OBJ_Y	65
+#define SIZE_INV_OBJ_X 75
+#define SIZE_INV_OBJ_Y 65
 
+WORD InvSelect = 0;
+WORD InvCoul = COUL_SELECT_MENU;
 
-WORD	InvSelect = 0 ;
-WORD	InvCoul = COUL_SELECT_MENU ;
-
-#define	INV_START_X	17
-#define	INV_START_Y	10
-
-/*──────────────────────────────────────────────────────────────────────────*/
-
-#define	SIZE_FOUND_OBJ	130
+#define INV_START_X 17
+#define INV_START_Y 10
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-T_REAL_VALUE	RealRot ;
-UBYTE		*Ptr3do ;
-WORD		TabAnim[4] ;
-WORD		FrameAnim[4] ;
+#define SIZE_FOUND_OBJ 130
 
-extern	WORD	ZoneGrm ;
-extern	WORD	IndexGrm ;
+/*──────────────────────────────────────────────────────────────────────────*/
 
-#define	CTRL_X0	100
-#define	CTRL_Y0	100
-#define	CTRL_X1	550
-#define	CTRL_Y1	290
+T_REAL_VALUE RealRot;
+UBYTE *Ptr3do;
+WORD TabAnim[4];
+WORD FrameAnim[4];
+
+extern WORD ZoneGrm;
+extern WORD IndexGrm;
+
+#define CTRL_X0 100
+#define CTRL_Y0 100
+#define CTRL_X1 550
+#define CTRL_Y1 290
 
 /*══════════════════════════════════════════════════════════════════════════*
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
-void MenuInitGame(int argc, UBYTE* argv[], WORD showIntroduction)
+void MenuInitGame(int argc, UBYTE *argv[], WORD showIntroduction)
 {
 	int retMainLoop;
 
@@ -202,7 +201,7 @@ void MenuInitGame(int argc, UBYTE* argv[], WORD showIntroduction)
 
 	if (retMainLoop = MainLoop())
 	{
-#ifdef	DEMO
+#ifdef DEMO
 		PlayMidiFile(6);
 		Credits();
 		TheEnd(PROGRAM_OK, "* End of Demo version.");
@@ -224,45 +223,45 @@ void MenuInitGame(int argc, UBYTE* argv[], WORD showIntroduction)
 	CopyScreen(Log, Screen);
 }
 
-
-void	Init3DGame()
+void Init3DGame()
 {
-	SetIsoProjection( 320-8-1, 240, SIZE_BRICK_XZ ) ;
-	SetPosCamera( 0,0,0 ) ;
-	SetAngleCamera( 0,0,0 ) ;
-	SetLightVector( AlphaLight, BetaLight, 0 ) ;
+	SetIsoProjection(320 - 8 - 1, 240, SIZE_BRICK_XZ);
+	SetPosCamera(0, 0, 0);
+	SetAngleCamera(0, 0, 0);
+	SetLightVector(AlphaLight, BetaLight, 0);
 }
 
-extern	UBYTE	*Imagen ;
+extern UBYTE *Imagen;
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawFire( WORD x0, WORD y0, WORD x1, WORD y1, WORD coul )
+void DrawFire(WORD x0, WORD y0, WORD x1, WORD y1, WORD coul)
 {
-	DoFire( y0, coul ) ;
+	DoFire(y0, coul);
 
-	if( !Rnd(5) )
+	if (!Rnd(5))
 	{
-		BufSpeak[ Rnd(320*10)+20*320 ] = 255 ;
+		BufSpeak[Rnd(320 * 10) + 20 * 320] = 255;
 	}
 }
 
-void	WaitReleaseSpace()
+void WaitReleaseSpace()
 {
-	SaveTimer() ;
-	while( (Fire & F_SPACE)
-	OR (Key == K_ESC) ) ;
-	RestoreTimer() ;
+	SaveTimer();
+	while ((Fire & F_SPACE)
+			   OR(Key == K_ESC))
+		;
+	RestoreTimer();
 }
 
-char*	GetMenuMultiTextAux(WORD num, char* dst)
+char *GetMenuMultiTextAux(WORD num, char *dst)
 {
-	char* multiTextPtr = GetMultiText(num, dst);
+	char *multiTextPtr = GetMultiText(num, dst);
 
 	// IF text reference doesn't exist in TEXT.HQR file, use text in source code
 	if (!multiTextPtr)
 	{
-		char* customTextPtr = GetCustomizedMultiText(num);
+		char *customTextPtr = GetCustomizedMultiText(num);
 
 		if (customTextPtr)
 			strcpy(dst, customTextPtr);
@@ -274,956 +273,969 @@ char*	GetMenuMultiTextAux(WORD num, char* dst)
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-	     █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▄ ▄█ █▀▀▀▀ ██▄ █ █   █
-	     ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██▀ █ ██▀▀  ██▀██ ██  █
-	     ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀
+		 █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▄ ▄█ █▀▀▀▀ ██▄ █ █   █
+		 ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██▀ █ ██▀▀  ██▀██ ██  █
+		 ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	DrawObj3D( WORD x0, WORD y0, WORD x1, WORD y1,
-	WORD y3d , WORD betaflag ,
-	UBYTE *ptr3do )
+void DrawObj3D(WORD x0, WORD y0, WORD x1, WORD y1,
+			   WORD y3d, WORD betaflag,
+			   UBYTE *ptr3do)
 {
-	WORD	beta ;
+	WORD beta;
 
-	SetIsoProjection( (x1+x0)/2, (y1+y0)/2, 0 ) ;
+	SetIsoProjection((x1 + x0) / 2, (y1 + y0) / 2, 0);
 
-	SetClip( x0,y0, x1,y1 ) ;
+	SetClip(x0, y0, x1, y1);
 
-	if( betaflag == -1 )
+	if (betaflag == -1)
 	{
-		beta = GetRealAngle( &RealRot ) ;
+		beta = GetRealAngle(&RealRot);
 
-		if( RealRot.TimeValue == 0 )
+		if (RealRot.TimeValue == 0)
 		{
-			InitRealAngle( beta, beta-256, 50, &RealRot ) ;
+			InitRealAngle(beta, beta - 256, 50, &RealRot);
 		}
 	}
 	else
 	{
-		beta = betaflag ;
+		beta = betaflag;
 	}
 
-	AffObjetIso( 0,y3d,0, 0,beta,0, ptr3do ) ;
+	AffObjetIso(0, y3d, 0, 0, beta, 0, ptr3do);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	DrawCadre( WORD x0, WORD y0, WORD x1, WORD y1 )
+void DrawCadre(WORD x0, WORD y0, WORD x1, WORD y1)
 {
-	Line( x0  , y0  , x1, y0, 79 ) ;
-	Line( x0  , y0  , x0, y1, 79 ) ;
-	Line( x1  , y0+1, x1, y1, 73 ) ;
-	Line( x0+1, y1  , x1, y1, 73 ) ;
+	Line(x0, y0, x1, y0, 79);
+	Line(x0, y0, x0, y1, 79);
+	Line(x1, y0 + 1, x1, y1, 73);
+	Line(x0 + 1, y1, x1, y1, 73);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-    █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀█ █▀▀▀█ █▀▀▀█ ▀▀█▀▀ █▀▀▀▀ █▄ ▄█ █▀▀▀▀ ██▄ █ ▀▀█▀▀
-    ██    ██  █ ██▀ █ ██▀▀▀ ██  █ ██▀█▀   ██  ██▀▀  ██▀ █ ██▀▀  ██▀██   ██
-    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀    ▀▀▀▀▀ ▀▀  ▀   ▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀   ▀▀
+	█▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀█ █▀▀▀█ █▀▀▀█ ▀▀█▀▀ █▀▀▀▀ █▄ ▄█ █▀▀▀▀ ██▄ █ ▀▀█▀▀
+	██    ██  █ ██▀ █ ██▀▀▀ ██  █ ██▀█▀   ██  ██▀▀  ██▀ █ ██▀▀  ██▀██   ██
+	▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀    ▀▀▀▀▀ ▀▀  ▀   ▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀   ▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawComportement( WORD comportement, WORD beta, WORD copyblock )
+void DrawComportement(WORD comportement, WORD beta, WORD copyblock)
 {
-	WORD	x0, y0, x1, y1 ;
-	UBYTE	*ptranim ;
-	WORD	frameanim ;
+	WORD x0, y0, x1, y1;
+	UBYTE *ptranim;
+	WORD frameanim;
 
+	x0 = CTRL_X0 + 10 + comportement * 110;
+	y0 = CTRL_Y0 + 10;
+	x1 = x0 + 99;
+	y1 = y0 + 119;
 
-	x0 = CTRL_X0+10 + comportement * 110 ;
-	y0 = CTRL_Y0+10 ;
-	x1 = x0+99 ;
-	y1 = y0+119 ;
+	ptranim = HQR_Get(HQR_Anims, TabAnim[comportement]);
+	frameanim = FrameAnim[comportement];
 
-	ptranim = HQR_Get( HQR_Anims, TabAnim[comportement] ) ;
-	frameanim = FrameAnim[comportement] ;
-
-	if( SetInterAnimObjet( frameanim, ptranim, Ptr3do ) )
+	if (SetInterAnimObjet(frameanim, ptranim, Ptr3do))
 	{
-		frameanim++ ;
-		if( frameanim == GetNbFramesAnim( ptranim ) )
+		frameanim++;
+		if (frameanim == GetNbFramesAnim(ptranim))
 		{
-			frameanim = GetBouclageAnim( ptranim ) ;
+			frameanim = GetBouclageAnim(ptranim);
 		}
-		FrameAnim[comportement] = frameanim ;
+		FrameAnim[comportement] = frameanim;
 	}
 
-	if( !copyblock )	/* init */
+	if (!copyblock) /* init */
 	{
-		DrawCadre( x0-1, y0-1, x1+1, y1+1 ) ;
+		DrawCadre(x0 - 1, y0 - 1, x1 + 1, y1 + 1);
 	}
 
-	MemoClip() ;
-	UnSetClip() ;
+	MemoClip();
+	UnSetClip();
 
-	if( comportement != Comportement )
+	if (comportement != Comportement)
 	{
 
-		Box( x0,y0, x1,y1, 0 ) ;
+		Box(x0, y0, x1, y1, 0);
 
-/*		CopyBlock( x0,y0, x1,y1, Screen, x0, y0, Log ) ;
-		ShadeBox( x0,y0, x1,y1, 3 ) ;
-*/
+		/*		CopyBlock( x0,y0, x1,y1, Screen, x0, y0, Log ) ;
+				ShadeBox( x0,y0, x1,y1, 3 ) ;
+		*/
 	}
 	else
 	{
 
-		Box( x0,y0, x1,y1, 68 ) ;
+		Box(x0, y0, x1, y1, 68);
 
-/*		CopyBlock( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40, Screen,
-			   CTRL_X0+10, CTRL_Y0+139, Log ) ;
-		ShadeBox( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40, 4 ) ;
-*/
-		Box( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40, 0 ) ;
-		DrawCadre( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40 ) ;
+		/*		CopyBlock( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40, Screen,
+					   CTRL_X0+10, CTRL_Y0+139, Log ) ;
+				ShadeBox( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40, 4 ) ;
+		*/
+		Box(CTRL_X0 + 10, CTRL_Y0 + 139, CTRL_X1 - 10, CTRL_Y0 + 139 + 40, 0);
+		DrawCadre(CTRL_X0 + 10, CTRL_Y0 + 139, CTRL_X1 - 10, CTRL_Y0 + 139 + 40);
 
-		CoulFont( 15 ) ;
-		if( Comportement == C_AGRESSIF
-		AND CombatAuto == TRUE )
-			GetMultiText( 4, String ) ;
+		CoulFont(15);
+		if (Comportement == C_AGRESSIF AND CombatAuto == TRUE)
+			GetMultiText(4, String);
 		else
-			GetMultiText( Comportement, String ) ;
+			GetMultiText(Comportement, String);
 
-		Font( (CTRL_X1+CTRL_X0-SizeFont( String ))/2, CTRL_Y0+140, String )		;
+		Font((CTRL_X1 + CTRL_X0 - SizeFont(String)) / 2, CTRL_Y0 + 140, String);
 	}
 
-	DrawObj3D(	x0, y0, x1, y1,
-			-600, beta,
-			Ptr3do ) ;
+	DrawObj3D(x0, y0, x1, y1,
+			  -600, beta,
+			  Ptr3do);
 
-/*	if( comportement != Comportement )
+	/*	if( comportement != Comportement )
+		{
+	//		ShadeBox( x0,y0, x1,y1, 5 ) ;
+		}
+		else
+		{
+	//		Rect( x0+1,y0+1, x1-1,y1-1, 12 ) ;
+			Rect( x0+2,y0+2, x1-2,y1-2, 12 ) ;
+		}
+	*/
+
+	if (copyblock)
 	{
-//		ShadeBox( x0,y0, x1,y1, 5 ) ;
-	}
-	else
-	{
-//		Rect( x0+1,y0+1, x1-1,y1-1, 12 ) ;
-		Rect( x0+2,y0+2, x1-2,y1-2, 12 ) ;
-	}
-*/
-
-	if( copyblock )
-	{
-		CopyBlockPhys( x0,y0,x1,y1 ) ;
-		CopyBlockPhys( CTRL_X0+10, CTRL_Y0+139, CTRL_X1-10, CTRL_Y0+139+40 ) ;
+		CopyBlockPhys(x0, y0, x1, y1);
+		CopyBlockPhys(CTRL_X0 + 10, CTRL_Y0 + 139, CTRL_X1 - 10, CTRL_Y0 + 139 + 40);
 	}
 
-	RestoreClip() ;
+	RestoreClip();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	DrawInfoMenu( WORD x0, WORD y0 )
+void DrawInfoMenu(WORD x0, WORD y0)
 {
-	WORD	x,x1 ;
-	WORD	l ;
-	WORD	lifepoint ;
+	WORD x, x1;
+	WORD l;
+	WORD lifepoint;
 
-	UnSetClip() ;
+	UnSetClip();
 
-	DrawCadre( x0,y0, x0+450, y0+80 ) ;
-	/*Shade*/Box( x0+1,y0+1, x0+450-1, y0+80-1, 0/*3*/ ) ;
+	DrawCadre(x0, y0, x0 + 450, y0 + 80);
+	/*Shade*/ Box(x0 + 1, y0 + 1, x0 + 450 - 1, y0 + 80 - 1, 0 /*3*/);
 
 	// Life Points	(max 50)
 
-//	AffGraph( 4, x0+9, y0+13, PtrSpriteExtra ) ;
-	AffGraph( 0, x0+9, y0+13, HQR_Get(HQRPtrSpriteExtra, 4) ) ;
+	//	AffGraph( 4, x0+9, y0+13, PtrSpriteExtra ) ;
+	AffGraph(0, x0 + 9, y0 + 13, HQR_Get(HQRPtrSpriteExtra, 4));
 
-	lifepoint = ListObjet[NUM_PERSO].LifePoint ;
-	x = RegleTrois32( x0+25, x0+325, 50, lifepoint ) ;
+	lifepoint = ListObjet[NUM_PERSO].LifePoint;
+	x = RegleTrois32(x0 + 25, x0 + 325, 50, lifepoint);
 
-	Box( x0+25, y0+10, x, y0+10+15, 91 ) ;
-	Box( x, y0+10, x0+325, y0+10+15, 0 ) ;
+	Box(x0 + 25, y0 + 10, x, y0 + 10 + 15, 91);
+	Box(x, y0 + 10, x0 + 325, y0 + 10 + 15, 0);
 
-	DrawCadre( x0+25, y0+10, x0+325, y0+10+15 ) ;
+	DrawCadre(x0 + 25, y0 + 10, x0 + 325, y0 + 10 + 15);
 
 	// Magic level	(max 4)	MagicPoint (max 80)
 
-	if( !ListFlagGame[FLAG_CONSIGNE]
-	AND  ListFlagGame[FLAG_TUNIQUE] )
+	if (!ListFlagGame[FLAG_CONSIGNE] AND ListFlagGame[FLAG_TUNIQUE])
 	{
 
-//	AffGraph( 5, x0+9, y0+36, PtrSpriteExtra ) ;
-	AffGraph( 0, x0+9, y0+36, HQR_Get(HQRPtrSpriteExtra, 5) ) ;
+		//	AffGraph( 5, x0+9, y0+36, PtrSpriteExtra ) ;
+		AffGraph(0, x0 + 9, y0 + 36, HQR_Get(HQRPtrSpriteExtra, 5));
 
-	if( MagicLevel )
-	{
-		x = RegleTrois32( x0+25, x0+325, 80, MagicPoint ) ;
-		Box( x0+25, y0+35, x, y0+35+15, 75 ) ;
-
-		for( l=0; l<MagicLevel; l++ )
+		if (MagicLevel)
 		{
-			x1 = RegleTrois32( x0+25, x0+325, 40, MagicLevel*10 ) ;
-			Line( x1, y0+35+1, x1, y0+35+15-1, 0 ) ;
+			x = RegleTrois32(x0 + 25, x0 + 325, 80, MagicPoint);
+			Box(x0 + 25, y0 + 35, x, y0 + 35 + 15, 75);
+
+			for (l = 0; l < MagicLevel; l++)
+			{
+				x1 = RegleTrois32(x0 + 25, x0 + 325, 40, MagicLevel * 10);
+				Line(x1, y0 + 35 + 1, x1, y0 + 35 + 15 - 1, 0);
+			}
+
+			x1 = RegleTrois32(x0 + 25, x0 + 325, 40, MagicLevel * 10);
+			DrawCadre(x0 + 25, y0 + 35, x1, y0 + 35 + 15);
 		}
-
-		x1 = RegleTrois32( x0+25, x0+325, 40, MagicLevel*10 ) ;
-		DrawCadre( x0+25, y0+35, x1, y0+35+15 ) ;
-	}
-
 	}
 
 	// Nb Gold Pieces
 
-//	AffGraph( 3, x0+340, y0+15, PtrSpriteExtra ) ;
-	AffGraph( 0, x0+340, y0+15, HQR_Get(HQRPtrSpriteExtra, 3) ) ;
-	CoulFont( 155 ) ;
-	Font( x0+370, y0+5, Itoa(NbGoldPieces) ) ;
+	//	AffGraph( 3, x0+340, y0+15, PtrSpriteExtra ) ;
+	AffGraph(0, x0 + 340, y0 + 15, HQR_Get(HQRPtrSpriteExtra, 3));
+	CoulFont(155);
+	Font(x0 + 370, y0 + 5, Itoa(NbGoldPieces));
 
 	// Nb Little Keys
 
-//	AffGraph( 6, x0+340, y0+55, PtrSpriteExtra ) ;
-	AffGraph( 0, x0+340, y0+55, HQR_Get(HQRPtrSpriteExtra, 6) ) ;
-	CoulFont( 155 ) ;
-	Font( x0+370, y0+40, Itoa(NbLittleKeys) ) ;
+	//	AffGraph( 6, x0+340, y0+55, PtrSpriteExtra ) ;
+	AffGraph(0, x0 + 340, y0 + 55, HQR_Get(HQRPtrSpriteExtra, 6));
+	CoulFont(155);
+	Font(x0 + 370, y0 + 40, Itoa(NbLittleKeys));
 
 	// Nb CloverBox
 
-	for( l=0; l<NbCloverBox; l++ )
+	for (l = 0; l < NbCloverBox; l++)
 	{
-		x1 = RegleTrois32( x0+25, x0+325, MAX_CLOVER_BOX, l ) ;
-//		AffGraph( 41, x1, y0+58, PtrSpriteExtra ) ;
-		AffGraph( 0, x1, y0+58, HQR_Get(HQRPtrSpriteExtra, 41) ) ;
+		x1 = RegleTrois32(x0 + 25, x0 + 325, MAX_CLOVER_BOX, l);
+		//		AffGraph( 41, x1, y0+58, PtrSpriteExtra ) ;
+		AffGraph(0, x1, y0 + 58, HQR_Get(HQRPtrSpriteExtra, 41));
 	}
 
 	// Nb Four-leaf Clover
 
-	for( l=0; l<NbFourLeafClover; l++ )
+	for (l = 0; l < NbFourLeafClover; l++)
 	{
-		x1 = RegleTrois32( x0+25, x0+325, MAX_CLOVER_BOX, l ) ;
-//		AffGraph( 7, x1+2, y0+60, PtrSpriteExtra ) ;
-		AffGraph( 0, x1+2, y0+60, HQR_Get(HQRPtrSpriteExtra, 7) ) ;
+		x1 = RegleTrois32(x0 + 25, x0 + 325, MAX_CLOVER_BOX, l);
+		//		AffGraph( 7, x1+2, y0+60, PtrSpriteExtra ) ;
+		AffGraph(0, x1 + 2, y0 + 60, HQR_Get(HQRPtrSpriteExtra, 7));
 	}
 
-	CopyBlockPhys( x0,y0, x0+450, y0+80 ) ;
+	CopyBlockPhys(x0, y0, x0 + 450, y0 + 80);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	DrawMenuComportement( WORD beta )
+void DrawMenuComportement(WORD beta)
 {
-	DrawCadre( CTRL_X0  , CTRL_Y0  , CTRL_X1, CTRL_Y1 ) ;
+	DrawCadre(CTRL_X0, CTRL_Y0, CTRL_X1, CTRL_Y1);
 
-	ShadeBox( CTRL_X0+1,CTRL_Y0+1, CTRL_X1-1, CTRL_Y1-1, 2 ) ;
+	ShadeBox(CTRL_X0 + 1, CTRL_Y0 + 1, CTRL_X1 - 1, CTRL_Y1 - 1, 2);
 
-	SetAnimObjet(	FrameAnim[C_NORMAL],
-			HQR_Get( HQR_Anims, TabAnim[C_NORMAL] ),
-			Ptr3do ) ;
-	DrawComportement( C_NORMAL, beta, FALSE ) ;
+	SetAnimObjet(FrameAnim[C_NORMAL],
+				 HQR_Get(HQR_Anims, TabAnim[C_NORMAL]),
+				 Ptr3do);
+	DrawComportement(C_NORMAL, beta, FALSE);
 
-	SetAnimObjet(	FrameAnim[C_SPORTIF],
-			HQR_Get( HQR_Anims, TabAnim[C_SPORTIF] ),
-			Ptr3do ) ;
-	DrawComportement( C_SPORTIF, beta, FALSE ) ;
+	SetAnimObjet(FrameAnim[C_SPORTIF],
+				 HQR_Get(HQR_Anims, TabAnim[C_SPORTIF]),
+				 Ptr3do);
+	DrawComportement(C_SPORTIF, beta, FALSE);
 
-	SetAnimObjet(	FrameAnim[C_AGRESSIF],
-			HQR_Get( HQR_Anims, TabAnim[C_AGRESSIF] ),
-			Ptr3do ) ;
-	DrawComportement( C_AGRESSIF,beta, FALSE ) ;
+	SetAnimObjet(FrameAnim[C_AGRESSIF],
+				 HQR_Get(HQR_Anims, TabAnim[C_AGRESSIF]),
+				 Ptr3do);
+	DrawComportement(C_AGRESSIF, beta, FALSE);
 
-	SetAnimObjet(	FrameAnim[C_DISCRET],
-			HQR_Get( HQR_Anims, TabAnim[C_DISCRET] ),
-			Ptr3do ) ;
-	DrawComportement( C_DISCRET, beta, FALSE ) ;
+	SetAnimObjet(FrameAnim[C_DISCRET],
+				 HQR_Get(HQR_Anims, TabAnim[C_DISCRET]),
+				 Ptr3do);
+	DrawComportement(C_DISCRET, beta, FALSE);
 
-	DrawInfoMenu( CTRL_X0, CTRL_Y1+10 ) ;
+	DrawInfoMenu(CTRL_X0, CTRL_Y1 + 10);
 
-	CopyBlockPhys( CTRL_X0,CTRL_Y0, CTRL_X1, CTRL_Y1 ) ;
+	CopyBlockPhys(CTRL_X0, CTRL_Y0, CTRL_X1, CTRL_Y1);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	MenuComportement()
+void MenuComportement()
 {
-	T_OBJET	*ptrobj ;
-	UBYTE	*memoptrfile3d ;
-	WORD	oldcomp ;
-	WORD	memoisland ;
-	LONG	memoflagspeak ;
+	T_OBJET *ptrobj;
+	UBYTE *memoptrfile3d;
+	WORD oldcomp;
+	WORD memoisland;
+	LONG memoflagspeak;
 
-	SaveTimer() ;
+	SaveTimer();
 
-	if( Comportement == C_PROTOPACK )
+	if (Comportement == C_PROTOPACK)
 	{
-		HQ_StopSample() ;
-		SetComportement( C_NORMAL ) ;
+		HQ_StopSample();
+		SetComportement(C_NORMAL);
 	}
 
-	ptrobj = &ListObjet[NUM_PERSO] ;
+	ptrobj = &ListObjet[NUM_PERSO];
 
-	memoptrfile3d = ptrobj->PtrFile3D ;
+	memoptrfile3d = ptrobj->PtrFile3D;
 
-	Ptr3do = PtrBody[ptrobj->Body] ;
+	Ptr3do = PtrBody[ptrobj->Body];
 
-	TabAnim[0] = AnimRienNormal ;
-	TabAnim[1] = AnimRienSportif ;
-	TabAnim[2] = AnimRienAgressif ;
-	TabAnim[3] = AnimRienDiscret ;
+	TabAnim[0] = AnimRienNormal;
+	TabAnim[1] = AnimRienSportif;
+	TabAnim[2] = AnimRienAgressif;
+	TabAnim[3] = AnimRienDiscret;
 
-	InitRealAngle( ptrobj->Beta, ptrobj->Beta-256, 50, &RealRot ) ;
+	InitRealAngle(ptrobj->Beta, ptrobj->Beta - 256, 50, &RealRot);
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	memoisland = Island ;
-	Island = 255 ;
+	memoisland = Island;
+	Island = 255;
 
-	memoflagspeak = FlagSpeak ;
-	FlagSpeak = FALSE ;
-	InitDial( 0 ) ;
+	memoflagspeak = FlagSpeak;
+	FlagSpeak = FALSE;
+	InitDial(0);
 
-	DrawMenuComportement( ptrobj->Beta ) ;
+	DrawMenuComportement(ptrobj->Beta);
 
-	oldcomp = Comportement ;
-	SetAnimObjet(	FrameAnim[Comportement],
-			HQR_Get( HQR_Anims, TabAnim[Comportement] ),
-			Ptr3do ) ;
+	oldcomp = Comportement;
+	SetAnimObjet(FrameAnim[Comportement],
+				 HQR_Get(HQR_Anims, TabAnim[Comportement]),
+				 Ptr3do);
 
-	while( (Fire & F_CTRL) OR ((Key>=K_F1) AND (Key<=K_F4)) )
+	while ((Fire & F_CTRL) OR((Key >= K_F1) AND(Key <= K_F4)))
 	{
-#ifdef	DEBUG_TOOLS
-		CheckSavePcx() ;
+#ifdef DEBUG_TOOLS
+		CheckSavePcx();
 #endif
-		MyJoy = Joy ;
+		MyJoy = Joy;
 
-/*		if( Comportement == C_AGRESSIF )
+		/*		if( Comportement == C_AGRESSIF )
+				{
+					if( MyJoy & J_UP )	CombatAuto = TRUE ;
+					if( MyJoy & J_DOWN )	CombatAuto = FALSE ;
+				}
+		*/
+		if (MyJoy & J_RIGHT)
+			Comportement++;
+		if (MyJoy & J_LEFT)
+			Comportement--;
+		Comportement &= 3;
+
+		if (Comportement != oldcomp)
 		{
-			if( MyJoy & J_UP )	CombatAuto = TRUE ;
-			if( MyJoy & J_DOWN )	CombatAuto = FALSE ;
+			DrawComportement(oldcomp, ptrobj->Beta, TRUE);
+
+			oldcomp = Comportement;
+			InitRealAngle(ptrobj->Beta,
+						  ptrobj->Beta - 256,
+						  50, &RealRot);
+
+			SetAnimObjet(FrameAnim[Comportement],
+						 HQR_Get(HQR_Anims, TabAnim[Comportement]),
+						 Ptr3do);
+
+			while (Joy)
+				DrawComportement(Comportement, -1, TRUE);
 		}
-*/
-		if( MyJoy & J_RIGHT ) 	Comportement++ ;
-		if( MyJoy & J_LEFT )	Comportement-- ;
-		Comportement &= 3 ;
-
-		if( Comportement != oldcomp )
-		{
-			DrawComportement( oldcomp, ptrobj->Beta, TRUE ) ;
-
-			oldcomp = Comportement ;
-			InitRealAngle(	ptrobj->Beta,
-					ptrobj->Beta-256,
-					50, &RealRot ) ;
-
-			SetAnimObjet(	FrameAnim[Comportement],
-					HQR_Get( HQR_Anims, TabAnim[Comportement] ),
-					Ptr3do ) ;
-
-			while( Joy )
-				DrawComportement( Comportement, -1, TRUE ) ;
-		}
-		DrawComportement( Comportement, -1, TRUE ) ;
+		DrawComportement(Comportement, -1, TRUE);
 	}
-	SetComportement( Comportement ) ;
+	SetComportement(Comportement);
 
-	Init3DGame() ;
+	Init3DGame();
 
-	Island = memoisland ;
+	Island = memoisland;
 
-	FlagSpeak = memoflagspeak ;
-	InitDial( START_FILE_ISLAND+Island ) ;
+	FlagSpeak = memoflagspeak;
+	InitDial(START_FILE_ISLAND + Island);
 
-	RestoreTimer() ;
+	RestoreTimer();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-	      █    ██▄ █ █   █ █▀▀▀▀ ██▄ █ ▀▀█▀▀ █▀▀▀█ █▀▀▀█ █  ▄▀
-	      ██   ██▀██ ██ ▄▀ ██▀▀  ██▀██   ██  ██  █ ██▀█▀ ██▀
-	      ▀▀   ▀▀  ▀ ▀▀▀   ▀▀▀▀▀ ▀▀  ▀   ▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀
+		  █    ██▄ █ █   █ █▀▀▀▀ ██▄ █ ▀▀█▀▀ █▀▀▀█ █▀▀▀█ █  ▄▀
+		  ██   ██▀██ ██ ▄▀ ██▀▀  ██▀██   ██  ██  █ ██▀█▀ ██▀
+		  ▀▀   ▀▀  ▀ ▀▀▀   ▀▀▀▀▀ ▀▀  ▀   ▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	Draw3dObject( WORD x, WORD y, WORD *ptrobj, WORD beta, WORD zoom )
+void Draw3dObject(WORD x, WORD y, WORD *ptrobj, WORD beta, WORD zoom)
 {
-	SetProjection( x,y,128,200,200 ) ;
+	SetProjection(x, y, 128, 200, 200);
 
-	SetFollowCamera( 0,0,0, 60,0,0, zoom ) ;
+	SetFollowCamera(0, 0, 0, 60, 0, 0, zoom);
 
-	if( !ptrobj )
+	if (!ptrobj)
 	{
-		Message( "ptrobj = 0", TRUE ) ;
+		Message("ptrobj = 0", TRUE);
 	}
 	else
 	{
-		AffObjetIso(	0,0,0, 0,beta,0, ptrobj ) ;
+		AffObjetIso(0, 0, 0, 0, beta, 0, ptrobj);
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawOneInventory( WORD flagnum )
+void DrawOneInventory(WORD flagnum)
 {
-	WORD	x, y, x0, y0, x1, y1 ;
-	WORD	*ptrobj ;
+	WORD x, y, x0, y0, x1, y1;
+	WORD *ptrobj;
 
-	x =	INV_START_X + 10 + SIZE_INV_OBJ_X/2
-		+ (SIZE_INV_OBJ_X+10) * (flagnum/4) ;
-	y = 	INV_START_Y + 10 + SIZE_INV_OBJ_Y/2
-		+ (SIZE_INV_OBJ_Y+10) * (flagnum&3) ;
+	x = INV_START_X + 10 + SIZE_INV_OBJ_X / 2 + (SIZE_INV_OBJ_X + 10) * (flagnum / 4);
+	y = INV_START_Y + 10 + SIZE_INV_OBJ_Y / 2 + (SIZE_INV_OBJ_Y + 10) * (flagnum & 3);
 
-	x0 = x - SIZE_INV_OBJ_X/2 ;
-	y0 = y - SIZE_INV_OBJ_Y/2 ;
-	x1 = x + SIZE_INV_OBJ_X/2 ;
-	y1 = y + SIZE_INV_OBJ_Y/2 ;
+	x0 = x - SIZE_INV_OBJ_X / 2;
+	y0 = y - SIZE_INV_OBJ_Y / 2;
+	x1 = x + SIZE_INV_OBJ_X / 2;
+	y1 = y + SIZE_INV_OBJ_Y / 2;
 
-	if( flagnum == InvSelect )
+	if (flagnum == InvSelect)
 	{
-		Box( x0, y0, x1, y1, InvCoul ) ;
+		Box(x0, y0, x1, y1, InvCoul);
 	}
 	else
 	{
-		Box( x0, y0, x1, y1, 0 ) ;
-//		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
-//		ShadeBox( x0, y0, x1, y1, 4 ) ;
+		Box(x0, y0, x1, y1, 0);
+		//		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
+		//		ShadeBox( x0, y0, x1, y1, 4 ) ;
 	}
 
-	if( (ListFlagGame[flagnum])
-	AND ((ListFlagGame[FLAG_CONSIGNE]==0) OR (flagnum==FLAG_CLOVER)) )
+	if ((ListFlagGame[flagnum])
+			AND((ListFlagGame[FLAG_CONSIGNE] == 0) OR(flagnum == FLAG_CLOVER)))
 	{
-		ptrobj = HQR_Get( InventoryObj, flagnum ) ;
-		if( HQR_Flag )
+		ptrobj = HQR_Get(InventoryObj, flagnum);
+		if (HQR_Flag)
 		{
-			PatchObjet( ptrobj ) ;
+			PatchObjet(ptrobj);
 		}
 
-		Draw3dObject(	x, y, ptrobj,
-				ListBetaGame[flagnum]+=8, 15000 ) ;
+		Draw3dObject(x, y, ptrobj,
+					 ListBetaGame[flagnum] += 8, 15000);
 
-		if( flagnum == 15 )	// carburant
+		if (flagnum == 15) // carburant
 		{
-			CoulFont( 15 ) ;
-			Font( x0+3,y0+32, Itoa( Fuel ) ) ;
+			CoulFont(15);
+			Font(x0 + 3, y0 + 32, Itoa(Fuel));
 		}
 	}
 
-	DrawCadre( x0, y0, x1, y1 ) ;
+	DrawCadre(x0, y0, x1, y1);
 
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-
-void	DrawListInventory()
+void DrawListInventory()
 {
-	WORD	x, y ;
-	WORD	n = 0 ;
-	WORD	x0, y0, x1, y1 ;
+	WORD x, y;
+	WORD n = 0;
+	WORD x0, y0, x1, y1;
 
-	x0 = INV_START_X ;
-	y0 = INV_START_Y ;
+	x0 = INV_START_X;
+	y0 = INV_START_Y;
 
-	x1 = x0 + (SIZE_INV_OBJ_X+10)*7 + 10 ;
-	y1 = y0 + (SIZE_INV_OBJ_Y+10)*4 + 10 ;
+	x1 = x0 + (SIZE_INV_OBJ_X + 10) * 7 + 10;
+	y1 = y0 + (SIZE_INV_OBJ_Y + 10) * 4 + 10;
 
-	ShadeBox( x0,y0, x1,y1, 4 ) ;
-	DrawCadre( x0,y0, x1,y1 ) ;
+	ShadeBox(x0, y0, x1, y1, 4);
+	DrawCadre(x0, y0, x1, y1);
 
-/*	DrawCadre(	INV_START_X+ 10 - 2 + (SIZE_INV_OBJ_X+10) * 0,
-			INV_START_Y+ 10 - 2 + (SIZE_INV_OBJ_Y+10) * 1,
+	/*	DrawCadre(	INV_START_X+ 10 - 2 + (SIZE_INV_OBJ_X+10) * 0,
+				INV_START_Y+ 10 - 2 + (SIZE_INV_OBJ_Y+10) * 1,
 
-			INV_START_X+ 1 + (SIZE_INV_OBJ_X+10) * 1,
-			INV_START_Y+ 1 + (SIZE_INV_OBJ_Y+10) * 3  ) ;
-*/
-	Rect(	INV_START_X+ 10 - 2 + (SIZE_INV_OBJ_X+10) * 1,
-		INV_START_Y+ 10 - 2 + (SIZE_INV_OBJ_Y+10) * 0,
-		INV_START_X+ 1 + (SIZE_INV_OBJ_X+10) * 2,
-		INV_START_Y+ 1 + (SIZE_INV_OBJ_Y+10) * 4,
-		75  ) ;
+				INV_START_X+ 1 + (SIZE_INV_OBJ_X+10) * 1,
+				INV_START_Y+ 1 + (SIZE_INV_OBJ_Y+10) * 3  ) ;
+	*/
+	Rect(INV_START_X + 10 - 2 + (SIZE_INV_OBJ_X + 10) * 1,
+		 INV_START_Y + 10 - 2 + (SIZE_INV_OBJ_Y + 10) * 0,
+		 INV_START_X + 1 + (SIZE_INV_OBJ_X + 10) * 2,
+		 INV_START_Y + 1 + (SIZE_INV_OBJ_Y + 10) * 4,
+		 75);
 
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 
-	for( n=0; n<MAX_INVENTORY; n++ )
+	for (n = 0; n < MAX_INVENTORY; n++)
 	{
-		DrawOneInventory( n ) ;
+		DrawOneInventory(n);
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	Inventory()
+void Inventory()
 {
-	WORD	flag = 1 ;
-	WORD	dialstat = 0 ;
-	WORD	oldselect ;
-	WORD	memoalphalight, memobetalight ;
-	LONG	memoflagspeak ;
+	WORD flag = 1;
+	WORD dialstat = 0;
+	WORD oldselect;
+	WORD memoalphalight, memobetalight;
+	LONG memoflagspeak;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	memoalphalight = AlphaLight ;
-	memobetalight = BetaLight ;
-	SetLightVector( 896, 950, 0 ) ;
+	memoalphalight = AlphaLight;
+	memobetalight = BetaLight;
+	SetLightVector(896, 950, 0);
 
 	// magic NRJ
-	if( NbFourLeafClover > 0 )	ListFlagGame[FLAG_CLOVER] = TRUE ;
-	else				ListFlagGame[FLAG_CLOVER] = FALSE ;
+	if (NbFourLeafClover > 0)
+		ListFlagGame[FLAG_CLOVER] = TRUE;
+	else
+		ListFlagGame[FLAG_CLOVER] = FALSE;
 
-	InvCoul = COUL_SELECT_MENU ;
-	DrawListInventory() ;	// draw all
+	InvCoul = COUL_SELECT_MENU;
+	DrawListInventory(); // draw all
 
-	memoflagspeak = FlagSpeak ;
-	FlagSpeak = FALSE ;
-	InitDial( 2 ) ;	// game divers txt
+	memoflagspeak = FlagSpeak;
+	FlagSpeak = FALSE;
+	InitDial(2); // game divers txt
 
-	dialstat = 3 ;
-	TestCoulDial( 4 ) ;
-	InitDialWindow() ;
+	dialstat = 3;
+	TestCoulDial(4);
+	InitDialWindow();
 
-	while( Key != K_ESC )
+	while (Key != K_ESC)
 	{
-#ifdef	DEBUG_TOOLS
-		CheckSavePcx() ;
+#ifdef DEBUG_TOOLS
+		CheckSavePcx();
 #endif
-		oldselect = InvSelect ;
+		oldselect = InvSelect;
 
-		if( !flag )
+		if (!flag)
 		{
-			MyJoy = Joy ;
-			MyFire = Fire ;
-			MyKey = Key ;
-			if( MyJoy OR Fire )	flag = 1 ;
+			MyJoy = Joy;
+			MyFire = Fire;
+			MyKey = Key;
+			if (MyJoy OR Fire)
+				flag = 1;
 		}
 		else
 		{
-			MyFire = MyJoy = MyKey = 0 ;
-			if( !Joy AND !Fire )	flag = 0 ;
+			MyFire = MyJoy = MyKey = 0;
+			if (!Joy AND !Fire)
+				flag = 0;
 		}
 
-		if( (MyKey == K_ESC) OR (MyFire&F_SHIFT) )
+		if ((MyKey == K_ESC) OR(MyFire & F_SHIFT))
 		{
-			break ;
+			break;
 		}
 
-		if( MyJoy & J_DOWN )
+		if (MyJoy & J_DOWN)
 		{
-			InvSelect++ ;
-			if( InvSelect >= MAX_INVENTORY )
-				InvSelect = 0 ;
-			DrawOneInventory( oldselect ) ;
-			dialstat = 3 ;
+			InvSelect++;
+			if (InvSelect >= MAX_INVENTORY)
+				InvSelect = 0;
+			DrawOneInventory(oldselect);
+			dialstat = 3;
 		}
 
-		if( MyJoy & J_UP )
+		if (MyJoy & J_UP)
 		{
-			InvSelect-- ;
-			if( InvSelect < 0 )
-				InvSelect = MAX_INVENTORY - 1 ;
-			DrawOneInventory( oldselect ) ;
-			dialstat = 3 ;
+			InvSelect--;
+			if (InvSelect < 0)
+				InvSelect = MAX_INVENTORY - 1;
+			DrawOneInventory(oldselect);
+			dialstat = 3;
 		}
 
-		if( MyJoy & J_LEFT )
+		if (MyJoy & J_LEFT)
 		{
-			InvSelect -= 4 ;
-			if( InvSelect < 0 )
-				InvSelect = MAX_INVENTORY + InvSelect ;
-			DrawOneInventory( oldselect ) ;
-			dialstat = 3 ;
+			InvSelect -= 4;
+			if (InvSelect < 0)
+				InvSelect = MAX_INVENTORY + InvSelect;
+			DrawOneInventory(oldselect);
+			dialstat = 3;
 		}
 
-		if( MyJoy & J_RIGHT )
+		if (MyJoy & J_RIGHT)
 		{
-			InvSelect += 4 ;
-			if( InvSelect >= MAX_INVENTORY )
-				InvSelect = InvSelect - MAX_INVENTORY ;
-			DrawOneInventory( oldselect ) ;
-			dialstat = 3 ;
+			InvSelect += 4;
+			if (InvSelect >= MAX_INVENTORY)
+				InvSelect = InvSelect - MAX_INVENTORY;
+			DrawOneInventory(oldselect);
+			dialstat = 3;
 		}
 
-
-		if( dialstat == 3 )
+		if (dialstat == 3)
 		{
-			SecondInitDialWindow() ;
+			SecondInitDialWindow();
 
-			if( (ListFlagGame[InvSelect]==1)
-			AND ((ListFlagGame[FLAG_CONSIGNE]==0) OR (InvSelect==FLAG_CLOVER)) )
+			if ((ListFlagGame[InvSelect] == 1)
+					AND((ListFlagGame[FLAG_CONSIGNE] == 0) OR(InvSelect == FLAG_CLOVER)))
 			{
-				OpenDialNoWindow( InvSelect+100 ) ;
-				dialstat = 0 ;
+				OpenDialNoWindow(InvSelect + 100);
+				dialstat = 0;
 			}
 			else
 			{
-				OpenDialNoWindow( 128 ) ;
-				dialstat = 0 ;
+				OpenDialNoWindow(128);
+				dialstat = 0;
 			}
 		}
 
-		if( dialstat != 2 )
+		if (dialstat != 2)
 		{
-			dialstat = NextDialCar() ;
+			dialstat = NextDialCar();
 		}
-		if( dialstat != 1 )		// en cours lecture
+		if (dialstat != 1) // en cours lecture
 		{
-			Vsync() ;
+			Vsync();
 		}
 
-		if( MyFire & F_SPACE )
+		if (MyFire & F_SPACE)
 		{
-			if( dialstat == 2 )
+			if (dialstat == 2)
 			{
-				SecondInitDialWindow() ;
-				dialstat = 0 ;
+				SecondInitDialWindow();
+				dialstat = 0;
 			}
 			else
 			{
-				if( (ListFlagGame[InvSelect]==1)
-				AND ((ListFlagGame[FLAG_CONSIGNE]==0) OR (InvSelect==FLAG_CLOVER)) )
+				if ((ListFlagGame[InvSelect] == 1)
+						AND((ListFlagGame[FLAG_CONSIGNE] == 0) OR(InvSelect == FLAG_CLOVER)))
 				{
-					SecondInitDialWindow() ;
-					OpenDialNoWindow( InvSelect+100 ) ;
+					SecondInitDialWindow();
+					OpenDialNoWindow(InvSelect + 100);
 				}
 			}
 		}
 
-		DrawOneInventory( InvSelect ) ;
+		DrawOneInventory(InvSelect);
 
-		if( MyFire & F_RETURN )
+		if (MyFire & F_RETURN)
 		{
-			if( (ListFlagGame[InvSelect]==1)
-			AND ((ListFlagGame[FLAG_CONSIGNE]==0) OR (InvSelect==FLAG_CLOVER)) )
+			if ((ListFlagGame[InvSelect] == 1)
+					AND((ListFlagGame[FLAG_CONSIGNE] == 0) OR(InvSelect == FLAG_CLOVER)))
 			{
-				InventoryAction = InvSelect ;
+				InventoryAction = InvSelect;
 
-				InvCoul = 91 ; // rouge
-				DrawOneInventory( InvSelect ) ;
+				InvCoul = 91; // rouge
+				DrawOneInventory(InvSelect);
 
-				break ;
+				break;
 			}
 		}
 	}
-	CloseDial() ;
+	CloseDial();
 
-	AlphaLight = memoalphalight ;
-	BetaLight  = memobetalight ;
-	Init3DGame() ;
+	AlphaLight = memoalphalight;
+	BetaLight = memobetalight;
+	Init3DGame();
 
-	FlagSpeak = memoflagspeak ;
-	InitDial( START_FILE_ISLAND+Island ) ;
+	FlagSpeak = memoflagspeak;
+	InitDial(START_FILE_ISLAND + Island);
 
-	while( Key OR Fire ) ;
+	while (Key OR Fire)
+		;
 }
 /*══════════════════════════════════════════════════════════════════════════*
-    █▀▀▀▀ █▀▀▀█ █   █ ██▄ █ █▀▀▀▄       █▀▀▀█ █▀▀█      █ █▀▀▀▀ █▀▀▀▀ ▀▀█▀▀
-    ██▀▀  ██  █ ██  █ ██▀██ ██  █       ██  █ ██▀▀█ ▄▄  █ ██▀▀  ██      ██
-    ▀▀    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀   ▀▀
+	█▀▀▀▀ █▀▀▀█ █   █ ██▄ █ █▀▀▀▄       █▀▀▀█ █▀▀█      █ █▀▀▀▀ █▀▀▀▀ ▀▀█▀▀
+	██▀▀  ██  █ ██  █ ██▀██ ██  █       ██  █ ██▀▀█ ▄▄  █ ██▀▀  ██      ██
+	▀▀    ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀  ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀   ▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DoFoundObj( WORD numobj )
+void DoFoundObj(WORD numobj)
 {
-	char	string[256] ;
-	WORD	*ptr3do ;
-	T_OBJET	*ptrobj ;
-	WORD	xm, ym, zm, xw, yw, zw ;
-	WORD	x, y, x0, y0, x1, y1 ;
-	ULONG	timerend ;
-	WORD	dialstat ;
-	WORD	flag ;
-	UBYTE	*ptranim ;
-	WORD	numanim ;
-	WORD	frameanim ;
+	char string[256];
+	WORD *ptr3do;
+	T_OBJET *ptrobj;
+	WORD xm, ym, zm, xw, yw, zw;
+	WORD x, y, x0, y0, x1, y1;
+	ULONG timerend;
+	WORD dialstat;
+	WORD flag;
+	UBYTE *ptranim;
+	WORD numanim;
+	WORD frameanim;
 
-	LONG	memoflagspeak ;
-	LONG	speakfromcd  ;
-	LONG	memotimersystem ;
+	LONG memoflagspeak;
+	LONG speakfromcd;
+	LONG memotimersystem;
 
-	ptrobj = &ListObjet[NUM_PERSO] ;
+	ptrobj = &ListObjet[NUM_PERSO];
 
 	// reaff scene recentree sans twinkel
 
-	StartXCube = ((ListObjet[NUM_PERSO].PosObjX+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
-	StartYCube = ((ListObjet[NUM_PERSO].PosObjY+SIZE_BRICK_Y)/SIZE_BRICK_Y) ;
-	StartZCube = ((ListObjet[NUM_PERSO].PosObjZ+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
+	StartXCube = ((ListObjet[NUM_PERSO].PosObjX + DEMI_BRICK_XZ) / SIZE_BRICK_XZ);
+	StartYCube = ((ListObjet[NUM_PERSO].PosObjY + SIZE_BRICK_Y) / SIZE_BRICK_Y);
+	StartZCube = ((ListObjet[NUM_PERSO].PosObjZ + DEMI_BRICK_XZ) / SIZE_BRICK_XZ);
 
-	ptrobj->Flags |= INVISIBLE ;
-	AffScene( TRUE ) ;
-	ptrobj->Flags &= ~INVISIBLE ;
+	ptrobj->Flags |= INVISIBLE;
+	AffScene(TRUE);
+	ptrobj->Flags &= ~INVISIBLE;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
 	// reaff twinksen anim trouve
 
-	xw = StartXCube*SIZE_BRICK_XZ ;
-	yw = StartYCube*SIZE_BRICK_Y ;
-	zw = StartZCube*SIZE_BRICK_XZ ;
+	xw = StartXCube * SIZE_BRICK_XZ;
+	yw = StartYCube * SIZE_BRICK_Y;
+	zw = StartZCube * SIZE_BRICK_XZ;
 
-	AffObjetIso(	ptrobj->PosObjX-xw, ptrobj->PosObjY-yw, ptrobj->PosObjZ-zw,
-			0, 128/*ptrobj->Beta*/, 0,
-			PtrBody[ptrobj->Body] ) ;
+	AffObjetIso(ptrobj->PosObjX - xw, ptrobj->PosObjY - yw, ptrobj->PosObjZ - zw,
+				0, 128 /*ptrobj->Beta*/, 0,
+				PtrBody[ptrobj->Body]);
 
-	SetClip( ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax ) ;
+	SetClip(ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax);
 
-	xm = ((ptrobj->PosObjX+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
-	ym = ((ptrobj->PosObjY)/SIZE_BRICK_Y) ;
-	if( (ptrobj->Col&127) != 0 )	ym++ ;
-	zm = ((ptrobj->PosObjZ+DEMI_BRICK_XZ)/SIZE_BRICK_XZ) ;
+	xm = ((ptrobj->PosObjX + DEMI_BRICK_XZ) / SIZE_BRICK_XZ);
+	ym = ((ptrobj->PosObjY) / SIZE_BRICK_Y);
+	if ((ptrobj->Col & 127) != 0)
+		ym++;
+	zm = ((ptrobj->PosObjZ + DEMI_BRICK_XZ) / SIZE_BRICK_XZ);
 
-	DrawOverBrick( xm, ym, zm ) ;
+	DrawOverBrick(xm, ym, zm);
 
-	Flip() ;
+	Flip();
 
-	ProjettePoint(	ptrobj->PosObjX-xw,
-			ptrobj->PosObjY-yw,
-			ptrobj->PosObjZ-zw ) ;
+	ProjettePoint(ptrobj->PosObjX - xw,
+				  ptrobj->PosObjY - yw,
+				  ptrobj->PosObjZ - zw);
 
-	Yp -= 150 ;
+	Yp -= 150;
 
-	x0 = Xp - SIZE_FOUND_OBJ/2 ;
-	y0 = Yp - SIZE_FOUND_OBJ/2 ;
-	x1 = Xp + SIZE_FOUND_OBJ/2 ;
-	y1 = Yp + SIZE_FOUND_OBJ/2 ;
+	x0 = Xp - SIZE_FOUND_OBJ / 2;
+	y0 = Yp - SIZE_FOUND_OBJ / 2;
+	x1 = Xp + SIZE_FOUND_OBJ / 2;
+	y1 = Yp + SIZE_FOUND_OBJ / 2;
 
-	HQ_MixSample(	41, 0x1000, 1, 128, 128 ) ;
+	HQ_MixSample(41, 0x1000, 1, 128, 128);
 
 	// aff text et objet
 
-#ifdef	CDROM
+#ifdef CDROM
 
-	if( IsVoiceFileOnHD( 2 ) )
+	if (IsVoiceFileOnHD(2))
 	{
 		// voix sur hd touche à rien
 
-		InitDial( 2 ) ;	// game divers txt
-		speakfromcd = FALSE ;
-
+		InitDial(2); // game divers txt
+		speakfromcd = FALSE;
 	}
-	else	// coupe music cd si on
+	else // coupe music cd si on
 	{
-		StopMusicCD() ;
-		memoflagspeak = FlagSpeak ;
-		FlagSpeak = FALSE ;
+		StopMusicCD();
+		memoflagspeak = FlagSpeak;
+		FlagSpeak = FALSE;
 
-		InitDial( 2 ) ;
+		InitDial(2);
 
-		FlagSpeak = memoflagspeak ;
-		speakfromcd = TRUE ;
+		FlagSpeak = memoflagspeak;
+		speakfromcd = TRUE;
 	}
 
 #else
 
-	InitDial( 2 ) ;	// game divers txt
+	InitDial(2); // game divers txt
 
 #endif
 
-	UnSetClip() ;
-	OpenDial( numobj ) ;
-//	timerend = TimerRef + 50 * 30 ;
-	dialstat = 1 ;
-	flag = FALSE ;
-	TestCoulDial( 4 ) ;	// coul twinsen
-#ifdef	CDROM
+	UnSetClip();
+	OpenDial(numobj);
+	//	timerend = TimerRef + 50 * 30 ;
+	dialstat = 1;
+	flag = FALSE;
+	TestCoulDial(4); // coul twinsen
+#ifdef CDROM
 
-	if( speakfromcd )
+	if (speakfromcd)
 	{
-		SpeakFromCD( 2, numobj ) ;
+		SpeakFromCD(2, numobj);
 	}
 	else
 	{
-		Speak( numobj ) ;
+		Speak(numobj);
 	}
 #endif
 
-	numanim = SearchAnim( GEN_ANIM_TROUVE, NUM_PERSO ) ;
-	ptranim = HQR_Get( HQR_Anims, numanim ) ;
-#ifdef	DEBUG_TOOLS
-	if( numanim == -1 )
+	numanim = SearchAnim(GEN_ANIM_TROUVE, NUM_PERSO);
+	ptranim = HQR_Get(HQR_Anims, numanim);
+#ifdef DEBUG_TOOLS
+	if (numanim == -1)
 	{
-		Message( "num anim 'trouve' = -1 in DoFoundObj", TRUE ) ;
-		goto argexit ;
+		Message("num anim 'trouve' = -1 in DoFoundObj", TRUE);
+		goto argexit;
 	}
-	if( !ptranim )
+	if (!ptranim)
 	{
-		Message( "ptranim = 0 in DoFoundObj", TRUE ) ;
-		goto argexit ;
+		Message("ptranim = 0 in DoFoundObj", TRUE);
+		goto argexit;
 	}
 #endif
 
-	frameanim = 0 ;
+	frameanim = 0;
 
-	PtrBufferAnim += StockInterAnim( PtrBufferAnim, PtrBody[ptrobj->Body] ) ;
-	if( PtrBufferAnim > BufferAnim + 5000 - 512 )	PtrBufferAnim = BufferAnim ;
+	PtrBufferAnim += StockInterAnim(PtrBufferAnim, PtrBody[ptrobj->Body]);
+	if (PtrBufferAnim > BufferAnim + 5000 - 512)
+		PtrBufferAnim = BufferAnim;
 
-	ptr3do = HQR_Get( InventoryObj, numobj ) ;
-	if( HQR_Flag )
+	ptr3do = HQR_Get(InventoryObj, numobj);
+	if (HQR_Flag)
 	{
-		PatchObjet( ptr3do ) ;
+		PatchObjet(ptr3do);
 	}
 
-	NbOptPhysBox = 0 ;		// clear list cls boxes
+	NbOptPhysBox = 0; // clear list cls boxes
 
-	while( flag == FALSE )
+	while (flag == FALSE)
 	{
-		UnSetClip() ;
+		UnSetClip();
 
-		NbPhysBox = 0 ;
-		ClsBoxes() ;
+		NbPhysBox = 0;
+		ClsBoxes();
 
-		ShadeBox( x0, y0, x1, y1, 4 ) ;
-		SetClip(  x0, y0, x1, y1 ) ;
+		ShadeBox(x0, y0, x1, y1, 4);
+		SetClip(x0, y0, x1, y1);
 
-		Draw3dObject(	Xp, Yp, ptr3do,
-				ListBetaGame[numobj]+=8, 10000 ) ;
+		Draw3dObject(Xp, Yp, ptr3do,
+					 ListBetaGame[numobj] += 8, 10000);
 
-		DrawCadre( x0, y0, x1, y1 ) ;
-		AddPhysBox( x0,y0, x1,y1 ) ;
+		DrawCadre(x0, y0, x1, y1);
+		AddPhysBox(x0, y0, x1, y1);
 
-		UnSetClip() ;
-		Init3DGame() ;
+		UnSetClip();
+		Init3DGame();
 
 		// reaff twinkel anim trouve
 
-		if( SetInterAnimObjet( frameanim, ptranim, PtrBody[ptrobj->Body] ) )
+		if (SetInterAnimObjet(frameanim, ptranim, PtrBody[ptrobj->Body]))
 		{
-			frameanim++ ;
-			if( frameanim == GetNbFramesAnim( ptranim ) )
+			frameanim++;
+			if (frameanim == GetNbFramesAnim(ptranim))
 			{
-				frameanim = GetBouclageAnim( ptranim ) ;
+				frameanim = GetBouclageAnim(ptranim);
 			}
 		}
 
-		AffObjetIso(	ptrobj->PosObjX-xw, ptrobj->PosObjY-yw, ptrobj->PosObjZ-zw,
-				0, 128/*ptrobj->Beta*/, 0,
-				PtrBody[ptrobj->Body] ) ;
+		AffObjetIso(ptrobj->PosObjX - xw, ptrobj->PosObjY - yw, ptrobj->PosObjZ - zw,
+					0, 128 /*ptrobj->Beta*/, 0,
+					PtrBody[ptrobj->Body]);
 
-		SetClip( ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax ) ;
-		DrawOverBrick( xm, ym, zm ) ;
-		AddPhysBox( ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax ) ;
+		SetClip(ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax);
+		DrawOverBrick(xm, ym, zm);
+		AddPhysBox(ScreenXmin, ScreenYmin, ScreenXmax, ScreenYmax);
 
 		// message
 
-		if( dialstat == 1 )
+		if (dialstat == 1)
 		{
-			UnSetClip() ;
-			dialstat = NextDialCar() ;
+			UnSetClip();
+			dialstat = NextDialCar();
 		}
-		if( dialstat != 1 )		// pas en cours lecture
+		if (dialstat != 1) // pas en cours lecture
 		{
-			Vsync() ;
+			Vsync();
 		}
 
-		FlipBoxes() ;
+		FlipBoxes();
 
-		if( Fire )
+		if (Fire)
 		{
-			if( dialstat == 0 )
+			if (dialstat == 0)
 			{
-				flag = TRUE ;
+				flag = TRUE;
 			}
-			if( dialstat == 2 )
+			if (dialstat == 2)
 			{
-				dialstat = 1 ;	// continue
+				dialstat = 1; // continue
 			}
 		}
 	}
 
-#ifdef	DEBUG_TOOLS
+#ifdef DEBUG_TOOLS
 argexit:
 #endif
 
-#ifdef	CDROM
+#ifdef CDROM
 
-	if( speakfromcd )
+	if (speakfromcd)
 	{
-		while( TestSpeakFromCD() AND (Key != K_ESC) ) ;
+		while (TestSpeakFromCD() AND(Key != K_ESC))
+			;
 	}
 	else
 	{
-		while( TestSpeak() AND (Key != K_ESC) ) ;
+		while (TestSpeak() AND(Key != K_ESC))
+			;
 	}
-	StopSpeak() ;
+	StopSpeak();
 #endif
-	Init3DGame() ;
+	Init3DGame();
 
-	InitDial( START_FILE_ISLAND+Island ) ;
+	InitDial(START_FILE_ISLAND + Island);
 
-	while( Key == K_ESC ) ;
-
+	while (Key == K_ESC)
+		;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	ExtInitMcga()
+void ExtInitMcga()
 {
-	int	i ;
-	char	num[10] ;
+	int i;
+	char num[10];
 
 	if (Wave_Driver_Enable)
-		while( !WavePause() ) ;
+		while (!WavePause())
+			;
 
-	InitMcgaMode() ;
-	if( FlagPalettePcx )	Palette( PalettePcx ) ;
-	else			Palette( PtrPal ) ;
-	WaveContinue() ;
-	FlagMCGA = TRUE ;
+	InitMcgaMode();
+	if (FlagPalettePcx)
+		Palette(PalettePcx);
+	else
+		Palette(PtrPal);
+	WaveContinue();
+	FlagMCGA = TRUE;
 }
 
-void	ExtInitSvga()
+void ExtInitSvga()
 {
 	if (Wave_Driver_Enable)
-		while( !WavePause() ) ;
+		while (!WavePause())
+			;
 
-	SimpleInitSvga() ;
-	if( FlagPalettePcx )	Palette( PalettePcx ) ;
-	else			Palette( PtrPal ) ;
-	FlagMCGA = FALSE ;
-	WaveContinue() ;
+	SimpleInitSvga();
+	if (FlagPalettePcx)
+		Palette(PalettePcx);
+	else
+		Palette(PtrPal);
+	FlagMCGA = FALSE;
+	WaveContinue();
 }
 
-void	TestRestoreModeSVGA( LONG flag )
+void TestRestoreModeSVGA(LONG flag)
 {
-	if( FlagMCGA )
+	if (FlagMCGA)
 	{
-		ExtInitSvga() ;
-		if( flag )	AffScene(TRUE)	;
+		ExtInitSvga();
+		if (flag)
+			AffScene(TRUE);
 	}
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-void	CopyBlockPhysMCGA( LONG x0, LONG y0, LONG x1, LONG y1 )
+void CopyBlockPhysMCGA(LONG x0, LONG y0, LONG x1, LONG y1)
 {
-	LONG	x, y ;
+	LONG x, y;
 
-/*	x = (x0+x1)/2 - 160 ;
-	y = (y0+y1)/2 - 100 ;
-*/
-	x = x0 - 160 ;
-	y = y0 - 140 ;
+	/*	x = (x0+x1)/2 - 160 ;
+		y = (y0+y1)/2 - 100 ;
+	*/
+	x = x0 - 160;
+	y = y0 - 140;
 
-	if( x > 640-320 )	x = 640-320 ;
-	if( x < 0 )		x = 0 ;
-	if( y > 480-200 )	y = 480-200 ;
-	if( y < 0 )		y = 0 ;
+	if (x > 640 - 320)
+		x = 640 - 320;
+	if (x < 0)
+		x = 0;
+	if (y > 480 - 200)
+		y = 480 - 200;
+	if (y < 0)
+		y = 0;
 
-	CopyBlockMCGA( x,y, x+319, y+199, Log, 0,0,0xA0000 ) ;
+	CopyBlockMCGA(x, y, x + 319, y + 199, Log, 0, 0, 0xA0000);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-	     ██▀▀▀ █▀▀▀█ █   █ █▀▀▀▀       █     █▀▀▀█ █▀▀▀█ █▀▀▀▄
-	     ▀▀▀▀█ ██▀▀█ ██ ▄▀ ██▀▀        ██    ██  █ ██▀▀█ ██  █
-	     ▀▀▀▀▀ ▀▀  ▀ ▀▀▀   ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀
+		 ██▀▀▀ █▀▀▀█ █   █ █▀▀▀▀       █     █▀▀▀█ █▀▀▀█ █▀▀▀▄
+		 ▀▀▀▀█ ██▀▀█ ██ ▄▀ ██▀▀        ██    ██  █ ██▀▀█ ██  █
+		 ▀▀▀▀▀ ▀▀  ▀ ▀▀▀   ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WORD showNewGame )
+WORD PlayerGameList(UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WORD showNewGame)
 {
-	SYS_FileInfo fileinfo ;
-	ULONG	rc ;
-	UBYTE	wbyte ;
-	UBYTE	pathname[_MAX_PATH] ;
-	WORD	nb = 0 ;
-	FILE*	handle ;
+	SYS_FileInfo fileinfo;
+	ULONG rc;
+	UBYTE wbyte;
+	UBYTE pathname[_MAX_PATH];
+	WORD nb = 0;
+	FILE *handle;
 
 	if (showNewGame)
 	{
 		int i = 0;
 		UBYTE string[256];
-		
+
 		GetMenuMultiTextAux(953, string);
 
 		*ptrlistname++ = listname;
@@ -1236,15 +1248,16 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 		*listname++ = 0;
 
 		nb++;
-		if (nb == MAX_PLAYER)	return nb;
+		if (nb == MAX_PLAYER)
+			return nb;
 	}
 
 	if (showAutoSave)
 	{
 		strcpy(pathname, PATH_RESSOURCE);
-		strcat(pathname, AUTO_SAVE_NAME".LBA");
+		strcat(pathname, AUTO_SAVE_NAME ".LBA");
 
-		//Get Auto save file first
+		// Get Auto save file first
 		rc = SYS_FindFirst(pathname, SYS_FA_NORMAL, &fileinfo);
 		if (!rc)
 		{
@@ -1260,98 +1273,100 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 			*listname++ = 0;
 
 			nb++;
-			if (nb == MAX_PLAYER)	return nb;
+			if (nb == MAX_PLAYER)
+				return nb;
 		}
 	}
 
-	strcpy(pathname, PATH_RESSOURCE"*.LBA");
+	strcpy(pathname, PATH_RESSOURCE "*.LBA");
 
-	//Get all the other save files
-	rc = SYS_FindFirst( pathname, SYS_FA_NORMAL, &fileinfo ) ;
-	while( !rc )
+	// Get all the other save files
+	rc = SYS_FindFirst(pathname, SYS_FA_NORMAL, &fileinfo);
+	while (!rc)
 	{
-		//ignore auto save file
-		if (strcmp(fileinfo.name, AUTO_SAVE_NAME".LBA") == 0)
+		// ignore auto save file
+		if (strcmp(fileinfo.name, AUTO_SAVE_NAME ".LBA") == 0)
 		{
 			rc = SYS_FindNext(&fileinfo);
 			continue;
 		}
 
-		strcpy( pathname, PATH_RESSOURCE ) ;
-		strcat( pathname,  fileinfo.name ) ;
+		strcpy(pathname, PATH_RESSOURCE);
+		strcat(pathname, fileinfo.name);
 
-		handle = OpenRead( pathname ) ;
-		if( handle )
+		handle = OpenRead(pathname);
+		if (handle)
 		{
-			Read( handle, &wbyte, 1 ) ;	// num version
+			Read(handle, &wbyte, 1); // num version
 
-			*ptrlistname++ = listname ;
+			*ptrlistname++ = listname;
 			do
 			{
-				Read( handle, &wbyte, 1 ) ;
-				*listname++ = wbyte ;
+				Read(handle, &wbyte, 1);
+				*listname++ = wbyte;
 
-			} while( wbyte != 0 ) ;
+			} while (wbyte != 0);
 
-			Close( handle ) ;
+			Close(handle);
 
-			nb++ ;
-			if( nb == MAX_PLAYER )	break ;
+			nb++;
+			if (nb == MAX_PLAYER)
+				break;
 		}
-		rc = SYS_FindNext( &fileinfo ) ;
+		rc = SYS_FindNext(&fileinfo);
 	}
-	
-	SYS_FindClose( &fileinfo ) ;
-	return nb ;
+
+	SYS_FindClose(&fileinfo);
+	return nb;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	FindPlayerFile()
+WORD FindPlayerFile()
 {
-	SYS_FileInfo fileinfo ;
-	ULONG	rc ;
-	UBYTE	pathname[_MAX_PATH] ;
-	UBYTE	playername[MAX_SIZE_PLAYER_NAME+1] ;
-	UBYTE	*ptr ;
-	FILE*	handle ;
-	UBYTE	wbyte ;
+	SYS_FileInfo fileinfo;
+	ULONG rc;
+	UBYTE pathname[_MAX_PATH];
+	UBYTE playername[MAX_SIZE_PLAYER_NAME + 1];
+	UBYTE *ptr;
+	FILE *handle;
+	UBYTE wbyte;
 
-	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
+	strcpy(pathname, PATH_RESSOURCE "*.LBA");
 
-	rc = SYS_FindFirst( pathname, SYS_FA_NORMAL, &fileinfo ) ;
-	while( !rc )
+	rc = SYS_FindFirst(pathname, SYS_FA_NORMAL, &fileinfo);
+	while (!rc)
 	{
-		strcpy( pathname, PATH_RESSOURCE ) ;
-		strcat( pathname,  fileinfo.name ) ;
+		strcpy(pathname, PATH_RESSOURCE);
+		strcat(pathname, fileinfo.name);
 
-		handle = OpenRead( pathname ) ;
+		handle = OpenRead(pathname);
 
-		Read( handle, &wbyte, 1 ) ;	// num version
+		Read(handle, &wbyte, 1); // num version
 
-		ptr = playername ;
+		ptr = playername;
 		do
 		{
-			Read( handle, &wbyte, 1 ) ;
-			*ptr++ = wbyte ;
+			Read(handle, &wbyte, 1);
+			*ptr++ = wbyte;
 
-		} while( wbyte != 0 ) ;
+		} while (wbyte != 0);
 
-		Close( handle ) ;
+		Close(handle);
 
-		if( !stricmp( PlayerName, playername ) )
+		if (!stricmp(PlayerName, playername))
 		{
-			strcpy( GamePathname, PATH_RESSOURCE ) ;
-			strcat( GamePathname, fileinfo.name ) ;
-			SYS_FindClose( &fileinfo ) ;
-			return TRUE ;
+			strcpy(GamePathname, PATH_RESSOURCE);
+			strcat(GamePathname, fileinfo.name);
+			SYS_FindClose(&fileinfo);
+			return TRUE;
 		}
 
-		rc = SYS_FindNext( &fileinfo ) ;
+		rc = SYS_FindNext(&fileinfo);
 	}
-	
-	SYS_FindClose( &fileinfo ) ;
-	return FALSE ;
+
+	SYS_FindClose(&fileinfo);
+	return FALSE;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -1362,30 +1377,30 @@ void SaveGame()
 	SaveGameWithName(AUTO_SAVE_NAME, 1);
 }
 
-void SaveGameWithName(char* fileName, WORD isAutoSave)
+void SaveGameWithName(char *fileName, WORD isAutoSave)
 {
-	FILE*	handle ;
-	WORD	wword ;
-	UBYTE	wbyte ;
+	FILE *handle;
+	WORD wword;
+	UBYTE wbyte;
 	int i;
 
 	if (fileName)
 	{
 		char savePath[1024];
 
-		//Check if WindowsFilenameSaving flag in LBA.CFG is set to ON
+		// Check if WindowsFilenameSaving flag in LBA.CFG is set to ON
 		if (FlagWindowsFilenameSaving)
 		{
-			//Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files) 
-			//No need to perform this validation if we're doing an auto save
+			// Added this check to make sure if there are S0000.LBA files that can be replaced. This allows to replace save files from previous versions without creating new ones (like TLBA Classic S0000.LBA save files)
+			// No need to perform this validation if we're doing an auto save
 			if (!isAutoSave && FindPlayerFile())
 			{
-				//Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
+				// Use the already existing save file path name (uses S0000.LBA if it already existed in the save folder)
 				strcpy(savePath, GamePathname);
 			}
 			else
 			{
-				//If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming 
+				// If the file doesn't exist, create a new one with fileName as name, or replace if it's auto save or existing and not using S0000.LBA naming
 				strcpy(savePath, PATH_RESSOURCE);
 				strcat(savePath, fileName);
 				strcat(savePath, ".LBA");
@@ -1409,7 +1424,7 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 				{
 					do
 					{
-						strcpy(savePath, PATH_RESSOURCE"S");
+						strcpy(savePath, PATH_RESSOURCE "S");
 						strcat(savePath, Itoa(Rnd(10000)));
 						strcat(savePath, ".LBA");
 					} while (FileSize(savePath) != 0);
@@ -1425,59 +1440,59 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 		return;
 	}
 
-	if( !handle )
+	if (!handle)
 	{
-		Message( "Error Writing Saved Game", TRUE ) ;
-		return ;
+		Message("Error Writing Saved Game", TRUE);
+		return;
 	}
 
-	NumVersion = 3 ;
+	NumVersion = 3;
 
-	Write( handle, &NumVersion, 1 ) ;
+	Write(handle, &NumVersion, 1);
 
-	Write( handle, fileName, strlen(fileName)+1 ) ;
+	Write(handle, fileName, strlen(fileName) + 1);
 
-// list flag game
-	wbyte = MAX_FLAGS_GAME ;
-	Write( handle, &wbyte, 1 ) ;	// nb octets
-	Write( handle, ListFlagGame, MAX_FLAGS_GAME ) ;
+	// list flag game
+	wbyte = MAX_FLAGS_GAME;
+	Write(handle, &wbyte, 1); // nb octets
+	Write(handle, ListFlagGame, MAX_FLAGS_GAME);
 
-// infos jeu
-	Write( handle, &NumCube, 1 ) ;
-	Write( handle, &Chapitre, 1 ) ;
-	Write( handle, &Comportement, 1 ) ;
-	Write( handle, &ListObjet[NUM_PERSO].LifePoint, 1 ) ;
+	// infos jeu
+	Write(handle, &NumCube, 1);
+	Write(handle, &Chapitre, 1);
+	Write(handle, &Comportement, 1);
+	Write(handle, &ListObjet[NUM_PERSO].LifePoint, 1);
 
-	Write( handle, &NbGoldPieces, 2 ) ;
+	Write(handle, &NbGoldPieces, 2);
 
-	Write( handle, &MagicLevel, 1 ) ;
-	Write( handle, &MagicPoint, 1 ) ;
-	Write( handle, &NbCloverBox, 1 ) ;
+	Write(handle, &MagicLevel, 1);
+	Write(handle, &MagicPoint, 1);
+	Write(handle, &NbCloverBox, 1);
 
-	Write( handle, &SceneStartX, 2 ) ;
-	Write( handle, &SceneStartY, 2 ) ;
-	Write( handle, &SceneStartZ, 2 ) ;
-	Write( handle, &ListObjet[NUM_PERSO].Beta, 2 ) ;
+	Write(handle, &SceneStartX, 2);
+	Write(handle, &SceneStartY, 2);
+	Write(handle, &SceneStartZ, 2);
+	Write(handle, &ListObjet[NUM_PERSO].Beta, 2);
 
-	Write( handle, &ListObjet[NUM_PERSO].GenBody, 1 ) ;
+	Write(handle, &ListObjet[NUM_PERSO].GenBody, 1);
 
-// tabholopos
+	// tabholopos
 
-	wbyte = MAX_HOLO_POS ;
-	Write( handle, &wbyte, 1 ) ;
-	Write( handle, TabHoloPos, wbyte ) ;
+	wbyte = MAX_HOLO_POS;
+	Write(handle, &wbyte, 1);
+	Write(handle, TabHoloPos, wbyte);
 
-// others
-	Write( handle, &Fuel, 1 ) ;
+	// others
+	Write(handle, &Fuel, 1);
 
-// used inventory
-	wbyte = MAX_INVENTORY ;
-	Write( handle, &wbyte, 1 ) ;	// nb octets
-	Write( handle, ListFlagInventory, MAX_INVENTORY ) ;
+	// used inventory
+	wbyte = MAX_INVENTORY;
+	Write(handle, &wbyte, 1); // nb octets
+	Write(handle, ListFlagInventory, MAX_INVENTORY);
 
-// others
-	Write( handle, &NbFourLeafClover, 1 ) ;
-	Write( handle, &Weapon, 2 ) ;
+	// others
+	Write(handle, &NbFourLeafClover, 1);
+	Write(handle, &Weapon, 2);
 
 	if (!isAutoSave)
 	{
@@ -1494,87 +1509,87 @@ void SaveGameWithName(char* fileName, WORD isAutoSave)
 
 		// list flag cube
 		wbyte = MAX_FLAGS_CUBE;
-		Write(handle, &wbyte, 1);	// nb octets
+		Write(handle, &wbyte, 1); // nb octets
 		Write(handle, &ListFlagCube, MAX_FLAGS_CUBE);
 		Write(handle, &LastValidPerso, sizeof(T_OBJET));
 		Write(handle, &NumPingouin, 2); // save meca penguin use reference
 		wbyte = MAX_AUX_FLAGS_CUBE;
-		Write(handle, &wbyte, 1); // nb octets
+		Write(handle, &wbyte, 1);													   // nb octets
 		Write(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * MAX_AUX_FLAGS_CUBE); // save auxiliary cube flags
 	}
 
-	Close( handle ) ;
+	Close(handle);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	LoadGame()
+void LoadGame()
 {
-	FILE*	handle ;
-	WORD	wword ;
-	UBYTE	wbyte ;
-	UBYTE	*ptr ;
-	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0, 
+	FILE *handle;
+	WORD wword;
+	UBYTE wbyte;
+	UBYTE *ptr;
+	int successInventory = 0, successKeys = 0, successListObjets = 0, successNbZones = 0, successListZones = 0,
 		successListExtras = 0, successNbListFlagCube = 0, successListFlagCube = 0, successLastValidPerso = 0,
 		successMecaPenguin = 0, successNbListAuxFlagCube = 0, successListAuxFlagCube = 0;
 	int i;
 
-	handle = OpenRead( GamePathname ) ;
+	handle = OpenRead(GamePathname);
 
-	Read( handle, &wbyte, 1 ) ;	// num version
+	Read(handle, &wbyte, 1); // num version
 
-	ptr = PlayerName ;
+	ptr = PlayerName;
 	do
 	{
-		Read( handle, &wbyte, 1 ) ;
-		*ptr++ = wbyte ;
+		Read(handle, &wbyte, 1);
+		*ptr++ = wbyte;
 
-	} while( wbyte != 0 ) ;
+	} while (wbyte != 0);
 
-// list flag game
-	Read( handle, &wbyte, 1 ) ;	// nb octets
-	
-	successInventory = Read( handle, ListFlagGame, wbyte ) ;
+	// list flag game
+	Read(handle, &wbyte, 1); // nb octets
 
-	NewCube = 0 ;
-	Read( handle, &NewCube, 1 ) ;
+	successInventory = Read(handle, ListFlagGame, wbyte);
 
-	Read( handle, &Chapitre, 1 ) ;
+	NewCube = 0;
+	Read(handle, &NewCube, 1);
 
-	Read( handle, &Comportement, 1 ) ;
-	SaveComportement = Comportement ;
-	Read( handle, &ListObjet[NUM_PERSO].LifePoint, 1 ) ;
+	Read(handle, &Chapitre, 1);
 
-	Read( handle, &NbGoldPieces, 2 ) ;
+	Read(handle, &Comportement, 1);
+	SaveComportement = Comportement;
+	Read(handle, &ListObjet[NUM_PERSO].LifePoint, 1);
 
-	Read( handle, &MagicLevel, 1 ) ;
-	Read( handle, &MagicPoint, 1 ) ;
-	Read( handle, &NbCloverBox, 1 ) ;
+	Read(handle, &NbGoldPieces, 2);
 
-	Read( handle, &SceneStartX, 2 ) ;
-	Read( handle, &SceneStartY, 2 ) ;
-	Read( handle, &SceneStartZ, 2 ) ;
-	Read( handle, &ListObjet[NUM_PERSO].Beta, 2 ) ;
-	SaveBeta = ListObjet[NUM_PERSO].Beta ;
+	Read(handle, &MagicLevel, 1);
+	Read(handle, &MagicPoint, 1);
+	Read(handle, &NbCloverBox, 1);
 
-	Read( handle, &ListObjet[NUM_PERSO].GenBody, 1 ) ;
+	Read(handle, &SceneStartX, 2);
+	Read(handle, &SceneStartY, 2);
+	Read(handle, &SceneStartZ, 2);
+	Read(handle, &ListObjet[NUM_PERSO].Beta, 2);
+	SaveBeta = ListObjet[NUM_PERSO].Beta;
 
-// tabholopos
-	Read( handle, &wbyte, 1 ) ;
-	Read( handle, TabHoloPos, wbyte ) ;
+	Read(handle, &ListObjet[NUM_PERSO].GenBody, 1);
 
-// others
-	Read( handle, &Fuel, 1 ) ;
+	// tabholopos
+	Read(handle, &wbyte, 1);
+	Read(handle, TabHoloPos, wbyte);
 
-// used inventory
-	Read( handle, &wbyte, 1 ) ;	// nb octets
-	Read( handle, ListFlagInventory, wbyte ) ;
+	// others
+	Read(handle, &Fuel, 1);
 
-// others
-	Read( handle, &NbFourLeafClover, 1 ) ;
-	Read( handle, &Weapon, 2 ) ;
+	// used inventory
+	Read(handle, &wbyte, 1); // nb octets
+	Read(handle, ListFlagInventory, wbyte);
 
-	successKeys = Read( handle, &NbLittleKeys, 1 );
+	// others
+	Read(handle, &NbFourLeafClover, 1);
+	Read(handle, &Weapon, 2);
+
+	successKeys = Read(handle, &NbLittleKeys, 1);
 	successListObjets = Read(handle, &ListObjet, sizeof(T_OBJET) * MAX_OBJETS);
 	successListExtras = Read(handle, &ListExtra, sizeof(T_EXTRA) * MAX_EXTRAS);
 	successNbZones = Read(handle, &NbZones, 2);
@@ -1585,7 +1600,7 @@ void	LoadGame()
 
 		successListZones = 1;
 
-		//Iterating for ListZone because it has a different data type
+		// Iterating for ListZone because it has a different data type
 		for (i = 0; i < NbZones; i++)
 		{
 			successListZones &= Read(handle, &ListZone[i], sizeof(T_ZONE));
@@ -1593,7 +1608,7 @@ void	LoadGame()
 	}
 
 	// List flag cube
-	successNbListFlagCube = Read(handle, &wbyte, 1);	// nb octets
+	successNbListFlagCube = Read(handle, &wbyte, 1); // nb octets
 	if (successNbListFlagCube && wbyte > 0)
 		successListFlagCube = Read(handle, &ListFlagCube, wbyte);
 
@@ -1608,18 +1623,18 @@ void	LoadGame()
 	if (successNbListAuxFlagCube && wbyte > 0)
 		successListAuxFlagCube = Read(handle, &ListAuxFlagCube, sizeof(T_AUX_FLAG_CUBE) * wbyte); // read auxiliary cube flags
 
-	Close( handle ) ;
+	Close(handle);
 
-	//These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
-	HasLoadedSave = successListObjets || successListExtras || 
-					successNbZones || successListZones || 
+	// These flags are here to help the code identify if objects in a scene are coming from a save or from the HQR file. They also help with keeping retro compatibility with previous version save files
+	HasLoadedSave = successListObjets || successListExtras ||
+					successNbZones || successListZones ||
 					successKeys || successNbListFlagCube ||
 					successListFlagCube || successLastValidPerso ||
 					successMecaPenguin || successNbListAuxFlagCube ||
-					successListAuxFlagCube;							/*If any of these are present in the save file,
-																	it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file, 
-																	therefore the code should run the same logic for previous versions.	
-																	Inventory is not checked because it was already in original save files.*/
+					successListAuxFlagCube; /*If any of these are present in the save file,
+											it means we are loading a new version of the save files. If not, it means we are loading a previous version AUTO save file,
+											therefore the code should run the same logic for previous versions.
+											Inventory is not checked because it was already in original save files.*/
 	HasLoadedInventoryOnSave = successInventory;
 	HasLoadedListObjetsOnSave = successListObjets;
 	HasLoadedListObjetTracksOnSave = successListObjets;
@@ -1632,8 +1647,8 @@ void	LoadGame()
 
 	DisableAutoSave = 1; // do not let the code auto save immediately after loading a save
 
-	NumCube = -1 ;
-	FlagChgCube = 3 ;
+	NumCube = -1;
+	FlagChgCube = 3;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -1645,84 +1660,84 @@ void	LoadGame()
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawOneString( WORD x, WORD y, UBYTE *playername, WORD draw )
+void DrawOneString(WORD x, WORD y, UBYTE *playername, WORD draw)
 {
-	WORD	x2, x0,y0,x1,y1 ;
-//	UBYTE	string[256] ;
+	WORD x2, x0, y0, x1, y1;
+	//	UBYTE	string[256] ;
 
-	x0 = x - LargeurMenu/2 ;
-	x1 = x + LargeurMenu/2 ;
+	x0 = x - LargeurMenu / 2;
+	x1 = x + LargeurMenu / 2;
 
-	y0 = y - HAUTEUR_STANDARD/2 ;
-	y1 = y + HAUTEUR_STANDARD/2 ;
+	y0 = y - HAUTEUR_STANDARD / 2;
+	y1 = y + HAUTEUR_STANDARD / 2;
 
 	// fond
 
-	if( draw == 0 )
+	if (draw == 0)
 	{
-		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
-		ShadeBox( x0, y0, x1, y1, 4 ) ;
+		CopyBlock(x0, y0, x1, y1, Screen, x0, y0, Log);
+		ShadeBox(x0, y0, x1, y1, 4);
 	}
-	if( draw == 1 )
+	if (draw == 1)
 	{
-		DrawFire( x0, y0, x1, y1, COUL_INPUT_NAME&0xF0 ) ;
+		DrawFire(x0, y0, x1, y1, COUL_INPUT_NAME & 0xF0);
 	}
-	if( draw == 2 )
+	if (draw == 2)
 	{
-		Box( x0, y0, x1, y1, 91 ) ;
+		Box(x0, y0, x1, y1, 91);
 	}
 
 	// cadre
-	DrawCadre( x0, y0, x1, y1 ) ;
+	DrawCadre(x0, y0, x1, y1);
 
 	// text
-	CoulFont( COUL_TEXT_MENU ) ;
+	CoulFont(COUL_TEXT_MENU);
 
-//	if( playername[0] != 0 )
-		Font( x - SizeFont( playername )/2, y-18, playername ) ;
+	//	if( playername[0] != 0 )
+	Font(x - SizeFont(playername) / 2, y - 18, playername);
 
 	// flip
 
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawSingleString( WORD x, WORD y, UBYTE *string )
+void DrawSingleString(WORD x, WORD y, UBYTE *string)
 {
-	WORD	x2, x0,y0,x1,y1 ;
-	WORD	sf ;
+	WORD x2, x0, y0, x1, y1;
+	WORD sf;
 
-	sf = SizeFont( string ) ;
+	sf = SizeFont(string);
 
-	x0 = x - sf/2 ;
-	x1 = x + sf/2 ;
+	x0 = x - sf / 2;
+	x1 = x + sf / 2;
 
-	y0 = y - HAUTEUR_STANDARD/2 ;
-	y1 = y + HAUTEUR_STANDARD/2 ;
+	y0 = y - HAUTEUR_STANDARD / 2;
+	y1 = y + HAUTEUR_STANDARD / 2;
 
 	// cadre
-//	DrawCadre( x0, y0, x1, y1 ) ;
+	//	DrawCadre( x0, y0, x1, y1 ) ;
 
 	// text
-	CoulFont( 0 ) ;
-	Font( x0 + 4, y-18 + 4, string ) ;
-	CoulFont( COUL_TEXT_MENU ) ;
-	Font( x0, y-18, string ) ;
+	CoulFont(0);
+	Font(x0 + 4, y - 18 + 4, string);
+	CoulFont(COUL_TEXT_MENU);
+	Font(x0, y - 18, string);
 
 	// flip
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-UBYTE	TabLetter[NB_CAR_V][NB_CAR_H] =
-{
-	{ ' ','A','B','C','D','E','F','G','H','I','J','K','L','M' } ,
-	{ '.','N','O','P','Q','R','S','T','U','V','W','X','Y','Z' } ,
-	{ '-','a','b','c','d','e','f','g','h','i','j','k','l','m' } ,
-	{ '?','n','o','p','q','r','s','t','u','v','w','x','y','z' } ,
-	{ '!','0','1','2','3','4','5','6','7','8','9',' ', 8 , 13 }   } ;
+UBYTE TabLetter[NB_CAR_V][NB_CAR_H] =
+	{
+		{' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M'},
+		{'.', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'},
+		{'-', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm'},
+		{'?', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'},
+		{'!', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ' ', 8, 13}};
 
 //	{ ' ','é','è','ç','à','ô','ê','â','î','8','9',' ',' ',' ' } ,
 
@@ -1748,61 +1763,61 @@ WORD	SearchLetter( UBYTE car )
 */
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawOneLetter( WORD tabx, WORD taby, WORD draw )
+void DrawOneLetter(WORD tabx, WORD taby, WORD draw)
 {
-	WORD	x2, x0,y0,x1,y1 ;
-	UBYTE	letter[256] ;
-	WORD	x, y ;
+	WORD x2, x0, y0, x1, y1;
+	UBYTE letter[256];
+	WORD x, y;
 
-	letter[0] = TabLetter[taby][tabx] ;
-	letter[1] = 0 ;
+	letter[0] = TabLetter[taby][tabx];
+	letter[1] = 0;
 
-	x = 25 + (640/NB_CAR_H) * tabx ;
-	y = 200 + (280/NB_CAR_V) * taby ;
+	x = 25 + (640 / NB_CAR_H) * tabx;
+	y = 200 + (280 / NB_CAR_V) * taby;
 
-	x0 = x - 40/2 ;
-	x1 = x + 40/2 ;
+	x0 = x - 40 / 2;
+	x1 = x + 40 / 2;
 
-	y0 = y - 50/2 ;
-	y1 = y + 50/2 ;
+	y0 = y - 50 / 2;
+	y1 = y + 50 / 2;
 
 	// fond
 
-	if( draw )
+	if (draw)
 	{
-		Box( x0, y0, x1, y1, 91 ) ;
+		Box(x0, y0, x1, y1, 91);
 	}
 	else
 	{
-		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
-		ShadeBox( x0, y0, x1, y1, 4 ) ;
+		CopyBlock(x0, y0, x1, y1, Screen, x0, y0, Log);
+		ShadeBox(x0, y0, x1, y1, 4);
 	}
 
 	// cadre
-	DrawCadre( x0, y0, x1, y1 ) ;
+	DrawCadre(x0, y0, x1, y1);
 
 	// text
 
-	CoulFont( COUL_LETTER_INPUT ) ;
+	CoulFont(COUL_LETTER_INPUT);
 
-	Font( x - SizeFont( letter )/2, y-18, letter ) ;
+	Font(x - SizeFont(letter) / 2, y - 18, letter);
 
 	// flip
 
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawAllLetters()
+void DrawAllLetters()
 {
-	WORD	x, y ;
+	WORD x, y;
 
-	for( y=0; y<NB_CAR_V; y++ )
+	for (y = 0; y < NB_CAR_V; y++)
 	{
-		for( x=0; x<NB_CAR_H; x++ )
+		for (x = 0; x < NB_CAR_H; x++)
 		{
-			DrawOneLetter( x,y, FALSE ) ;
+			DrawOneLetter(x, y, FALSE);
 		}
 	}
 }
@@ -1810,147 +1825,160 @@ void	DrawAllLetters()
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	InputPlayerName( WORD nummess, WORD isSaveGame )
+WORD InputPlayerName(WORD nummess, WORD isSaveGame)
 {
-	WORD	flag = 1 ;
-	UBYTE	string[256] ;
-	WORD	poscarX = 0 , poscarY = 0 ;
-	WORD	oldposcarX = -1 , oldposcarY ;
-	WORD	len ;
-	WORD	memoasciimode ;
-	WORD	car = 0 ;
-	WORD	retval = FALSE ;
-	UBYTE	incar ;
+	WORD flag = 1;
+	UBYTE string[256];
+	WORD poscarX = 0, poscarY = 0;
+	WORD oldposcarX = -1, oldposcarY;
+	WORD len;
+	WORD memoasciimode;
+	WORD car = 0;
+	WORD retval = FALSE;
+	UBYTE incar;
 
 try_again:
 
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	InitDial( 0 ) ;
+	InitDial(0);
 
-	GetMenuMultiTextAux( nummess, string ) ;
-	CoulFont( COUL_LETTER_INPUT ) ;
-	Font( 320 - SizeFont(string)/2, 20, string ) ;
-	CopyBlockPhys( 0,0,639,99 ) ;
+	GetMenuMultiTextAux(nummess, string);
+	CoulFont(COUL_LETTER_INPUT);
+	Font(320 - SizeFont(string) / 2, 20, string);
+	CopyBlockPhys(0, 0, 639, 99);
 
-	strcpy( PlayerName, "" ) ;
-	DrawOneString( 320, 100, PlayerName, 1 ) ;
-	DrawAllLetters() ;
+	strcpy(PlayerName, "");
+	DrawOneString(320, 100, PlayerName, 1);
+	DrawAllLetters();
 
-	while( Key OR Fire ) ;
+	while (Key OR Fire)
+		;
 
-	memoasciimode = AsciiMode ;
-	AsciiMode = TRUE ;
+	memoasciimode = AsciiMode;
+	AsciiMode = TRUE;
 
-	while( GetAscii() != 0 ) ;
+	while (GetAscii() != 0)
+		;
 
-	while( Key != K_ESC )
+	while (Key != K_ESC)
 	{
-#ifdef	DEBUG_TOOLS
-		CheckSavePcx() ;
+#ifdef DEBUG_TOOLS
+		CheckSavePcx();
 #endif
 		////////////////
 
-		car = GetAscii() ;
-		MyKey = Key ;
-		MyJoy = Joy ;
-		MyFire = Fire ;
+		car = GetAscii();
+		MyKey = Key;
+		MyJoy = Joy;
+		MyFire = Fire;
 
 		///////////////
 
-		DrawOneString( 320, 100, PlayerName, 1 ) ;
+		DrawOneString(320, 100, PlayerName, 1);
 
-		if( flag & 1 )
+		if (flag & 1)
 		{
-			if( oldposcarX != -1 )
-				DrawOneLetter( oldposcarX, oldposcarY, FALSE ) ;
-			DrawOneLetter( poscarX, poscarY, TRUE ) ;
-			oldposcarX = poscarX ;
-			oldposcarY = poscarY ;
-			flag &= ~1 ;
+			if (oldposcarX != -1)
+				DrawOneLetter(oldposcarX, oldposcarY, FALSE);
+			DrawOneLetter(poscarX, poscarY, TRUE);
+			oldposcarX = poscarX;
+			oldposcarY = poscarY;
+			flag &= ~1;
 		}
 
-		if( flag & 2 )
+		if (flag & 2)
 		{
-			while( Fire ) ;
-			flag &= ~2 ;
+			while (Fire)
+				;
+			flag &= ~2;
 		}
 
 		///////////////
 
-		if( car == A_SPACE )
+		if (car == A_SPACE)
 		{
-			incar = TabLetter[poscarY][poscarX] ;
-			if( (incar == 8) OR (incar == 13) )
+			incar = TabLetter[poscarY][poscarX];
+			if ((incar == 8) OR(incar == 13))
 			{
-				if( incar == 8 )	car = A_BACKSPACE ;
-				if( incar == 13 )	car = A_RETURN ;
+				if (incar == 8)
+					car = A_BACKSPACE;
+				if (incar == 13)
+					car = A_RETURN;
 			}
 			else
 			{
-				len = strlen(PlayerName) ;
-				if( len < MAX_SIZE_PLAYER_NAME )
+				len = strlen(PlayerName);
+				if (len < MAX_SIZE_PLAYER_NAME)
 				{
-					PlayerName[len] = incar ;
-					PlayerName[len+1] = 0 ;
-					flag |= 2 ;
+					PlayerName[len] = incar;
+					PlayerName[len + 1] = 0;
+					flag |= 2;
 				}
 			}
 		}
 
-		if( car == A_RIGHT )
+		if (car == A_RIGHT)
 		{
-			poscarX++ ;
-			if( poscarX == NB_CAR_H )	poscarX = 0 ;
-			flag |= 1 ;
+			poscarX++;
+			if (poscarX == NB_CAR_H)
+				poscarX = 0;
+			flag |= 1;
 		}
-		if( car == A_LEFT )
+		if (car == A_LEFT)
 		{
-			poscarX-- ;
-			if( poscarX == -1 )	poscarX = NB_CAR_H - 1 ;
-			flag |= 1 ;
+			poscarX--;
+			if (poscarX == -1)
+				poscarX = NB_CAR_H - 1;
+			flag |= 1;
 		}
-		if( car == A_DOWN )
+		if (car == A_DOWN)
 		{
-			poscarY++ ;
-			if( poscarY == NB_CAR_V )	poscarY = 0 ;
-			flag |= 1 ;
+			poscarY++;
+			if (poscarY == NB_CAR_V)
+				poscarY = 0;
+			flag |= 1;
 		}
-		if( car == A_UP )
+		if (car == A_UP)
 		{
-			poscarY-- ;
-			if( poscarY == -1 )	poscarY = NB_CAR_V - 1 ;
-			flag |= 1 ;
+			poscarY--;
+			if (poscarY == -1)
+				poscarY = NB_CAR_V - 1;
+			flag |= 1;
 		}
 
 		///////////////
 
-		len = strlen(PlayerName) ;
+		len = strlen(PlayerName);
 
-		if( car == A_BACKSPACE )
+		if (car == A_BACKSPACE)
 		{
-			if( len > 0 )	PlayerName[len-1] = 0 ;
-			else		car = 0 ;
+			if (len > 0)
+				PlayerName[len - 1] = 0;
+			else
+				car = 0;
 		}
 
-		if( car == A_RETURN )
+		if (car == A_RETURN)
 		{
-			if( len != 0 )	break ;
-			else		car = 0 ;
+			if (len != 0)
+				break;
+			else
+				car = 0;
 		}
 
-		if( (car != A_SPACE) AND (car != 0) )
+		if ((car != A_SPACE) AND(car != 0))
 		{
-			car &= 255 ;
+			car &= 255;
 
-//			if( SearchLetter( car ) )
-			if( (car>32) AND (car<255) )
+			//			if( SearchLetter( car ) )
+			if ((car > 32) AND(car < 255))
 			{
-				if( len < MAX_SIZE_PLAYER_NAME )
+				if (len < MAX_SIZE_PLAYER_NAME)
 				{
-					PlayerName[len] = car ;
-					PlayerName[len+1] = 0 ;
+					PlayerName[len] = car;
+					PlayerName[len + 1] = 0;
 				}
 			}
 		}
@@ -1958,996 +1986,1016 @@ try_again:
 		////////////////
 	}
 
-	if( car == A_RETURN )
+	if (car == A_RETURN)
 	{
-		//Ignore this check for new game, since what's input there does not influence the save name file anymore
-		if( isSaveGame && FindPlayerFile() == TRUE )
+		// Ignore this check for new game, since what's input there does not influence the save name file anymore
+		if (isSaveGame && FindPlayerFile() == TRUE)
 		{
-			//nummess = 43 ;
+			// nummess = 43 ;
 			nummess = 952; // use id from community text
-			goto try_again ;
+			goto try_again;
 		}
-		else	retval = TRUE ;
+		else
+			retval = TRUE;
 	}
 
-#ifdef	TRACE
-	AsciiMode = memoasciimode ;
+#ifdef TRACE
+	AsciiMode = memoasciimode;
 #else
-	AsciiMode = FALSE ;
+	AsciiMode = FALSE;
 #endif
 
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	return retval ;
+	return retval;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#define	NB_GAME_CHOICE	6
+#define NB_GAME_CHOICE 6
 
-WORD	ChoosePlayerName( WORD mess, WORD showAutoSave, WORD showNewGame )
+WORD ChoosePlayerName(WORD mess, WORD showAutoSave, WORD showNewGame)
 {
-	WORD	flag = 1 ;
-	UBYTE	*listplayername ;
-	UBYTE	**ptrlist ;
-	WORD	n, nb ;
-	WORD	start = 0 ;
-	WORD	select = 0 ;
-	WORD	ys = 50 ;
-	WORD	retval = 0 ;
-	UBYTE	string[256] ;
+	WORD flag = 1;
+	UBYTE *listplayername;
+	UBYTE **ptrlist;
+	WORD n, nb;
+	WORD start = 0;
+	WORD select = 0;
+	WORD ys = 50;
+	WORD retval = 0;
+	UBYTE string[256];
 
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	listplayername = Malloc( MAX_PLAYER * (MAX_SIZE_PLAYER_NAME+1) ) ;
-	ptrlist = (UBYTE**)Malloc( MAX_PLAYER * sizeof(UBYTE*) ) ;
+	listplayername = Malloc(MAX_PLAYER * (MAX_SIZE_PLAYER_NAME + 1));
+	ptrlist = (UBYTE **)Malloc(MAX_PLAYER * sizeof(UBYTE *));
 
-	if( !listplayername OR !ptrlist )
+	if (!listplayername OR !ptrlist)
 	{
-		TheEnd( NOT_ENOUGH_MEM, "Choose Player Name" ) ;
+		TheEnd(NOT_ENOUGH_MEM, "Choose Player Name");
 	}
 
-	nb = PlayerGameList( ptrlist, listplayername, showAutoSave, showNewGame ) ;
+	nb = PlayerGameList(ptrlist, listplayername, showAutoSave, showNewGame);
 
-	if( !nb )	return FALSE ;
+	if (!nb)
+		return FALSE;
 
-	InitDial( 0 ) ;
+	InitDial(0);
 
-	DrawSingleString( 320, 40, (UBYTE*)GetMenuMultiTextAux( mess,string ) ) ;
+	DrawSingleString(320, 40, (UBYTE *)GetMenuMultiTextAux(mess, string));
 
-	while( Key != K_ESC )
+	while (Key != K_ESC)
 	{
 
-		if( flag == 1 )
+		if (flag == 1)
 		{
-			for( n=0; n<6; n++ )
+			for (n = 0; n < 6; n++)
 			{
-				if( n+start >= nb )	break ;
-				if( (n+start) == select )
+				if (n + start >= nb)
+					break;
+				if ((n + start) == select)
 				{
-					ys = 50+50+60*n ;
+					ys = 50 + 50 + 60 * n;
 				}
-				DrawOneString( 320, 50+50+60*n, ptrlist[n+start], (n+start) == select ) ;
+				DrawOneString(320, 50 + 50 + 60 * n, ptrlist[n + start], (n + start) == select);
 			}
-			while( Joy OR Fire )
-				DrawOneString( 320, ys, ptrlist[select], 1 ) ;
-			flag = 0 ;
+			while (Joy OR Fire)
+				DrawOneString(320, ys, ptrlist[select], 1);
+			flag = 0;
 		}
 
-		DrawOneString( 320, ys, ptrlist[select], 1 ) ;
+		DrawOneString(320, ys, ptrlist[select], 1);
 
-		if( Joy & J_DOWN )
+		if (Joy & J_DOWN)
 		{
-			if( select < (nb-1) )
+			if (select < (nb - 1))
 			{
-				DrawOneString( 320, ys, ptrlist[select], 0 ) ;
-				select++ ;
-				flag = 1 ;
+				DrawOneString(320, ys, ptrlist[select], 0);
+				select++;
+				flag = 1;
 			}
 
-			if( select >= (start + 6) )
+			if (select >= (start + 6))
 			{
-				if( start < (nb-1) )
+				if (start < (nb - 1))
 				{
-					start++ ;
+					start++;
 				}
 			}
 		}
 
-		if( Joy & J_UP )
+		if (Joy & J_UP)
 		{
-			if( select > 0 )
+			if (select > 0)
 			{
-				DrawOneString( 320, ys, ptrlist[select], 0 ) ;
-				select-- ;
-				flag = 1 ;
+				DrawOneString(320, ys, ptrlist[select], 0);
+				select--;
+				flag = 1;
 			}
-			if( select < start )
+			if (select < start)
 			{
-				start-- ;
+				start--;
 			}
 		}
 
-		if( Fire )
+		if (Fire)
 		{
-			// New Game option is in index 0, return 2 if this is selected, else return 1 
-			retval = showNewGame && select == 0 ? 2 : 1 ;
-			break ;
+			// New Game option is in index 0, return 2 if this is selected, else return 1
+			retval = showNewGame && select == 0 ? 2 : 1;
+			break;
 		}
 	}
 
-	strcpy( PlayerName, ptrlist[select] ) ;
-	FindPlayerFile() ;
+	strcpy(PlayerName, ptrlist[select]);
+	FindPlayerFile();
 
-	Free( ptrlist ) ;
-	Free( listplayername ) ;
+	Free(ptrlist);
+	Free(listplayername);
 
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	return retval ;
+	return retval;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-			    █▄ ▄█ █▀▀▀▀ ██▄ █ █   █
-			    ██▀ █ ██▀▀  ██▀██ ██  █
-			    ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀
+				█▄ ▄█ █▀▀▀▀ ██▄ █ █   █
+				██▀ █ ██▀▀  ██▀██ ██  █
+				▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawOneChoice( WORD x, WORD y, WORD type, WORD num, WORD select )
+void DrawOneChoice(WORD x, WORD y, WORD type, WORD num, WORD select)
 {
-	WORD	x2, x0,y0,x1,y1 ;
-	UBYTE	string[256] ;
-	ULONG	volleft, volright ;
+	WORD x2, x0, y0, x1, y1;
+	UBYTE string[256];
+	ULONG volleft, volright;
 
-	x0 = x - LargeurMenu/2 ;
-	x1 = x + LargeurMenu/2 ;
+	x0 = x - LargeurMenu / 2;
+	x1 = x + LargeurMenu / 2;
 
-	y0 = y - HAUTEUR_STANDARD/2 ;
-	y1 = y + HAUTEUR_STANDARD/2 ;
+	y0 = y - HAUTEUR_STANDARD / 2;
+	y1 = y + HAUTEUR_STANDARD / 2;
 
 	// fond
 
-	if( select )
+	if (select)
 	{
-		switch( type )
+		switch (type)
 		{
-			case 1:	// music volume
-				x2 = RegleTrois32( x0, x1, 255, MusicVolume ) ;
-				DrawFire( x0, y0, x2, y1, 91&0xF0 ) ;
-				Box( x2, y0, x1, y1, COUL_SELECT_MENU ) ;
-				break ;
+		case 1: // music volume
+			x2 = RegleTrois32(x0, x1, 255, MusicVolume);
+			DrawFire(x0, y0, x2, y1, 91 & 0xF0);
+			Box(x2, y0, x1, y1, COUL_SELECT_MENU);
+			break;
 
-			case 2:	// sample volume
-				x2 = RegleTrois32( x0, x1, 255, SampleVolume ) ;
-				DrawFire( x0, y0, x2, y1, 91&0xF0 ) ;
-				Box( x2, y0, x1, y1, COUL_SELECT_MENU ) ;
-				break ;
+		case 2: // sample volume
+			x2 = RegleTrois32(x0, x1, 255, SampleVolume);
+			DrawFire(x0, y0, x2, y1, 91 & 0xF0);
+			Box(x2, y0, x1, y1, COUL_SELECT_MENU);
+			break;
 
-			case 3:	// CD volume
-				x2 = RegleTrois32( x0, x1, 255, CDVolume ) ;
-				DrawFire( x0, y0, x2, y1, 91&0xF0 ) ;
-				Box( x2, y0, x1, y1, COUL_SELECT_MENU ) ;
-				break ;
+		case 3: // CD volume
+			x2 = RegleTrois32(x0, x1, 255, CDVolume);
+			DrawFire(x0, y0, x2, y1, 91 & 0xF0);
+			Box(x2, y0, x1, y1, COUL_SELECT_MENU);
+			break;
 
-			case 4:	// Line volume
-				x2 = RegleTrois32( x0, x1, 255, LineVolume ) ;
-				DrawFire( x0, y0, x2, y1, 91&0xF0 ) ;
-				Box( x2, y0, x1, y1, COUL_SELECT_MENU ) ;
-				break ;
+		case 4: // Line volume
+			x2 = RegleTrois32(x0, x1, 255, LineVolume);
+			DrawFire(x0, y0, x2, y1, 91 & 0xF0);
+			Box(x2, y0, x1, y1, COUL_SELECT_MENU);
+			break;
 
-			case 5:	// Master volume
-				x2 = RegleTrois32( x0, x1, 255, MasterVolume ) ;
-				DrawFire( x0, y0, x2, y1, 91&0xF0 ) ;
-				Box( x2, y0, x1, y1, COUL_SELECT_MENU ) ;
-				break ;
-			default:
-//				Box( x0, y0, x1, y1, COUL_SELECT_MENU ) ;
-				DrawFire( x0, y0, x1, y1, COUL_SELECT_MENU&0xF0 ) ;
+		case 5: // Master volume
+			x2 = RegleTrois32(x0, x1, 255, MasterVolume);
+			DrawFire(x0, y0, x2, y1, 91 & 0xF0);
+			Box(x2, y0, x1, y1, COUL_SELECT_MENU);
+			break;
+		default:
+			//				Box( x0, y0, x1, y1, COUL_SELECT_MENU ) ;
+			DrawFire(x0, y0, x1, y1, COUL_SELECT_MENU & 0xF0);
 		}
 
-		if( (type >= 1) AND (type<=5) )
+		if ((type >= 1) AND(type <= 5))
 		{
 			// bruitons un peu la situation (violement)
 
-			DoLoopMidi() ;
+			DoLoopMidi();
 
-			if( (TimerRef-TimerSample) > 30 )
+			if ((TimerRef - TimerSample) > 30)
 			{
-				TimerSample = TimerRef ;
-				Balance( rand()&127, 128, &volleft, &volright );
-				HQ_MixSample( 34+((rand()&7)>0)*92, 0x1000, 1, volleft, volright ) ;
-//				HQ_MixSample( Rnd( 50 ), 0x1000, 1, volleft, volright ) ;
+				TimerSample = TimerRef;
+				Balance(rand() & 127, 128, &volleft, &volright);
+				HQ_MixSample(34 + ((rand() & 7) > 0) * 92, 0x1000, 1, volleft, volright);
+				//				HQ_MixSample( Rnd( 50 ), 0x1000, 1, volleft, volright ) ;
 			}
 		}
-
 	}
 	else
 	{
-		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
-		ShadeBox( x0, y0, x1, y1, 4 ) ;
+		CopyBlock(x0, y0, x1, y1, Screen, x0, y0, Log);
+		ShadeBox(x0, y0, x1, y1, 4);
 	}
 
 	// cadre
-	DrawCadre( x0, y0, x1, y1 ) ;
+	DrawCadre(x0, y0, x1, y1);
 
 	// text
 
-	CoulFont( COUL_TEXT_MENU ) ;
-	GetMenuMultiTextAux( num, string ) ;
-	
-	Font( x - SizeFont( string )/2, y-18, string ) ;
+	CoulFont(COUL_TEXT_MENU);
+	GetMenuMultiTextAux(num, string);
+
+	Font(x - SizeFont(string) / 2, y - 18, string);
 
 	// flip
 
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 }
 
 // Display a line of text indicating whether wall collision damage is turned on or off
-void	InfoWallCollisionDamage()
+void InfoWallCollisionDamage()
 {
 	WORD x, y, x0, y0, x1, y1;
 	WORD sf;
 
-	WORD 	num = WallColDamageEnabled ? 234 : 34 ;
-	char* 	infoText = GetCustomizedMultiText( num );
-	
+	WORD num = WallColDamageEnabled ? 234 : 34;
+	char *infoText = GetCustomizedMultiText(num);
+
 	x = 25;
 	y = 50;
 
-	sf = SizeFont( infoText ) ;
+	sf = SizeFont(infoText);
 
 	x0 = x;
 	x1 = x + sf;
 
-	y0 = y - HAUTEUR_STANDARD/2 ;
-	y1 = y + HAUTEUR_STANDARD/2 ;
+	y0 = y - HAUTEUR_STANDARD / 2;
+	y1 = y + HAUTEUR_STANDARD / 2;
 
 	// text
-	CoulFont( 0 ) ;
-	Font( x0 + 4, y-18 + 4, infoText ) ;
-	CoulFont( COUL_TEXT_MENU ) ;
-	Font( x0, y-18, infoText ) ;
+	CoulFont(0);
+	Font(x0 + 4, y - 18 + 4, infoText);
+	CoulFont(COUL_TEXT_MENU);
+	Font(x0, y - 18, infoText);
 
 	// flip
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	CopyBlockPhys(x0, y0, x1, y1);
 
 	free(infoText);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	DrawGameMenu( UWORD *ptrmenu, WORD justone )
+void DrawGameMenu(UWORD *ptrmenu, WORD justone)
 {
-	WORD	n, y ;
-	WORD	nb ;
-	WORD	selected, type, num ;
+	WORD n, y;
+	WORD nb;
+	WORD selected, type, num;
 
-	selected = *ptrmenu++ ;
+	selected = *ptrmenu++;
 
-	nb = *ptrmenu++ ;
+	nb = *ptrmenu++;
 
-	y = *ptrmenu++ ;
+	y = *ptrmenu++;
 
-	ptrmenu++ ;	// dial num
+	ptrmenu++; // dial num
 
-	if( y == 0 )	// depuis le haut
+	if (y == 0) // depuis le haut
 	{
-		y = HAUTEUR_STANDARD/2 + 10 ;
+		y = HAUTEUR_STANDARD / 2 + 10;
 	}
-	else		// centre sur y
+	else // centre sur y
 	{
-		y -= ( HAUTEUR_STANDARD*nb + (nb-1)*MENU_SPACE ) / 2 ;
+		y -= (HAUTEUR_STANDARD * nb + (nb - 1) * MENU_SPACE) / 2;
 	}
 
-	for( n=0; n<nb; n++ )
+	for (n = 0; n < nb; n++)
 	{
-		type = *ptrmenu++ ;
-		num = *ptrmenu++ ;
+		type = *ptrmenu++;
+		num = *ptrmenu++;
 
-		if( justone )
+		if (justone)
 		{
-			if( n == selected )
+			if (n == selected)
 			{
-				DrawOneChoice( 320, y, type, num, TRUE ) ;
+				DrawOneChoice(320, y, type, num, TRUE);
 			}
 		}
 		else
 		{
-			DrawOneChoice( 320, y, type, num, (n==selected) ) ;
+			DrawOneChoice(320, y, type, num, (n == selected));
 		}
 
-		y += HAUTEUR_STANDARD + MENU_SPACE ;
+		y += HAUTEUR_STANDARD + MENU_SPACE;
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	SetVolumes(LONG Music, LONG Sample, LONG Line, LONG CD, LONG Master )
+void SetVolumes(LONG Music, LONG Sample, LONG Line, LONG CD, LONG Master)
 {
-	static	ULONG	lasttimer ;
+	static ULONG lasttimer;
 
-
-	while (lasttimer == TimerRef ) ;
-	lasttimer == TimerRef ;
+	while (lasttimer == TimerRef)
+		;
+	lasttimer == TimerRef;
 
 	if (!MixMusic)
 	{
-		MaxVolume = Music ;
-		VolumeMidi( 100 ) ;
+		MaxVolume = Music;
+		VolumeMidi(100);
 	}
 
-	MixerChangeVolume(	Sample,
-				Music,
-				CD,
-				Line,
-				Master ) ;
+	MixerChangeVolume(Sample,
+					  Music,
+					  CD,
+					  Line,
+					  Master);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	DoGameMenu( UWORD *ptrmenu )
+WORD DoGameMenu(UWORD *ptrmenu)
 {
-	WORD	flag = 1 ;
-	WORD	nb , selected ;
-	LONG	flagVol = 0 ;
-	UWORD	*ptr ;
-	ULONG	chrono ;
+	WORD flag = 1;
+	WORD nb, selected;
+	LONG flagVol = 0;
+	UWORD *ptr;
+	ULONG chrono;
 
-	Load_HQR( PATH_RESSOURCE"ress.hqr", BufSpeak, RESS_INIT_PLASMA ) ;
+	Load_HQR(PATH_RESSOURCE "ress.hqr", BufSpeak, RESS_INIT_PLASMA);
 
-	selected = ptrmenu[0] ;
-	nb = ptrmenu[1] ;
+	selected = ptrmenu[0];
+	nb = ptrmenu[1];
 
-	chrono = TimerRef ;
+	chrono = TimerRef;
 
-	while( TRUE )
+	while (TRUE)
 	{
 
-#ifdef	DEBUG_TOOLS
-		CheckSavePcx() ;
+#ifdef DEBUG_TOOLS
+		CheckSavePcx();
 #endif
-/*	okazou
-		if( Key == K_S )
-		{
-			Save( "f://projet//lba//datas//initplas.ma", BufSpeak, 16*1024 ) ;
-		}
-*/
+		/*	okazou
+				if( Key == K_S )
+				{
+					Save( "f://projet//lba//datas//initplas.ma", BufSpeak, 16*1024 ) ;
+				}
+		*/
 
 		// rustine credits ...
-		if( ptrmenu == GameMainMenu )
+		if (ptrmenu == GameMainMenu)
 		{
-#ifdef	DEMO
-			if( (TimerRef - chrono > 50 * 60)
-			OR ((Key == K_C) AND (Fire & F_SHIFT)) )
+#ifdef DEMO
+			if ((TimerRef - chrono > 50 * 60)
+					OR((Key == K_C) AND(Fire & F_SHIFT)))
 #else
-			if( (TimerRef - chrono > 50 * (60 * 3 + 53) )
-			OR ((Key == K_C) AND (Fire & F_SHIFT)) )
+			if ((TimerRef - chrono > 50 * (60 * 3 + 53))
+					OR((Key == K_C) AND(Fire & F_SHIFT)))
 #endif
 			{
-				chrono = TimerRef ;
-				return 9999 ;
+				chrono = TimerRef;
+				return 9999;
 			}
 		}
 
-		MyJoy = Joy ;
+		MyJoy = Joy;
 
-		if( MyJoy & J_DOWN )
+		if (MyJoy & J_DOWN)
 		{
-			selected++ ;
-			if( selected == nb )	selected = 0 ;
-			flag = 1 ;
+			selected++;
+			if (selected == nb)
+				selected = 0;
+			flag = 1;
 		}
 
-		if( MyJoy & J_UP )
+		if (MyJoy & J_UP)
 		{
-			selected-- ;
-			if( selected < 0 )	selected = nb - 1 ;
-			flag = 1 ;
+			selected--;
+			if (selected < 0)
+				selected = nb - 1;
+			flag = 1;
 		}
 
-		switch( ptrmenu[4 + 0 + selected*2] ) // type
+		switch (ptrmenu[4 + 0 + selected * 2]) // type
 		{
-			case 0:	// text normal
-				break ;
+		case 0: // text normal
+			break;
 
-			case 1: // volume music
+		case 1: // volume music
 
-				if ( flag ) flagVol = 3 ;
+			if (flag)
+				flagVol = 3;
 
-				if( (MyJoy & J_LEFT) )
-				{
-					MusicVolume -= 4 ;
-					flagVol = 3 ;
-				}
-				if( (MyJoy & J_RIGHT) )
-				{
-					MusicVolume += 4 ;
-					flagVol = 3 ;
-				}
-				break ;
+			if ((MyJoy & J_LEFT))
+			{
+				MusicVolume -= 4;
+				flagVol = 3;
+			}
+			if ((MyJoy & J_RIGHT))
+			{
+				MusicVolume += 4;
+				flagVol = 3;
+			}
+			break;
 
-			case 2: // volume sample
+		case 2: // volume sample
 
-				if ( flag ) flagVol = 3 ;
+			if (flag)
+				flagVol = 3;
 
-				if( (MyJoy & J_LEFT) )
-				{
-					SampleVolume -= 4 ;
-					flagVol = 3 ;
-				}
-				if( (MyJoy & J_RIGHT) )
-				{
-					SampleVolume += 4 ;
-					flagVol = 3 ;
-				}
-				break ;
+			if ((MyJoy & J_LEFT))
+			{
+				SampleVolume -= 4;
+				flagVol = 3;
+			}
+			if ((MyJoy & J_RIGHT))
+			{
+				SampleVolume += 4;
+				flagVol = 3;
+			}
+			break;
 
-			case 3: // volume cd
+		case 3: // volume cd
 
-				if ( flag ) flagVol = 4 ;
+			if (flag)
+				flagVol = 4;
 
-				if( (MyJoy & J_LEFT) )
-				{
-					CDVolume -= 4 ;
-					flagVol = 4 ;
-				}
-				if( (MyJoy & J_RIGHT) )
-				{
-					CDVolume += 4 ;
-					flagVol = 4 ;
-				}
-				break ;
+			if ((MyJoy & J_LEFT))
+			{
+				CDVolume -= 4;
+				flagVol = 4;
+			}
+			if ((MyJoy & J_RIGHT))
+			{
+				CDVolume += 4;
+				flagVol = 4;
+			}
+			break;
 
-			case 4: // volume Line
+		case 4: // volume Line
 
-				if ( flag ) flagVol = 5 ;
+			if (flag)
+				flagVol = 5;
 
-				if( (MyJoy & J_LEFT) )
-				{
-					LineVolume -= 4 ;
-					flagVol = 5 ;
-				}
-				if( (MyJoy & J_RIGHT) )
-				{
-					LineVolume += 4 ;
-					flagVol = 5 ;
-				}
-				break ;
+			if ((MyJoy & J_LEFT))
+			{
+				LineVolume -= 4;
+				flagVol = 5;
+			}
+			if ((MyJoy & J_RIGHT))
+			{
+				LineVolume += 4;
+				flagVol = 5;
+			}
+			break;
 
-			case 5: // volume master
+		case 5: // volume master
 
-				if ( flag ) flagVol = 2 ;
+			if (flag)
+				flagVol = 2;
 
-				if( (MyJoy & J_LEFT) )
-				{
-					MasterVolume -= 4 ;
-					flagVol = 2 ;
-				}
-				if( (MyJoy & J_RIGHT) )
-				{
-					MasterVolume += 4 ;
-					flagVol = 2 ;
-				}
-				break ;
+			if ((MyJoy & J_LEFT))
+			{
+				MasterVolume -= 4;
+				flagVol = 2;
+			}
+			if ((MyJoy & J_RIGHT))
+			{
+				MasterVolume += 4;
+				flagVol = 2;
+			}
+			break;
 		}
 
-		if( flag == 1 )
+		if (flag == 1)
 		{
-			ptrmenu[0] = selected ;
-			DrawGameMenu( ptrmenu, FALSE ) ;
-			while( Joy OR Fire OR Key )
-				DrawGameMenu( ptrmenu, TRUE ) ;
-			flag = 0 ;
+			ptrmenu[0] = selected;
+			DrawGameMenu(ptrmenu, FALSE);
+			while (Joy OR Fire OR Key)
+				DrawGameMenu(ptrmenu, TRUE);
+			flag = 0;
 		}
 		else
 		{
-//			Vsync() ;
-			if( flagVol )
+			//			Vsync() ;
+			if (flagVol)
 			{
-				if( MusicVolume > 255 )	MusicVolume = 255 ;
-				if( SampleVolume > 255 )SampleVolume = 255 ;
-				if( LineVolume > 255 )	LineVolume = 255 ;
-				if( CDVolume > 255 )	CDVolume = 255 ;
-				if( MasterVolume > 255 )MasterVolume = 255 ;
+				if (MusicVolume > 255)
+					MusicVolume = 255;
+				if (SampleVolume > 255)
+					SampleVolume = 255;
+				if (LineVolume > 255)
+					LineVolume = 255;
+				if (CDVolume > 255)
+					CDVolume = 255;
+				if (MasterVolume > 255)
+					MasterVolume = 255;
 
-				if( MusicVolume < 0 )	MusicVolume = 0 ;
-				if( SampleVolume < 0 )	SampleVolume = 0 ;
-				if( LineVolume < 0 )	LineVolume = 0 ;
-				if( CDVolume < 0 )	CDVolume = 0 ;
-				if( MasterVolume < 0 )	MasterVolume = 0 ;
+				if (MusicVolume < 0)
+					MusicVolume = 0;
+				if (SampleVolume < 0)
+					SampleVolume = 0;
+				if (LineVolume < 0)
+					LineVolume = 0;
+				if (CDVolume < 0)
+					CDVolume = 0;
+				if (MasterVolume < 0)
+					MasterVolume = 0;
 
-				switch ( flagVol )
+				switch (flagVol)
 				{
-					case 3:
-					SetVolumes(MusicVolume, SampleVolume, 0, 0, MasterVolume ) ;
+				case 3:
+					SetVolumes(MusicVolume, SampleVolume, 0, 0, MasterVolume);
 					break;
-					case 4:
-					SetVolumes(0, SampleVolume, 0, CDVolume, MasterVolume ) ;
+				case 4:
+					SetVolumes(0, SampleVolume, 0, CDVolume, MasterVolume);
 					break;
-					case 5:
-					SetVolumes(0, SampleVolume, LineVolume, 0, MasterVolume ) ;
+				case 5:
+					SetVolumes(0, SampleVolume, LineVolume, 0, MasterVolume);
 					break;
-					default:
-					SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume ) ;
+				default:
+					SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume);
 				}
 			}
-			DrawGameMenu( ptrmenu, TRUE ) ;
-			flagVol = 0 ;
-			flag = 0 ;
+			DrawGameMenu(ptrmenu, TRUE);
+			flagVol = 0;
+			flag = 0;
 		}
 
-		if( Fire & F_RETURN
-		OR  Fire & F_SPACE )
+		if (Fire & F_RETURN OR Fire & F_SPACE)
 		{
-			return ptrmenu[4 + 1 + selected*2] ; // num mess
+			return ptrmenu[4 + 1 + selected * 2]; // num mess
 		}
 
-//		if( Key == K_ESC )	break ;
+		//		if( Key == K_ESC )	break ;
 	}
-	return -1 ;
+	return -1;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	OptionsMenu()
+LONG OptionsMenu()
 {
-	WORD select ;
-	WORD flag = 0 ;
+	WORD select;
+	WORD flag = 0;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	HQ_StopSample() ;
-#ifdef	CDROM
-	PlayCdTrack( 9 ) ;
+	HQ_StopSample();
+#ifdef CDROM
+	PlayCdTrack(9);
 #else
-	PlayMidiFile( 9 ) ;
+	PlayMidiFile(9);
 #endif
 
-	while( !flag )
+	while (!flag)
 	{
-		select = DoGameMenu( GameOptionMenu ) ;
+		select = DoGameMenu(GameOptionMenu);
 
-		switch( select )	// num mess
+		switch (select) // num mess
 		{
-/*			case -1: // esc
-				flag = 1 ;
-				break ;
-*/
-			case 15: // retour au jeu
-			case 26: // menu prec.
-				flag = 1 ;
-				break ;
+			/*			case -1: // esc
+							flag = 1 ;
+							break ;
+			*/
+		case 15: // retour au jeu
+		case 26: // menu prec.
+			flag = 1;
+			break;
 
-			case 47:
-				CopyScreen( Screen, Log ) ;
-				Flip() ;
-				AdvancedOptions() ;
-				break ;
+		case 47:
+			CopyScreen(Screen, Log);
+			Flip();
+			AdvancedOptions();
+			break;
 
-			case 30:
-				CopyScreen( Screen, Log ) ;
-				Flip() ;
-				VolumeOptions() ;
-				break ;
+		case 30:
+			CopyScreen(Screen, Log);
+			Flip();
+			VolumeOptions();
+			break;
 
-			case 46:
-				CopyScreen( Screen, Log ) ;
-				Flip() ;
-				SavedGameManagement() ;
-				break ;
+		case 46:
+			CopyScreen(Screen, Log);
+			Flip();
+			SavedGameManagement();
+			break;
 		}
 	}
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	return FALSE ;
+	return FALSE;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	VolumeOptions()
+void VolumeOptions()
 {
-	WORD select ;
-	WORD flag = 0 ;
+	WORD select;
+	WORD flag = 0;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-#ifdef	CDROM
-	PlayAllMusic( 9 ) ;	// he oui on lance les 2
+#ifdef CDROM
+	PlayAllMusic(9); // he oui on lance les 2
 #else
-	PlayMidiFile( 9 ) ;
+	PlayMidiFile(9);
 #endif
 
-	TimerSample = TimerRef ;
+	TimerSample = TimerRef;
 
-	while( !flag )
+	while (!flag)
 	{
-		select = DoGameMenu( GameVolumeMenu ) ;
+		select = DoGameMenu(GameVolumeMenu);
 
-		switch( select )	// num mess
+		switch (select) // num mess
 		{
-/*			case -1: // esc
-				flag = 1 ;
-				break ;
-*/
-			case 26: // quitter
-#ifdef	CDROM
-				FadeMusicMidi( 1 ) ;
+			/*			case -1: // esc
+							flag = 1 ;
+							break ;
+			*/
+		case 26: // quitter
+#ifdef CDROM
+			FadeMusicMidi(1);
 #endif
-				SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume ) ;
-				flag = 1 ;
-				break ;
+			SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume);
+			flag = 1;
+			break;
 
-			case 16:
-				SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume ) ;
-				WriteVolumeSettings() ;
-				GameVolumeMenu[0] = 0 ; // selected
-				break ;
+		case 16:
+			SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume);
+			WriteVolumeSettings();
+			GameVolumeMenu[0] = 0; // selected
+			break;
 		}
 	}
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 }
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	SavedGameManagement()
+void SavedGameManagement()
 {
-	WORD	select ;
-	WORD	flag = 0 ;
-	UBYTE	memoplayername[MAX_SIZE_PLAYER_NAME] ;
-	UBYTE	memogamepath[_MAX_PATH] ;
+	WORD select;
+	WORD flag = 0;
+	UBYTE memoplayername[MAX_SIZE_PLAYER_NAME];
+	UBYTE memogamepath[_MAX_PATH];
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	strcpy( memoplayername, PlayerName ) ;
-	strcpy( memogamepath, GamePathname ) ;
+	strcpy(memoplayername, PlayerName);
+	strcpy(memogamepath, GamePathname);
 
-	while( !flag )
+	while (!flag)
 	{
-		select = DoGameMenu( SavedGameMenu ) ;
+		select = DoGameMenu(SavedGameMenu);
 
-		switch( select )	// num mess
+		switch (select) // num mess
 		{
-			case 26: // quitter
-				flag = 1 ;
-				break ;
+		case 26: // quitter
+			flag = 1;
+			break;
 // Do not show copy saved game feature any longer, player can pretty much copy save games with Create New Save feature now
 #ifndef DISABLE_COPY_SAVED_GAME
-			case 41: // copier
-				if( ChoosePlayerName( 41, 1, 0 ) )
+		case 41: // copier
+			if (ChoosePlayerName(41, 1, 0))
+			{
+				UBYTE *ptr, *ptrs;
+				LONG size;
+				UBYTE num;
+				UBYTE n, c;
+				FILE *handle;
+
+				ptrs = ptr = LoadMalloc(GamePathname);
+				size = FileSize(GamePathname);
+				num = *ptr++;		 // num version
+				n = strlen(ptr) + 1; // size player name
+
+				if (InputPlayerName(44, 1))
 				{
-					UBYTE	*ptr,*ptrs ;
-					LONG	size ;
-					UBYTE	num ;
-					UBYTE	n,c ;
-					FILE*	handle ;
-
-					ptrs = ptr = LoadMalloc( GamePathname ) ;
-					size = FileSize( GamePathname ) ;
-					num = *ptr++ ;		// num version
-					n = strlen( ptr ) + 1 ; // size player name
-
-					if( InputPlayerName( 44, 1 ) )
+					do
 					{
-						do
-						{
-							strcpy( GamePathname, PATH_RESSOURCE"S" ) ;
-							strcat( GamePathname, Itoa( Rnd(10000) ) ) ;
-							strcat( GamePathname, ".LBA" ) ;
-						}
-						while( FileSize( GamePathname ) != 0 ) ;
+						strcpy(GamePathname, PATH_RESSOURCE "S");
+						strcat(GamePathname, Itoa(Rnd(10000)));
+						strcat(GamePathname, ".LBA");
+					} while (FileSize(GamePathname) != 0);
 
-						handle = OpenWrite( GamePathname ) ;
-						if( handle )
-						{
-							Write( handle, &num, 1 ) ;
-							Write( handle, PlayerName, strlen(PlayerName)+1 ) ;
-							Write( handle, ptrs+n+1, size-n-1 ) ;
-							Close( handle ) ;
-						}
+					handle = OpenWrite(GamePathname);
+					if (handle)
+					{
+						Write(handle, &num, 1);
+						Write(handle, PlayerName, strlen(PlayerName) + 1);
+						Write(handle, ptrs + n + 1, size - n - 1);
+						Close(handle);
 					}
-					Free( ptrs ) ;
 				}
-				CopyScreen( Screen, Log ) ;
-				break ;
+				Free(ptrs);
+			}
+			CopyScreen(Screen, Log);
+			break;
 #endif
-			case 45: // detruire
-				if( ChoosePlayerName( 45, 0, 0 ) )
+		case 45: // detruire
+			if (ChoosePlayerName(45, 0, 0))
+			{
+				CopyScreen(Screen, Log);
+
+				DrawOneString(320, 80, PlayerName, 2);
+
+				SavedConfirmMenu[0] = 0;
+				select = DoGameMenu(SavedConfirmMenu);
+
+				switch (select) // num mess
 				{
-					CopyScreen( Screen, Log ) ;
-
-					DrawOneString( 320, 80, PlayerName, 2 ) ;
-
-					SavedConfirmMenu[0] = 0 ;
-					select = DoGameMenu( SavedConfirmMenu ) ;
-
-					switch( select )	// num mess
-					{
-						case 48: // detruire
-							Delete( GamePathname ) ;
-							break ;
-					}
+				case 48: // detruire
+					Delete(GamePathname);
+					break;
 				}
-				SavedGameMenu[0] = 0 ;
-				CopyScreen( Screen, Log ) ;
-				Flip() ;
-//				flag = 1 ;
-				break ;
+			}
+			SavedGameMenu[0] = 0;
+			CopyScreen(Screen, Log);
+			Flip();
+			//				flag = 1 ;
+			break;
 		}
 	}
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	strcpy( GamePathname, memogamepath ) ;
-	strcpy( PlayerName, memoplayername ) ;
+	strcpy(GamePathname, memogamepath);
+	strcpy(PlayerName, memoplayername);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	AdvancedOptions()
+void AdvancedOptions()
 {
-	WORD select ;
-	WORD flag = 0 ;
+	WORD select;
+	WORD flag = 0;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
 	// Setting initial value of Wall Damage Collision on the menu (this is to avoid inconsistency if the player toggles damage collision using F12 and opens the menu afterwards).
 	GameAdvancedMenu[15] = WallColDamageEnabled ? 234 : 34;
 
-	while( !flag )
+	while (!flag)
 	{
-		select = DoGameMenu( GameAdvancedMenu ) ;
+		select = DoGameMenu(GameAdvancedMenu);
 
-		switch( select )	// num mess
+		switch (select) // num mess
 		{
-			case 26:
-				flag = 1 ;
-				break ;
+		case 26:
+			flag = 1;
+			break;
 
-			case 4: // agressif auto
-				GameAdvancedMenu[7] = 2 ;
-				CombatAuto = FALSE ;
-				break ;
+		case 4: // agressif auto
+			GameAdvancedMenu[7] = 2;
+			CombatAuto = FALSE;
+			break;
 
-			case 2: // agressif manuel
-				GameAdvancedMenu[7] = 4 ;
-				CombatAuto = TRUE ;
-				break ;
-			case 31: // poly high
-				GameAdvancedMenu[9] = 131 ;
-				SetFillDetails( 1 ) ;
-				break ;
-			case 131: // poly medium
-				GameAdvancedMenu[9] = 231 ;
-				SetFillDetails( 0 ) ;
-				break ;
-			case 231: // poly low
-				GameAdvancedMenu[9] = 31 ;
-				SetFillDetails( 2 ) ;
-				break ;
+		case 2: // agressif manuel
+			GameAdvancedMenu[7] = 4;
+			CombatAuto = TRUE;
+			break;
+		case 31: // poly high
+			GameAdvancedMenu[9] = 131;
+			SetFillDetails(1);
+			break;
+		case 131: // poly medium
+			GameAdvancedMenu[9] = 231;
+			SetFillDetails(0);
+			break;
+		case 231: // poly low
+			GameAdvancedMenu[9] = 31;
+			SetFillDetails(2);
+			break;
 
-			case 32: // ombres full
-				GameAdvancedMenu[11] = 132 ;
-				Shadow = 1 ;
-				break ;
-			case 132: // ombres obj
-				GameAdvancedMenu[11] = 232 ;
-				Shadow = 0 ;
-				break ;
-			case 232: // pas ombres
-				GameAdvancedMenu[11] = 32 ;
-				Shadow = 2 ;
-				break ;
+		case 32: // ombres full
+			GameAdvancedMenu[11] = 132;
+			Shadow = 1;
+			break;
+		case 132: // ombres obj
+			GameAdvancedMenu[11] = 232;
+			Shadow = 0;
+			break;
+		case 232: // pas ombres
+			GameAdvancedMenu[11] = 32;
+			Shadow = 2;
+			break;
 
-			case 33: // zoom hard
-				GameAdvancedMenu[13] = 233 ;
-				SceZoom = 0 ;
-				break ;
+		case 33: // zoom hard
+			GameAdvancedMenu[13] = 233;
+			SceZoom = 0;
+			break;
 
-			case 233: // pas zoom
-				GameAdvancedMenu[13] = 33 ;
-				SceZoom = 1 ;
-				break ;
-			case 34: // wall collision damage on
-				GameAdvancedMenu[15] = 234 ;
-				WallColDamageEnabled = 1;
-				break ;
-			case 234: // wall collision damage off
-				GameAdvancedMenu[15] = 34;
-				WallColDamageEnabled = 0;
-				break ;
+		case 233: // pas zoom
+			GameAdvancedMenu[13] = 33;
+			SceZoom = 1;
+			break;
+		case 34: // wall collision damage on
+			GameAdvancedMenu[15] = 234;
+			WallColDamageEnabled = 1;
+			break;
+		case 234: // wall collision damage off
+			GameAdvancedMenu[15] = 34;
+			WallColDamageEnabled = 0;
+			break;
 
-/*			case 233: // zoom soft
-				GameAdvancedMenu[13] = 33 ;
-				SceZoom = 2 ;
-				break ;
-*/
+			/*			case 233: // zoom soft
+							GameAdvancedMenu[13] = 33 ;
+							SceZoom = 2 ;
+							break ;
+			*/
 		}
 	}
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	MainGameMenu()
+LONG MainGameMenu()
 {
-	WORD select ;
-	WORD flag = 0 ;
+	WORD select;
+	WORD flag = 0;
 
-	HQ_StopSample() ;
+	HQ_StopSample();
 
-
-/*	for( flag=0; flag<50*320; flag++ )
-	{
-		BufSpeak[flag] = 0 ;
-	}
-	flag = 0;
-*/
-
-	CopyScreen( Log, Screen ) ;
-
-	while( !flag )
-	{
-		InitDial( 0 )		;//	SYS
-
-#ifdef	CDROM
-		PlayCdTrack( 9 ) ;
-#else
-		PlayMidiFile( 9 ) ;
-#endif
-		HQ_StopSample() ;
-
-		GetMultiText( 49, PleaseWait ) ;
-
-		select = DoGameMenu( GameMainMenu ) ;
-		switch( select )	// num mess
+	/*	for( flag=0; flag<50*320; flag++ )
 		{
-			case 9999:	// menu demo
+			BufSpeak[flag] = 0 ;
+		}
+		flag = 0;
+	*/
 
-				MenuDemo() ;
-				Load_HQR( PATH_RESSOURCE"ress.hqr", Screen, RESS_MENU_PCR ) ;
-				CopyScreen( Screen, Log ) ;
-				SetBlackPal() ;
-				Flip() ;
-				FadeToPal( PtrPal ) ;
-				break ;
+	CopyScreen(Log, Screen);
 
-//			case -1: // esc
-			case 22: // quitter
-				flag = 1 ;
-				break ;
+	while (!flag)
+	{
+		InitDial(0); //	SYS
 
-			case 20: // newgame
+#ifdef CDROM
+		PlayCdTrack(9);
+#else
+		PlayMidiFile(9);
+#endif
+		HQ_StopSample();
 
-				if( !InputPlayerName( 42, 0 ) )	break ;
+		GetMultiText(49, PleaseWait);
 
-				/**do
-				{
-					strcpy( GamePathname, PATH_RESSOURCE"S" ) ;
-					strcat( GamePathname, Itoa( Rnd(10000) ) ) ;
-					strcat( GamePathname, ".LBA" ) ;
-				}
-				while( FileSize( GamePathname ) != 0 ) ;*/
+		select = DoGameMenu(GameMainMenu);
+		switch (select) // num mess
+		{
+		case 9999: // menu demo
 
-				MenuInitGame(1,0,1);
-				while( Key OR Fire ) ; // provisoire
-				break ;
+			MenuDemo();
+			Load_HQR(PATH_RESSOURCE "ress.hqr", Screen, RESS_MENU_PCR);
+			CopyScreen(Screen, Log);
+			SetBlackPal();
+			Flip();
+			FadeToPal(PtrPal);
+			break;
 
-			case 21: // load
+			//			case -1: // esc
+		case 22: // quitter
+			flag = 1;
+			break;
 
-				if( !ChoosePlayerName( 21, 1, 0 ) ) break ;
-				
-				MenuInitGame(-1,0,0);
-				while( Key OR Fire ) ; // provisoire
-				break ;
+		case 20: // newgame
 
-			case 23:
-				CopyScreen( Screen, Log ) ;
-				Flip() ;
-				GameOptionMenu[5] = 26 ; // retour prec
-				OptionsMenu() ;
-				break ;
+			if (!InputPlayerName(42, 0))
+				break;
+
+			/**do
+			{
+				strcpy( GamePathname, PATH_RESSOURCE"S" ) ;
+				strcat( GamePathname, Itoa( Rnd(10000) ) ) ;
+				strcat( GamePathname, ".LBA" ) ;
+			}
+			while( FileSize( GamePathname ) != 0 ) ;*/
+
+			MenuInitGame(1, 0, 1);
+			while (Key OR Fire)
+				; // provisoire
+			break;
+
+		case 21: // load
+
+			if (!ChoosePlayerName(21, 1, 0))
+				break;
+
+			MenuInitGame(-1, 0, 0);
+			while (Key OR Fire)
+				; // provisoire
+			break;
+
+		case 23:
+			CopyScreen(Screen, Log);
+			Flip();
+			GameOptionMenu[5] = 26; // retour prec
+			OptionsMenu();
+			break;
 		}
 	}
-	return FALSE ;
+	return FALSE;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	QuitMenu(WORD showSaveOptions)
+LONG QuitMenu(WORD showSaveOptions)
 {
 	LONG retValue = -999;
-	WORD select ;
-	LONG memoflagspeak ;
+	WORD select;
+	LONG memoflagspeak;
 	WORD playerNameResult;
 	WORD doSaveGame = 0;
 
+	CopyScreen(Log, Screen);
+	HQ_StopSample();
 
-	CopyScreen( Log, Screen ) ;
-	HQ_StopSample() ;
-
-	while( retValue == -999 )
+	while (retValue == -999)
 	{
-		memoflagspeak = FlagSpeak ;
-		FlagSpeak = FALSE ;
-		InitDial( 0 )		;//	SYS
-		FlagSpeak = memoflagspeak ;
+		memoflagspeak = FlagSpeak;
+		FlagSpeak = FALSE;
+		InitDial(0); //	SYS
+		FlagSpeak = memoflagspeak;
 
-		select = DoGameMenu( showSaveOptions ? GameQuitMenu : GameQuitMenuWithoutSave) ;
+		select = DoGameMenu(showSaveOptions ? GameQuitMenu : GameQuitMenuWithoutSave);
 
-		InitDial( START_FILE_ISLAND+Island )	;//	SYS
+		InitDial(START_FILE_ISLAND + Island); //	SYS
 
-		switch( select )	// num mess
+		switch (select) // num mess
 		{
-			case 27: // abandonner
-				retValue = 1;
+		case 27: // abandonner
+			retValue = 1;
+			break;
+
+		case 28: // continue
+			retValue = 0;
+			break;
+
+		case 950: // load game
+			if (!ChoosePlayerName(950, 1, 0))
+			{
+				// if no load file is selected, reset dialog file to current island
+				InitDial(START_FILE_ISLAND + Island);
 				break;
+			}
 
-			case 28: // continue
-				retValue = 0;
-				break;
+			while (Key OR Fire)
+				; // provisoire
 
-			case 950: // load game
-				if (!ChoosePlayerName(950, 1, 0))
-				{
-					//if no load file is selected, reset dialog file to current island
-					InitDial(START_FILE_ISLAND + Island);
-					break;
-				}
+			// Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
+			retValue = 2;
+			break;
 
-				while (Key OR Fire); // provisoire
+		case 951: // save game
+			playerNameResult = ChoosePlayerName(951, 0, 1);
+			doSaveGame = 0;
 
-				//Returning false was blocking the menu sometimes, returning true should stop the previous main loop game flow, doesn't appear to cause issues
-				retValue = 2;
-				break;
-
-			case 951: //save game
-				playerNameResult = ChoosePlayerName(951, 0, 1);
-				doSaveGame = 0;
-
-				if (playerNameResult == 2)
-				{
-					if (InputPlayerName(951, 1))
-					{
-						doSaveGame = 1;
-					}
-				}
-				else if (playerNameResult)
+			if (playerNameResult == 2)
+			{
+				if (InputPlayerName(951, 1))
 				{
 					doSaveGame = 1;
 				}
+			}
+			else if (playerNameResult)
+			{
+				doSaveGame = 1;
+			}
 
-				if (doSaveGame)
-				{
-					SaveComportement = Comportement;
-					SaveBeta = ListObjet[NUM_PERSO].Beta;
+			if (doSaveGame)
+			{
+				SaveComportement = Comportement;
+				SaveBeta = ListObjet[NUM_PERSO].Beta;
 
-					SceneStartX = ListObjet[NUM_PERSO].PosObjX;
-					SceneStartY = ListObjet[NUM_PERSO].PosObjY;
-					SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
+				SceneStartX = ListObjet[NUM_PERSO].PosObjX;
+				SceneStartY = ListObjet[NUM_PERSO].PosObjY;
+				SceneStartZ = ListObjet[NUM_PERSO].PosObjZ;
 
-					SaveGameWithName(PlayerName, 0);
-				}
+				SaveGameWithName(PlayerName, 0);
+			}
 
-				//reset dialog file to current island
-				InitDial(START_FILE_ISLAND + Island);
+			// reset dialog file to current island
+			InitDial(START_FILE_ISLAND + Island);
 
-				retValue = 0;
-				break;
+			retValue = 0;
+			break;
 		}
 	}
 
@@ -2955,9 +3003,9 @@ LONG	QuitMenu(WORD showSaveOptions)
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-       █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▀▀▀▀ █   █ █▀▀▀█  █    █▀▀▀▀ █▀▀▀▀
-       ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██    ██▀▀█ ██  █  ██   ██    ██▀▀
-       ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀  ▀▀   ▀▀▀▀▀ ▀▀▀▀▀
+	   █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▀▀▀▀ █   █ █▀▀▀█  █    █▀▀▀▀ █▀▀▀▀
+	   ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██    ██▀▀█ ██  █  ██   ██    ██▀▀
+	   ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀  ▀▀   ▀▀▀▀▀ ▀▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 /*
@@ -2978,105 +3026,108 @@ UWORD	GameChoiceMenu[] = {
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	GameAskChoice( WORD nummess )
+void GameAskChoice(WORD nummess)
 {
-	WORD n ;
+	WORD n;
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	GameChoiceMenu[0] = 0 ;
-	GameChoiceMenu[1] = GameNbChoices ;
-	GameChoiceMenu[2] = 0 ;
-	GameChoiceMenu[3] = START_FILE_ISLAND+Island ;
-	for(n=0; n<GameNbChoices; n++ )
+	GameChoiceMenu[0] = 0;
+	GameChoiceMenu[1] = GameNbChoices;
+	GameChoiceMenu[2] = 0;
+	GameChoiceMenu[3] = START_FILE_ISLAND + Island;
+	for (n = 0; n < GameNbChoices; n++)
 	{
-		GameChoiceMenu[4+n*2+0] = 0 ;			// type
-		GameChoiceMenu[4+n*2+1] = GameListChoice[n] ;	// mess
+		GameChoiceMenu[4 + n * 2 + 0] = 0;				   // type
+		GameChoiceMenu[4 + n * 2 + 1] = GameListChoice[n]; // mess
 	}
 
-	MyDial( nummess ) ;
-	DoGameMenu( GameChoiceMenu ) ;
-	GameChoice = GameListChoice[GameChoiceMenu[0]] ; // ret num mess
+	MyDial(nummess);
+	DoGameMenu(GameChoiceMenu);
+	GameChoice = GameListChoice[GameChoiceMenu[0]]; // ret num mess
 
-#ifdef	CDROM
-	NumObjSpeak = NUM_PERSO ;
-	Speak( GameChoice ) ;
-	while( TestSpeak() AND (Key!=K_ESC) )	;// Wait until silence
-	StopSpeak() ;//	Security
+#ifdef CDROM
+	NumObjSpeak = NUM_PERSO;
+	Speak(GameChoice);
+	while (TestSpeak() AND(Key != K_ESC))
+		;		 // Wait until silence
+	StopSpeak(); //	Security
 #endif
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
-	     █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▀▀▀█ █   █ █▀▀▀▀ █▀▀▀█
-	     ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██  █ ██ ▄▀ ██▀▀  ██▀█▀
-	     ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀   ▀▀▀▀▀ ▀▀  ▀
+		 █▀▀▀▀ █▀▀▀█ █▄ ▄█ █▀▀▀▀       █▀▀▀█ █   █ █▀▀▀▀ █▀▀▀█
+		 ██ ▀█ ██▀▀█ ██▀ █ ██▀▀        ██  █ ██ ▄▀ ██▀▀  ██▀█▀
+		 ▀▀▀▀▀ ▀▀  ▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀   ▀▀▀▀▀ ▀▀  ▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	GameOver()
+void GameOver()
 {
-	WORD	*ptr3do ;
-	LONG	x0,y0,x1,y1 ;
-	LONG	zoom ;
-	LONG	alpha, beta ;
-	ULONG	chrono ;
+	WORD *ptr3do;
+	LONG x0, y0, x1, y1;
+	LONG zoom;
+	LONG alpha, beta;
+	ULONG chrono;
 
-	TestRestoreModeSVGA( FALSE ) ;
-	Palette( PtrPal ) ;
+	TestRestoreModeSVGA(FALSE);
+	Palette(PtrPal);
 
-	CopyScreen( Log, Screen ) ;
+	CopyScreen(Log, Screen);
 
-	ptr3do = LoadMalloc_HQR( PATH_RESSOURCE"ress.hqr", RESS_GAME_OVER ) ;
-	if( !ptr3do )	return ;
-	PatchObjet( ptr3do ) ;
+	ptr3do = LoadMalloc_HQR(PATH_RESSOURCE "ress.hqr", RESS_GAME_OVER);
+	if (!ptr3do)
+		return;
+	PatchObjet(ptr3do);
 
-	HQ_StopSample() ;
-	FadeMusicMidi( 1 ) ;
+	HQ_StopSample();
+	FadeMusicMidi(1);
 
 	// lance un sample ou music de game over ??
 
-	SetProjection( 320,240, 128,200,200 ) ;
+	SetProjection(320, 240, 128, 200, 200);
 
-	alpha = 60 ;
-	beta = 0 ;
-	zoom = 50000 ;
+	alpha = 60;
+	beta = 0;
+	zoom = 50000;
 
-	x0 = 320-200 ;
-	y0 = 240-120 ;
-	x1 = 320+200-1 ;
-	y1 = 240+120-1 ;
+	x0 = 320 - 200;
+	y0 = 240 - 120;
+	x1 = 320 + 200 - 1;
+	y1 = 240 + 120 - 1;
 
-	chrono= TimerRef ;
+	chrono = TimerRef;
 
-	SetClip(  x0, y0, x1, y1 ) ;
-	while( (Key != K_ESC) AND (TimerRef-chrono<=10*50) )
+	SetClip(x0, y0, x1, y1);
+	while ((Key != K_ESC) AND(TimerRef - chrono <= 10 * 50))
 	{
-		zoom = BoundRegleTrois( 40000, 3200, 10*50, TimerRef-chrono ) ;
-		beta = RegleTrois32( 1, 1024, 2*50, (TimerRef-chrono)%(2*50) ) ;
+		zoom = BoundRegleTrois(40000, 3200, 10 * 50, TimerRef - chrono);
+		beta = RegleTrois32(1, 1024, 2 * 50, (TimerRef - chrono) % (2 * 50));
 
-		CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
+		CopyBlock(x0, y0, x1, y1, Screen, x0, y0, Log);
 
-		SetFollowCamera( 0,0,0, 0, -beta,0, zoom ) ;
-		AffObjetIso(	0,0,0, 0,0,0, ptr3do ) ;
+		SetFollowCamera(0, 0, 0, 0, -beta, 0, zoom);
+		AffObjetIso(0, 0, 0, 0, 0, 0, ptr3do);
 
-		CopyBlockPhys( x0,y0, x1,y1 ) ;
+		CopyBlockPhys(x0, y0, x1, y1);
 	}
-	HQ_MixSample( 37, 0x1000+Rnd(2000)-(2000/2), 1, 128, 128 ) ;
-	CopyBlock( x0, y0, x1, y1, Screen, x0, y0, Log ) ;
-	SetFollowCamera( 0,0,0, 0,0,0, zoom ) ;
-	AffObjetIso(	0,0,0, 0,0,0, ptr3do ) ;
-	CopyBlockPhys( x0,y0, x1,y1 ) ;
+	HQ_MixSample(37, 0x1000 + Rnd(2000) - (2000 / 2), 1, 128, 128);
+	CopyBlock(x0, y0, x1, y1, Screen, x0, y0, Log);
+	SetFollowCamera(0, 0, 0, 0, 0, 0, zoom);
+	AffObjetIso(0, 0, 0, 0, 0, 0, ptr3do);
+	CopyBlockPhys(x0, y0, x1, y1);
 
-	chrono = TimerRef + 50 * 3 ;
-	while( (TimerRef < chrono) AND (Key!=K_ESC) ) ;
+	chrono = TimerRef + 50 * 3;
+	while ((TimerRef < chrono) AND(Key != K_ESC))
+		;
 
-	UnSetClip() ;
-	Free( ptr3do ) ;
+	UnSetClip();
+	Free(ptr3do);
 
-	CopyScreen( Screen, Log ) ;
-	Flip() ;
+	CopyScreen(Screen, Log);
+	Flip();
 
-	Init3DGame() ;
+	Init3DGame();
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -3086,111 +3137,119 @@ void	GameOver()
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	Credits()
+void Credits()
 {
-	LONG	memoflagspeak ;
-	LONG	memoshadow ;
+	LONG memoflagspeak;
+	LONG memoshadow;
 
-	memoflagspeak = FlagSpeak ;
-	memoshadow = Shadow ;
+	memoflagspeak = FlagSpeak;
+	memoshadow = Shadow;
 
-	FlagSpeak = FALSE ;
-	FlagCredits = TRUE ;
-	Shadow = 0 ;
+	FlagSpeak = FALSE;
+	FlagCredits = TRUE;
+	Shadow = 0;
 
-	InitGame( 1, 0 ) ;
+	InitGame(1, 0);
 
-	NewCube = NumCube = 119 ;
+	NewCube = NumCube = 119;
 
-	MainLoop() ;
+	MainLoop();
 
-	FlagCredits = FALSE ;
-	FlagSpeak = memoflagspeak ;
-	Shadow = memoshadow ;
+	FlagCredits = FALSE;
+	FlagSpeak = memoflagspeak;
+	Shadow = memoshadow;
 
-	Cls() ;
-	Flip() ;
+	Cls();
+	Flip();
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	RessPict( WORD num )
+void RessPict(WORD num)
 {
-	SetBlackPal() ;
-	Load_HQR( PATH_RESSOURCE"ress.hqr", Screen, num ) ;		// pcr
-	CopyScreen( Screen, Log ) ;
-	Load_HQR( PATH_RESSOURCE"ress.hqr", PalettePcx, num+1 ) ;	// pcp
-	Flip() ;
-	FadeToPal( PalettePcx ) ;
+	SetBlackPal();
+	Load_HQR(PATH_RESSOURCE "ress.hqr", Screen, num); // pcr
+	CopyScreen(Screen, Log);
+	Load_HQR(PATH_RESSOURCE "ress.hqr", PalettePcx, num + 1); // pcp
+	Flip();
+	FadeToPal(PalettePcx);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	TimerPause( WORD nbsec )
+void TimerPause(WORD nbsec)
 {
-	ULONG	memotimer ;
+	ULONG memotimer;
 
-	memotimer = TimerRef ;
-	while( TimerRef < (memotimer+50*nbsec) )
+	memotimer = TimerRef;
+	while (TimerRef < (memotimer + 50 * nbsec))
 	{
-		if( Key OR Fire OR Joy )	return ;
+		if (Key OR Fire OR Joy)
+			return;
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	AdelineLogo()
+void AdelineLogo()
 {
-	PlayMidiFile( 31 ) ;
+	PlayMidiFile(31);
 
-	Load_HQR( PATH_RESSOURCE"ress.hqr", Screen, RESS_LOGO_PCR ) ;
-	CopyScreen( Screen, Log ) ;
-	Load_HQR( PATH_RESSOURCE"ress.hqr", PalettePcx, RESS_LOGO_PAL ) ;
-	WhiteFade() ;
-	Flip() ;
-	FadeWhiteToPal( PalettePcx ) ;
+	Load_HQR(PATH_RESSOURCE "ress.hqr", Screen, RESS_LOGO_PCR);
+	CopyScreen(Screen, Log);
+	Load_HQR(PATH_RESSOURCE "ress.hqr", PalettePcx, RESS_LOGO_PAL);
+	WhiteFade();
+	Flip();
+	FadeWhiteToPal(PalettePcx);
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	MenuDemo()	// lancée toutes les 4 minutes
+void MenuDemo() // lancée toutes les 4 minutes
 {
-	Credits() ;
-	if( Key OR Fire OR Joy )	return ;
+	Credits();
+	if (Key OR Fire OR Joy)
+		return;
 
-	PlayAnimFla( "DRAGON3" ) ;
-	if( Key OR Fire OR Joy )	return ;
+	PlayAnimFla("DRAGON3");
+	if (Key OR Fire OR Joy)
+		return;
 
-	RessPict( RESS_TWINSUN_PCR ) ;
-	TimerPause( 3 ) ;
-	if( Key OR Fire OR Joy )	return ;
-	FadeToBlack( PalettePcx ) ;
+	RessPict(RESS_TWINSUN_PCR);
+	TimerPause(3);
+	if (Key OR Fire OR Joy)
+		return;
+	FadeToBlack(PalettePcx);
 
-	RessPict( RESS_INTRO_2_PCR ) ;
-	TimerPause( 3 ) ;
-	if( Key OR Fire OR Joy )	return ;
-	FadeToBlack( PalettePcx ) ;
+	RessPict(RESS_INTRO_2_PCR);
+	TimerPause(3);
+	if (Key OR Fire OR Joy)
+		return;
+	FadeToBlack(PalettePcx);
 
-	RessPict( RESS_INTRO_3_PCR ) ;
-	TimerPause( 3 ) ;
-	if( Key OR Fire OR Joy )	return ;
-	FadeToBlack( PalettePcx ) ;
+	RessPict(RESS_INTRO_3_PCR);
+	TimerPause(3);
+	if (Key OR Fire OR Joy)
+		return;
+	FadeToBlack(PalettePcx);
 
-	PlayAnimFla( "BATEAU" ) ;
-	if( Key OR Fire OR Joy )	return ;
+	PlayAnimFla("BATEAU");
+	if (Key OR Fire OR Joy)
+		return;
 
-	if( Version_US )
-		RessPict( RESS_BUMPER_PCR ) ;
+	if (Version_US)
+		RessPict(RESS_BUMPER_PCR);
 	else
-		RessPict( RESS_BUMPER2_PCR ) ;
+		RessPict(RESS_BUMPER2_PCR);
 
-	TimerPause( 3 ) ;
-	if( Key OR Fire OR Joy )	return ;
-	FadeToBlack( PalettePcx ) ;
+	TimerPause(3);
+	if (Key OR Fire OR Joy)
+		return;
+	FadeToBlack(PalettePcx);
 
-	AdelineLogo() ;
-	TimerPause( 3 ) ;
-	if( Key OR Fire OR Joy )	return ;
-	FadeToBlack( PalettePcx ) ;
+	AdelineLogo();
+	TimerPause(3);
+	if (Key OR Fire OR Joy)
+		return;
+	FadeToBlack(PalettePcx);
 }
-

@@ -3,8 +3,8 @@
 
 */
 
-#include 	"lib_sys/adeline.h"
-#include 	"lib_sys/lib_sys.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
 
 #include <i86.h>
 #include <dos.h>
@@ -19,296 +19,297 @@
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-UBYTE	DefString[256] ;
-UBYTE	DefValue[50] ;
-FILE*	DefHandle ;
-FILE*	DefHandleC ;
-LONG	DefModeCopy = FALSE ;
-UBYTE	*PtrDef ;
-UBYTE	*OrgPtrDef ;
-UBYTE	*EndPtrDef ;
+UBYTE DefString[256];
+UBYTE DefValue[50];
+FILE *DefHandle;
+FILE *DefHandleC;
+LONG DefModeCopy = FALSE;
+UBYTE *PtrDef;
+UBYTE *OrgPtrDef;
+UBYTE *EndPtrDef;
 
 /*══════════════════════════════════════════════════════════════════════════*/
-#ifdef	OCAZOU
-void	NextLine()
+#ifdef OCAZOU
+void NextLine()
 {
-	UBYTE	c ;
+	UBYTE c;
 
-	do	/* saute cr/lf espace */
+	do /* saute cr/lf espace */
 	{
-		if( Read( DefHandle, &c, 1L ) == 0L )	return ;
+		if (Read(DefHandle, &c, 1L) == 0L)
+			return;
 
-		if( DefModeCopy )	Write( DefHandleC, &c, 1L ) ;
-	}
-	while( c >= 32 ) ;
+		if (DefModeCopy)
+			Write(DefHandleC, &c, 1L);
+	} while (c >= 32);
 }
 #endif
 /*══════════════════════════════════════════════════════════════════════════*/
-LONG	ReadWord()
+LONG ReadWord()
 {
-	UBYTE	*ptr ;
-	UBYTE	c ;
+	UBYTE *ptr;
+	UBYTE c;
 
-	ptr = DefString ;
+	ptr = DefString;
 
-	do	// saute cr/lf espace
+	do // saute cr/lf espace
 	{
-		if( Read( DefHandle, &c, 1L ) == 0L )	return FALSE ;
+		if (Read(DefHandle, &c, 1L) == 0L)
+			return FALSE;
 
-		if( DefModeCopy )	Write( DefHandleC, &c, 1L ) ;
-	}
-	while( c <= 32 ) ;
+		if (DefModeCopy)
+			Write(DefHandleC, &c, 1L);
+	} while (c <= 32);
 
-	do	// lit mot
+	do // lit mot
 	{
-		*ptr++ = c ;
-		if( Read( DefHandle, &c, 1L ) == 0L )	c = 26 ;
-		else
-			if( DefModeCopy )	Write( DefHandleC, &c, 1L ) ;
-	}
-	while( c > 32 ) ;
+		*ptr++ = c;
+		if (Read(DefHandle, &c, 1L) == 0L)
+			c = 26;
+		else if (DefModeCopy)
+			Write(DefHandleC, &c, 1L);
+	} while (c > 32);
 
-	*ptr++ = 0 ;
+	*ptr++ = 0;
 
-	return	TRUE ;
+	return TRUE;
 }
 
-LONG	PtrDefReadWord()
+LONG PtrDefReadWord()
 {
-	UBYTE	*ptr ;
-	UBYTE	c ;
+	UBYTE *ptr;
+	UBYTE c;
 
-	ptr = DefString ;
+	ptr = DefString;
 
-	do	/* saute cr/lf espace */
+	do /* saute cr/lf espace */
 	{
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	return FALSE ;
-	}
-	while( c <= 32 ) ;
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			return FALSE;
+	} while (c <= 32);
 
-	do	/* lit mot */
+	do /* lit mot */
 	{
-		*ptr++ = c ;
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	c = 26 ;
-	}
-	while( c > 32 ) ;
+		*ptr++ = c;
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			c = 26;
+	} while (c > 32);
 
-	*ptr++ = 0 ;
+	*ptr++ = 0;
 
-	return	TRUE ;
+	return TRUE;
 }
 
-LONG	PtrDefReadIdent()
+LONG PtrDefReadIdent()
 {
-	UBYTE	*ptr ;
-	UBYTE	c ;
+	UBYTE *ptr;
+	UBYTE c;
 
-	ptr = DefString ;
+	ptr = DefString;
 
-	do	/* saute cr/lf espace */
+	do /* saute cr/lf espace */
 	{
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	return FALSE ;
-	}
-	while( c <= 32 ) ;
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			return FALSE;
+	} while (c <= 32);
 
-	do	/* lit mot */
+	do /* lit mot */
 	{
-		*ptr++ = c ;
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	c = 26 ;
-	}
-	while( (c >= 32) AND (c != ':') ) ;
+		*ptr++ = c;
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			c = 26;
+	} while ((c >= 32) AND(c != ':'));
 
-	while ( *--ptr == 32 ) ;
+	while (*--ptr == 32)
+		;
 
-	*(ptr+1) = 0 ;
+	*(ptr + 1) = 0;
 
-	return	TRUE ;
-}
-
-/*══════════════════════════════════════════════════════════════════════════*/
-
-LONG	ReadString()
-{
-	UBYTE	*ptr ;
-	UBYTE	c ;
-
-	ptr = DefString ;
-
-	do	// saute cr/lf espace
-	{
-		if( Read( DefHandle, &c, 1L ) == 0L )	return FALSE ;
-	}
-	while( c <= 32 ) ;
-
-	do	// lit phrase jusqu'a CR/LF
-	{
-		*ptr++ = c ;
-		if( Read( DefHandle, &c, 1L ) == 0L )	c = 13 ;
-	}
-	while( c != 13 ) ;
-	Read( DefHandle, &c, 1L ) ;	// lit LF ou rien si fin
-
-	*ptr++ = 0 ;
-
-	return	TRUE ;
-}
-
-void	PtrDefReadString()
-{
-	UBYTE	*ptr ;
-	UBYTE	c ;
-
-	ptr = DefString ;
-
-	*ptr = 0 ;
-
-	do	// saute espace / tab
-	{
-		c = *PtrDef++ ;
-		if(( PtrDef >= EndPtrDef )	OR
-		   ( c == 13 )			OR
-		   ( c == 10 )			   )
-		   return;
-	}
-	while( c <= 32 ) ;
-
-	do	/* lit phrase jusqu'a CR/LF */
-	{
-		*ptr++ = c ;
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	c = 13 ;
-	}
-	while( c >= 32 ) ;
-
-	while ( *--ptr == 32 ) ;
-
-//	PtrDef++ ;			/* lit LF ou rien si fin */
-
-	*(ptr+1) = 0 ;
-}
-/*══════════════════════════════════════════════════════════════════════════*/
-LONG	ReadThisString()
-{
-	UBYTE	*ptr ;
-	UBYTE	c ;
-
-	ptr = DefString ;
-
-	do	// saute espace
-	{
-		if( Read( DefHandle, &c, 1L ) == 0L )
-		{
-			*ptr = 0 ;
-			return TRUE ;
-		}
-	}
-	while( c == 32 ) ;
-
-	if( c > 31 )
-	{
-		do	// lit phrase jusqu'a CR/LF
-		{
-			*ptr++ = c ;
-			if( Read( DefHandle, &c, 1L ) == 0L )	c = 13 ;
-		}
-		while( c != 13 ) ;
-	}
-	Read( DefHandle, &c, 1L ) ;	// lit LF ou rien si fin
-
-	*ptr++ = 0 ;
-
-	return	TRUE ;
-}
-
-LONG	PtrDefReadThisString()
-{
-	UBYTE	*ptr ;
-	UBYTE	c ;
-
-	ptr = DefString ;
-
-	do	// saute espace
-	{
-		c = *PtrDef++ ;
-		if( PtrDef >= EndPtrDef )	return FALSE ;
-	}
-	while( c == 32 ) ;
-
-	if( c>31 )	// on a pu lire un cr
-	{
-		do	// lit phrase jusqu'a CR/LF
-		{
-			*ptr++ = c ;
-			c = *PtrDef++ ;
-			if( PtrDef >= EndPtrDef )	c = 13 ;
-		}
-		while( c != 13 ) ;
-	}
-
-	PtrDef++ ;			// lit LF ou rien si fin
-
-	*ptr++ = 0 ;
-
-	return	TRUE ;
+	return TRUE;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-LONG	SearchIdentificator( UBYTE *identificateur )
+
+LONG ReadString()
 {
-	while( ReadWord() )
+	UBYTE *ptr;
+	UBYTE c;
+
+	ptr = DefString;
+
+	do // saute cr/lf espace
 	{
-		if( DefString[strlen(DefString)-1] == ':' )
+		if (Read(DefHandle, &c, 1L) == 0L)
+			return FALSE;
+	} while (c <= 32);
+
+	do // lit phrase jusqu'a CR/LF
+	{
+		*ptr++ = c;
+		if (Read(DefHandle, &c, 1L) == 0L)
+			c = 13;
+	} while (c != 13);
+	Read(DefHandle, &c, 1L); // lit LF ou rien si fin
+
+	*ptr++ = 0;
+
+	return TRUE;
+}
+
+void PtrDefReadString()
+{
+	UBYTE *ptr;
+	UBYTE c;
+
+	ptr = DefString;
+
+	*ptr = 0;
+
+	do // saute espace / tab
+	{
+		c = *PtrDef++;
+		if ((PtrDef >= EndPtrDef) OR(c == 13) OR(c == 10))
+			return;
+	} while (c <= 32);
+
+	do /* lit phrase jusqu'a CR/LF */
+	{
+		*ptr++ = c;
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			c = 13;
+	} while (c >= 32);
+
+	while (*--ptr == 32)
+		;
+
+	//	PtrDef++ ;			/* lit LF ou rien si fin */
+
+	*(ptr + 1) = 0;
+}
+/*══════════════════════════════════════════════════════════════════════════*/
+LONG ReadThisString()
+{
+	UBYTE *ptr;
+	UBYTE c;
+
+	ptr = DefString;
+
+	do // saute espace
+	{
+		if (Read(DefHandle, &c, 1L) == 0L)
 		{
-			DefString[strlen(DefString)-1] = 0 ;
-			if( !strnicmp(	identificateur,
-					DefString,
-					strlen( identificateur ) ) )
+			*ptr = 0;
+			return TRUE;
+		}
+	} while (c == 32);
+
+	if (c > 31)
+	{
+		do // lit phrase jusqu'a CR/LF
+		{
+			*ptr++ = c;
+			if (Read(DefHandle, &c, 1L) == 0L)
+				c = 13;
+		} while (c != 13);
+	}
+	Read(DefHandle, &c, 1L); // lit LF ou rien si fin
+
+	*ptr++ = 0;
+
+	return TRUE;
+}
+
+LONG PtrDefReadThisString()
+{
+	UBYTE *ptr;
+	UBYTE c;
+
+	ptr = DefString;
+
+	do // saute espace
+	{
+		c = *PtrDef++;
+		if (PtrDef >= EndPtrDef)
+			return FALSE;
+	} while (c == 32);
+
+	if (c > 31) // on a pu lire un cr
+	{
+		do // lit phrase jusqu'a CR/LF
+		{
+			*ptr++ = c;
+			c = *PtrDef++;
+			if (PtrDef >= EndPtrDef)
+				c = 13;
+		} while (c != 13);
+	}
+
+	PtrDef++; // lit LF ou rien si fin
+
+	*ptr++ = 0;
+
+	return TRUE;
+}
+
+/*══════════════════════════════════════════════════════════════════════════*/
+LONG SearchIdentificator(UBYTE *identificateur)
+{
+	while (ReadWord())
+	{
+		if (DefString[strlen(DefString) - 1] == ':')
+		{
+			DefString[strlen(DefString) - 1] = 0;
+			if (!strnicmp(identificateur,
+						  DefString,
+						  strlen(identificateur)))
 			{
-				return TRUE ;	// identificateur trouve
+				return TRUE; // identificateur trouve
 			}
 		}
 	}
-	return FALSE ;
+	return FALSE;
 }
 
-LONG	PtrDefSearchIdentificator( UBYTE *identificateur )
+LONG PtrDefSearchIdentificator(UBYTE *identificateur)
 {
-	while( PtrDefReadIdent() )
+	while (PtrDefReadIdent())
 	{
-/*		if( DefString[strlen(DefString)-1] == ':' )
+		/*		if( DefString[strlen(DefString)-1] == ':' )
+				{
+					DefString[strlen(DefString)-1] = 0 ;
+		*/
+		if (!stricmp(identificateur, DefString))
 		{
-			DefString[strlen(DefString)-1] = 0 ;
-*/
-			if( !stricmp( identificateur, DefString ) )
-			{
-				return TRUE ;	// identificateur trouve
-			}
-//		}
+			return TRUE; // identificateur trouve
+		}
+		//		}
 	}
-	return FALSE ;
+	return FALSE;
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
+UBYTE *Def_ReadString(UBYTE *deffic, UBYTE *identificateur)
 {
-	DefHandle = OpenRead( deffic ) ;
-	if( !DefHandle )	return 0L ;
+	DefHandle = OpenRead(deffic);
+	if (!DefHandle)
+		return 0L;
 
-	if( SearchIdentificator( identificateur ) )
+	if (SearchIdentificator(identificateur))
 	{
-		if( ReadThisString() )
+		if (ReadThisString())
 		{
-			Close( DefHandle ) ;
-			return DefString ;
+			Close(DefHandle);
+			return DefString;
 		}
 	}
-	Close( DefHandle ) ;
-	return 0L ;
+	Close(DefHandle);
+	return 0L;
 }
 
 // UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
@@ -328,45 +329,48 @@ UBYTE	*Def_ReadString( UBYTE *deffic, UBYTE *identificateur )
 // }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
+LONG Def_ReadValue(UBYTE *deffic, UBYTE *identificateur)
 {
-	LONG	i ;
-	LONG	handle ;
-	LONG	value ;
-	UBYTE	c ;
+	LONG i;
+	LONG handle;
+	LONG value;
+	UBYTE c;
 
-	DefHandle = OpenRead( deffic ) ;
-	if( !DefHandle )	return -1L ;
+	DefHandle = OpenRead(deffic);
+	if (!DefHandle)
+		return -1L;
 
-	if( SearchIdentificator( identificateur ) )
+	if (SearchIdentificator(identificateur))
 	{
-		if( ReadWord() )
+		if (ReadWord())
 		{
-			Close( DefHandle ) ;
+			Close(DefHandle);
 
-			c =DefString[strlen(DefString)-1]&~32 ;
-			if( c == 'H' )
+			c = DefString[strlen(DefString) - 1] & ~32;
+			if (c == 'H')
 			{
 				// hexa
-				value = 0 ;
-				for( i=0; i<strlen(DefString)-1; i++ )
+				value = 0;
+				for (i = 0; i < strlen(DefString) - 1; i++)
 				{
-					c = DefString[i] ;
-					if( c <= '9' )	c -= '0' ;
-					else		c = (c&~32) - 'A' + 10 ;
-					value = value*16 + c ;
+					c = DefString[i];
+					if (c <= '9')
+						c -= '0';
+					else
+						c = (c & ~32) - 'A' + 10;
+					value = value * 16 + c;
 				}
-				return value ;
+				return value;
 			}
 			else
 			{
 				// deci
-				return atoi( DefString ) ;
+				return atoi(DefString);
 			}
 		}
 	}
-	Close( DefHandle ) ;
-	return -1L ;
+	Close(DefHandle);
+	return -1L;
 }
 
 // LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
@@ -410,33 +414,36 @@ LONG	Def_ReadValue( UBYTE *deffic, UBYTE *identificateur )
 // }
 
 /*══════════════════════════════════════════════════════════════════════════*/
-LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
+LONG Def_ReadValue2(UBYTE *deffic, UBYTE *identificateur, LONG *result)
 {
-	LONG	i ;
-	LONG	handle ;
-	LONG	value ;
-	UBYTE	c ;
+	LONG i;
+	LONG handle;
+	LONG value;
+	UBYTE c;
 
-	DefHandle = OpenRead( deffic ) ;
-	if( !DefHandle )	return FALSE ;
+	DefHandle = OpenRead(deffic);
+	if (!DefHandle)
+		return FALSE;
 
-	if( SearchIdentificator( identificateur ) )
+	if (SearchIdentificator(identificateur))
 	{
-		if( ReadWord() )
+		if (ReadWord())
 		{
-			Close( DefHandle ) ;
+			Close(DefHandle);
 
-			c =DefString[strlen(DefString)-1]&~32 ;
-			if( c == 'H' )
+			c = DefString[strlen(DefString) - 1] & ~32;
+			if (c == 'H')
 			{
 				// hexa
-				value = 0 ;
-				for( i=0; i<strlen(DefString)-1; i++ )
+				value = 0;
+				for (i = 0; i < strlen(DefString) - 1; i++)
 				{
-					c = DefString[i] ;
-					if( c <= '9' )	c -= '0' ;
-					else		c = (c&~32) - 'A' + 10 ;
-					value = value*16 + c ;
+					c = DefString[i];
+					if (c <= '9')
+						c -= '0';
+					else
+						c = (c & ~32) - 'A' + 10;
+					value = value * 16 + c;
 				}
 				*result = value;
 				return TRUE;
@@ -444,12 +451,12 @@ LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
 			else
 			{
 				// deci
-				*result = atoi( DefString ) ;
+				*result = atoi(DefString);
 				return TRUE;
 			}
 		}
 	}
-	Close( DefHandle ) ;
+	Close(DefHandle);
 	return FALSE;
 }
 
@@ -499,58 +506,60 @@ LONG	Def_ReadValue2( UBYTE *deffic, UBYTE *identificateur, LONG *result )
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
 
-LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
+LONG Def_WriteString(UBYTE *deffic, UBYTE *identificateur, UBYTE *string)
 {
-	UBYTE	crlf[] = { 13, 10, 0 } ;
+	UBYTE crlf[] = {13, 10, 0};
 
-	DefHandleC = OpenWrite( "c://__tempo.def" ) ;
-	if( !DefHandleC )	return	FALSE ;
-	DefHandle = OpenRead( deffic ) ;
-	if( DefHandle )
+	DefHandleC = OpenWrite("c://__tempo.def");
+	if (!DefHandleC)
+		return FALSE;
+	DefHandle = OpenRead(deffic);
+	if (DefHandle)
 	{
-		DefModeCopy = TRUE ;
-		if( SearchIdentificator( identificateur ) )	// copie jusqu'a identificateur
+		DefModeCopy = TRUE;
+		if (SearchIdentificator(identificateur)) // copie jusqu'a identificateur
 		{
-			ReadString() ;				// saute string
-//			ReadThisString() ;				// saute string
+			ReadString(); // saute string
+						  //			ReadThisString() ;				// saute string
 
-			Write( DefHandleC, string, strlen( string ) ) ;
-			Write( DefHandleC, crlf, 2L ) ;
+			Write(DefHandleC, string, strlen(string));
+			Write(DefHandleC, crlf, 2L);
 
-			while( ReadWord() ) ;			// copie le reste
+			while (ReadWord())
+				; // copie le reste
 
-			DefModeCopy = FALSE ;
-			Close( DefHandle ) ;
-			Close( DefHandleC ) ;
+			DefModeCopy = FALSE;
+			Close(DefHandle);
+			Close(DefHandleC);
 
-//			Delete( deffic ) ;
-//			rename( "c://__tempo.def", deffic ) ;
-			if( Copy( "c://__tempo.def", deffic ) )
+			//			Delete( deffic ) ;
+			//			rename( "c://__tempo.def", deffic ) ;
+			if (Copy("c://__tempo.def", deffic))
 			{
-				Delete( "c://__tempo.def" ) ;
+				Delete("c://__tempo.def");
 			}
 
-			DefModeCopy = FALSE ;
-			return TRUE ;
+			DefModeCopy = FALSE;
+			return TRUE;
 		}
-		Close( DefHandle ) ;
+		Close(DefHandle);
 	}
 	// creation ou ident pas trouve ecrit tout
-	Write( DefHandleC, identificateur, strlen(identificateur) ) ;
-	Write( DefHandleC, ": ", 2L ) ;
-	Write( DefHandleC, string, strlen( string ) ) ;
-	Write( DefHandleC, crlf, 2L ) ;
+	Write(DefHandleC, identificateur, strlen(identificateur));
+	Write(DefHandleC, ": ", 2L);
+	Write(DefHandleC, string, strlen(string));
+	Write(DefHandleC, crlf, 2L);
 
-	Close( DefHandleC ) ;
+	Close(DefHandleC);
 
-//	Delete( deffic ) ;
-	if( Copy( "c://__tempo.def", deffic ) )
+	//	Delete( deffic ) ;
+	if (Copy("c://__tempo.def", deffic))
 	{
-		Delete( "c://__tempo.def" ) ;
+		Delete("c://__tempo.def");
 	}
 
-	DefModeCopy = FALSE ;
-	return TRUE ;
+	DefModeCopy = FALSE;
+	return TRUE;
 }
 
 // LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
@@ -613,12 +622,11 @@ LONG	Def_WriteString( UBYTE *deffic, UBYTE *identificateur, UBYTE *string )
 
 /*══════════════════════════════════════════════════════════════════════════*/
 
-LONG	Def_WriteValue( UBYTE *deffic, UBYTE *identificateur, LONG value )
+LONG Def_WriteValue(UBYTE *deffic, UBYTE *identificateur, LONG value)
 {
-	itoa( value, DefValue, 10 ) ;
-	return Def_WriteString( deffic, identificateur, DefValue ) ;
+	itoa(value, DefValue, 10);
+	return Def_WriteString(deffic, identificateur, DefValue);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
-

@@ -18,7 +18,8 @@
 
 /* voir pcx.c */
 
-static struct {
+static struct
+{
 	char password;
 	char version;
 	char encoding;
@@ -31,8 +32,7 @@ static struct {
 	short int bytes_per_line;
 	short int palette_type;
 	char filler[58];
-	} pcx_header;
-
+} pcx_header;
 
 /*
   ╔═════════════════════════════════════════════════════════╗
@@ -41,13 +41,13 @@ static struct {
   ╚═════════════════════════════════════════════════════════╝
 */
 
-void PcxSave( UBYTE *filename, UBYTE *screen, UBYTE *ptrpalette )
+void PcxSave(UBYTE *filename, UBYTE *screen, UBYTE *ptrpalette)
 
 {
-	short int index = 0, i,k,number,num_out	;
-	unsigned char ch, old_ch, file_buf[640*2];
-	FILE* handle ;
-	UBYTE c ;
+	short int index = 0, i, k, number, num_out;
+	unsigned char ch, old_ch, file_buf[640 * 2];
+	FILE *handle;
+	UBYTE c;
 
 	pcx_header.password = 0x0A;
 	pcx_header.version = 0x05;
@@ -63,28 +63,31 @@ void PcxSave( UBYTE *filename, UBYTE *screen, UBYTE *ptrpalette )
 	pcx_header.ymax = 479;
 	pcx_header.xres = 640;
 	pcx_header.yres = 480;
-	pcx_header.no_of_planes = 1 ;
-	pcx_header.bytes_per_line = 640 ;
+	pcx_header.no_of_planes = 1;
+	pcx_header.bytes_per_line = 640;
 
-	handle = OpenWrite( filename ) ;
+	handle = OpenWrite(filename);
 
-	Write( handle, &pcx_header, 128 ) ;
+	Write(handle, &pcx_header, 128);
 
-	for ( k = pcx_header.ymin ; k <= pcx_header.ymax ; k++ )
+	for (k = pcx_header.ymin; k <= pcx_header.ymax; k++)
 	{
-		number = 1	;
+		number = 1;
 
-		old_ch = *( screen + 640*k )	;
+		old_ch = *(screen + 640 * k);
 
-		for ( i = 1 ; i <= 640; i++ )
+		for (i = 1; i <= 640; i++)
 		{
-			if ( i == 640 )	ch = old_ch-1			;
-			else		ch = *( screen + 640*k + i ) 	;
+			if (i == 640)
+				ch = old_ch - 1;
+			else
+				ch = *(screen + 640 * k + i);
 
-			if (( ch == old_ch ) && number < 63 )	number++ ;
+			if ((ch == old_ch) && number < 63)
+				number++;
 			else
 			{
-				num_out = ((unsigned char) number | 0xC0);
+				num_out = ((unsigned char)number | 0xC0);
 				if ((number != 1) || ((old_ch & 0xC0) == 0xC0))
 					file_buf[index++] = num_out;
 				file_buf[index++] = old_ch;
@@ -93,16 +96,14 @@ void PcxSave( UBYTE *filename, UBYTE *screen, UBYTE *ptrpalette )
 			}
 		}
 
-		Write( handle, file_buf, index );
-		index = 0			;
+		Write(handle, file_buf, index);
+		index = 0;
 	}
 
-	c = 0x0C ;
-	Write( handle, &c, 1 ) ;
+	c = 0x0C;
+	Write(handle, &c, 1);
 
-	Write( handle, ptrpalette ,768 ) ;
+	Write(handle, ptrpalette, 768);
 
-	Close( handle ) ;
+	Close(handle);
 }
-
-

@@ -1,6 +1,5 @@
 #include "C_EXTERN.H"
 
-
 void BlackFrame(void)
 {
 	int i = 0;

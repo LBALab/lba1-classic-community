@@ -9,66 +9,66 @@ LONG MaxVolume = 100;
 
 void AskMidiVars(char ***listidentifier, LONG **ptrvars)
 {
-	*listidentifier = NULL;
-	*ptrvars = NULL;
+    *listidentifier = NULL;
+    *ptrvars = NULL;
 }
 
 LONG InitMidiDLL(UBYTE *driverpathname)
 {
-	return FALSE;
+    return FALSE;
 }
 
 LONG InitMidi(void)
 {
-	return FALSE;
+    return FALSE;
 }
 
 void InitPathMidiSampleFile(UBYTE *path)
 {
-	// Stub
+    // Stub
 }
 
 void ClearMidi(void)
 {
-	// Stub
+    // Stub
 }
 
 void PlayMidi(UBYTE *ail_buffer)
 {
-	// Stub
+    // Stub
 }
 
 void StopMidi(void)
 {
-	// Stub
+    // Stub
 }
 
 LONG IsMidiPlaying(void)
 {
-	return FALSE;
+    return FALSE;
 }
 
 void FadeMidiDown(WORD nbsec)
 {
-	// Stub
+    // Stub
 }
 
 void FadeMidiUp(WORD nbsec)
 {
-	// Stub
+    // Stub
 }
 
 void WaitFadeMidi(void)
 {
-	// Stub
+    // Stub
 }
 
 void VolumeMidi(WORD volume)
 {
-	// Stub
+    // Stub
 }
 
 void DoLoopMidi(void)
 {
-	// Stub
+    // Stub
 }

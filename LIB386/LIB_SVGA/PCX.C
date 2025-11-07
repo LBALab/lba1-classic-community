@@ -11,27 +11,28 @@
 #include <ctype.h>
 
 /*══════════════════════════════════════════════════════════════════════════*
-			       █▀▀▀█ █▀▀▀▀ ▀▄ ▄▀
-			       ██▀▀▀ ██     ▄▀▄
-			       ▀▀    ▀▀▀▀▀ ▀   ▀
+				   █▀▀▀█ █▀▀▀▀ ▀▄ ▄▀
+				   ██▀▀▀ ██     ▄▀▄
+				   ▀▀    ▀▀▀▀▀ ▀   ▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-
-struct  ffblk   {
-    char        ff_reserved[21];
-    char        ff_attrib;
-    unsigned    ff_ftime;
-    unsigned    ff_fdate;
-    long        ff_fsize;
-    char        ff_name[13];
+struct ffblk
+{
+	char ff_reserved[21];
+	char ff_attrib;
+	unsigned ff_ftime;
+	unsigned ff_fdate;
+	long ff_fsize;
+	char ff_name[13];
 };
 
 union REGS reg;
 
 struct SREGS segregs;
 
-static struct {
+static struct
+{
 	char password;
 	char version;
 	char encoding;
@@ -44,54 +45,54 @@ static struct {
 	short int bytes_per_line;
 	short int palette_type;
 	char filler[58];
-	} pcx_header;
+} pcx_header;
 
 short int srcseg, srcoff, destseg, destoff;
 short int xres, yres, active_bank, bank;
-short int attr, i, j, k, dir_index= 0, type, length[7];
+short int attr, i, j, k, dir_index = 0, type, length[7];
 
-short int column, end, done, level,key,	start_x, start_y, start_angle,
-				cursor_x, cursor_y,	mode;
+short int column, end, done, level, key, start_x, start_y, start_angle,
+	cursor_x, cursor_y, mode;
 
 struct ffblk ffblk;
 
-long int col,row;
+long int col, row;
 
-short int index = 0	;
+short int index = 0;
 
-#define	SIZE_BUF	2048L
+#define SIZE_BUF 2048L
 
-UBYTE	*PtDest	;
+UBYTE *PtDest;
 
-LONG	debugline=0	;
+LONG debugline = 0;
 
 /*--------------------------------------------------------------------------*/
 
-void	line_out( UBYTE	*pts )
+void line_out(UBYTE *pts)
 {
-	UBYTE	*pt	;
-	WORD	i	;
+	UBYTE *pt;
+	WORD i;
 
-	pt = pts	;
+	pt = pts;
 
-	for ( i = 0 ; i < 640 ; i++ )	*PtDest++ = *pt++	;
+	for (i = 0; i < 640; i++)
+		*PtDest++ = *pt++;
 
-/*	Box( 0, 0, 160, 7, 0 )			;
-	Text( 0, 0, "Ligne:%d", debugline++ )	;
-	CopyBlockPhys( 0, 0, 160, 7 )		;
-*/
-
+	/*	Box( 0, 0, 160, 7, 0 )			;
+		Text( 0, 0, "Ligne:%d", debugline++ )	;
+		CopyBlockPhys( 0, 0, 160, 7 )		;
+	*/
 }
 /*--------------------------------------------------------------------------*/
-UBYTE	next_char( FILE* fd, UBYTE *pt)
+UBYTE next_char(FILE *fd, UBYTE *pt)
 {
-	if ( index == SIZE_BUF )
+	if (index == SIZE_BUF)
 	{
-		index = 0		;
-		Read( fd, pt, SIZE_BUF );
+		index = 0;
+		Read(fd, pt, SIZE_BUF);
 	}
 
-	return(pt[index++])	;
+	return (pt[index++]);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -101,48 +102,47 @@ UBYTE	next_char( FILE* fd, UBYTE *pt)
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	Load_Pcx(char *file_name, UBYTE *screen, UBYTE *tabcol)
+void Load_Pcx(char *file_name, UBYTE *screen, UBYTE *tabcol)
 {
-	FILE*	fd	;
-	FILE *fsave	;
-	unsigned char ch,color,buffer[650],file_buf[SIZE_BUF]	;
-	short int i,j,k,m,pass,col,row,plane			;
+	FILE *fd;
+	FILE *fsave;
+	unsigned char ch, color, buffer[650], file_buf[SIZE_BUF];
+	short int i, j, k, m, pass, col, row, plane;
 
+	PtDest = screen;
 
-	PtDest = screen			;
+	fd = OpenRead(file_name);
 
-	fd = OpenRead( file_name )	;
+	Read(fd, &pcx_header, 128L);
 
-	Read( fd, &pcx_header, 128L )	;
+	Seek(fd, -768L, SEEK_END);
 
-	Seek( fd, -768L, SEEK_END )	;
+	Read(fd, tabcol, 768);
 
-	Read( fd, tabcol, 768 )		;
+	Seek(fd, 128L, SEEK_START);
 
-	Seek( fd, 128L, SEEK_START )	;
+	index = SIZE_BUF; /* For Load in next_char */
 
-	index = SIZE_BUF		;/* For Load in next_char */
-
-	for ( row=pcx_header.ymin ; row<=pcx_header.ymax ; row++ )
+	for (row = pcx_header.ymin; row <= pcx_header.ymax; row++)
 	{
-		for ( col=pcx_header.xmin ; col<=pcx_header.xmax ; col++ )
+		for (col = pcx_header.xmin; col <= pcx_header.xmax; col++)
 		{
-			ch = next_char( fd, file_buf )	;
+			ch = next_char(fd, file_buf);
 			if ((ch & 0xC0) != 0xC0)
-				pass = 1		;
+				pass = 1;
 			else
 			{
-				pass = ch & 0x3F	;
-				ch = next_char( fd, file_buf );
+				pass = ch & 0x3F;
+				ch = next_char(fd, file_buf);
 			}
 
-			for ( m=0 ; m<pass ; m++ )
-				buffer[col++] = ch	;
+			for (m = 0; m < pass; m++)
+				buffer[col++] = ch;
 			col--;
 		}
-		line_out( buffer )	;
+		line_out(buffer);
 	}
-	Close( fd )	;
+	Close(fd);
 }
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -152,12 +152,12 @@ void	Load_Pcx(char *file_name, UBYTE *screen, UBYTE *tabcol)
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void Save_Pcx( char *filename, UBYTE *screen, UBYTE *ptrpalette )
+void Save_Pcx(char *filename, UBYTE *screen, UBYTE *ptrpalette)
 {
-	short int index = 0, i,k,number,num_out	;
-	unsigned char ch, old_ch, file_buf[640*2];
-	FILE* handle ;
-	UBYTE c ;
+	short int index = 0, i, k, number, num_out;
+	unsigned char ch, old_ch, file_buf[640 * 2];
+	FILE *handle;
+	UBYTE c;
 
 	pcx_header.password = 0x0A;
 	pcx_header.version = 0x05;
@@ -173,28 +173,31 @@ void Save_Pcx( char *filename, UBYTE *screen, UBYTE *ptrpalette )
 	pcx_header.ymax = 479;
 	pcx_header.xres = 640;
 	pcx_header.yres = 480;
-	pcx_header.no_of_planes = 1 ;
-	pcx_header.bytes_per_line = 640 ;
+	pcx_header.no_of_planes = 1;
+	pcx_header.bytes_per_line = 640;
 
-	handle = OpenWrite( filename ) ;
+	handle = OpenWrite(filename);
 
-	Write( handle, &pcx_header, 128 ) ;
+	Write(handle, &pcx_header, 128);
 
-	for ( k = pcx_header.ymin ; k <= pcx_header.ymax ; k++ )
+	for (k = pcx_header.ymin; k <= pcx_header.ymax; k++)
 	{
-		number = 1	;
+		number = 1;
 
-		old_ch = *( screen + 640*k )	;
+		old_ch = *(screen + 640 * k);
 
-		for ( i = 1 ; i <= 640; i++ )
+		for (i = 1; i <= 640; i++)
 		{
-			if ( i == 640 )	ch = old_ch-1			;
-			else		ch = *( screen + 640*k + i ) 	;
+			if (i == 640)
+				ch = old_ch - 1;
+			else
+				ch = *(screen + 640 * k + i);
 
-			if (( ch == old_ch ) && number < 63 )	number++ ;
+			if ((ch == old_ch) && number < 63)
+				number++;
 			else
 			{
-				num_out = ((unsigned char) number | 0xC0);
+				num_out = ((unsigned char)number | 0xC0);
 				if ((number != 1) || ((old_ch & 0xC0) == 0xC0))
 					file_buf[index++] = num_out;
 				file_buf[index++] = old_ch;
@@ -203,16 +206,14 @@ void Save_Pcx( char *filename, UBYTE *screen, UBYTE *ptrpalette )
 			}
 		}
 
-		Write( handle, file_buf, index );
-		index = 0			;
+		Write(handle, file_buf, index);
+		index = 0;
 	}
 
-	c = 0x0C ;
-	Write( handle, &c, 1 ) ;
+	c = 0x0C;
+	Write(handle, &c, 1);
 
-	Write( handle, ptrpalette ,768 ) ;
+	Write(handle, ptrpalette, 768);
 
-	Close( handle ) ;
+	Close(handle);
 }
-
-

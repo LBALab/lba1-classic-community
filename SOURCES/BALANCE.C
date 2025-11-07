@@ -1,7 +1,6 @@
 #include "DEFINES.H"
 #include "BALANCE.H"
 
-
 void Balance(ULONG balance, ULONG volume, ULONG *vol_left, ULONG *vol_right)
 {
 	UINT computed_volume_right = 0;

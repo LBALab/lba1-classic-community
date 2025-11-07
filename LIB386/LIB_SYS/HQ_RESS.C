@@ -8,24 +8,26 @@
 #include "LIB_SYS.H"
 #include "LIB_SAMP/LIB_WAVE.H"
 
-#define	RECOVER_AREA	500
+#define RECOVER_AREA 500
 
 /*══════════════════════════════════════════════════════════════════════════*
-    █   █ █▀▀▀█       █▀▀▀█ █▀▀▀▀ ██▀▀▀ ██▀▀▀ █▀▀▀█ █   █ █▀▀▀█ █▀▀▀▀ █▀▀▀▀
-    ██▀▀█ ██ ▄█       ██▀█▀ ██▀▀  ▀▀▀▀█ ▀▀▀▀█ ██  █ ██  █ ██▀█▀ ██    ██▀▀
-    ▀▀  ▀ ▀▀▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀
+	█   █ █▀▀▀█       █▀▀▀█ █▀▀▀▀ ██▀▀▀ ██▀▀▀ █▀▀▀█ █   █ █▀▀▀█ █▀▀▀▀ █▀▀▀▀
+	██▀▀█ ██ ▄█       ██▀█▀ ██▀▀  ▀▀▀▀█ ▀▀▀▀█ ██  █ ██  █ ██▀█▀ ██    ██▀▀
+	▀▀  ▀ ▀▀▀▀  ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀▀ ▀▀▀▀▀
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-WORD	HQR_Flag = FALSE ;
+WORD HQR_Flag = FALSE;
 
-typedef	struct	{	ULONG	SizeFile ;
-			ULONG	CompressedSizeFile ;
-			WORD	CompressMethod ;	/* 0 stored */
-							/* 1 LZS */
-		}	T_HEADER ;
+typedef struct
+{
+	ULONG SizeFile;
+	ULONG CompressedSizeFile;
+	WORD CompressMethod; /* 0 stored */
+						 /* 1 LZS */
+} T_HEADER;
 
-void	Expand( void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile ) ;
+void Expand(void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile);
 
 /*══════════════════════════════════════════════════════════════════════════*
 		█   █ █▀▀▀█ █▀▀▀█       █     █▀▀▀█ █▀▀▀█ █▀▀▀▄
@@ -34,155 +36,158 @@ void	Expand( void *ptrsourcecomp, void *ptrblocdest, ULONG sizefile ) ;
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	*LoadMalloc_HQR( UBYTE *name, UWORD index )
+void *LoadMalloc_HQR(UBYTE *name, UWORD index)
 {
-	FILE*		handle ;
-	UWORD		nbbloc ;
-	ULONG		buffer ;
-	ULONG		seekindex ;
-	UBYTE		*ptrbloc ;
-	UBYTE		*ptrdecomp ;
-	T_HEADER	header ;
+	FILE *handle;
+	UWORD nbbloc;
+	ULONG buffer;
+	ULONG seekindex;
+	UBYTE *ptrbloc;
+	UBYTE *ptrdecomp;
+	T_HEADER header;
 
-	handle = OpenRead( name ) ;
-	if( !handle )	return 0L ;
+	handle = OpenRead(name);
+	if (!handle)
+		return 0L;
 
-	Read( handle, &buffer, 4L ) ;
-	nbbloc = (UWORD)(buffer / 4L) ;
+	Read(handle, &buffer, 4L);
+	nbbloc = (UWORD)(buffer / 4L);
 
-	if( index >= nbbloc )
+	if (index >= nbbloc)
 	{
-		Close( handle ) ;
-		return 0L ;
+		Close(handle);
+		return 0L;
 	}
 
-	Seek( handle, index * 4L, SEEK_START ) ;
-	Read( handle, &seekindex, 4L ) ;
+	Seek(handle, index * 4L, SEEK_START);
+	Read(handle, &seekindex, 4L);
 
-	Seek( handle, seekindex, SEEK_START ) ;
-	Read( handle, &header, sizeof( header ) ) ;
+	Seek(handle, seekindex, SEEK_START);
+	Read(handle, &header, sizeof(header));
 
-	ptrbloc = Malloc( header.SizeFile + RECOVER_AREA ) ;
-	if( !ptrbloc )
+	ptrbloc = Malloc(header.SizeFile + RECOVER_AREA);
+	if (!ptrbloc)
 	{
-		Close( handle ) ;
-		return 0L ;
+		Close(handle);
+		return 0L;
 	}
 
-	switch( header.CompressMethod )
+	switch (header.CompressMethod)
 	{
-		case 0:		/* Stored */
-			Read(	handle,	ptrbloc, header.SizeFile ) ;
-			break ;
+	case 0: /* Stored */
+		Read(handle, ptrbloc, header.SizeFile);
+		break;
 
-		case 1:		/* LZS */
-			ptrdecomp = ptrbloc + header.SizeFile - header.CompressedSizeFile + RECOVER_AREA ;
-			Read(	handle, ptrdecomp, header.CompressedSizeFile ) ;
-			Expand( ptrdecomp, ptrbloc, header.SizeFile ) ;
-			break ;
+	case 1: /* LZS */
+		ptrdecomp = ptrbloc + header.SizeFile - header.CompressedSizeFile + RECOVER_AREA;
+		Read(handle, ptrdecomp, header.CompressedSizeFile);
+		Expand(ptrdecomp, ptrbloc, header.SizeFile);
+		break;
 
-		default:
-			Free( ptrbloc ) ;
-			Close( handle ) ;
-			return 0L ;	/* UnKnown version */
+	default:
+		Free(ptrbloc);
+		Close(handle);
+		return 0L; /* UnKnown version */
 	}
 
-	Mshrink( ptrbloc, header.SizeFile ) ;
-	Close( handle ) ;
+	Mshrink(ptrbloc, header.SizeFile);
+	Close(handle);
 
-	return ptrbloc ;
+	return ptrbloc;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-ULONG	Load_HQR( UBYTE *name, void *ptrdest, UWORD index )
+ULONG Load_HQR(UBYTE *name, void *ptrdest, UWORD index)
 {
-	FILE*		handle ;
-	UWORD		nbbloc ;
-	ULONG		buffer ;
-	ULONG		seekindex ;
-	UBYTE		*ptrdecomp ;
-	T_HEADER	header ;
+	FILE *handle;
+	UWORD nbbloc;
+	ULONG buffer;
+	ULONG seekindex;
+	UBYTE *ptrdecomp;
+	T_HEADER header;
 
-	handle = OpenRead( name ) ;
-	if( !handle )	return 0L ;
+	handle = OpenRead(name);
+	if (!handle)
+		return 0L;
 
-	Read( handle, &buffer, 4L ) ;
-	nbbloc = (UWORD)(buffer / 4L) ;
+	Read(handle, &buffer, 4L);
+	nbbloc = (UWORD)(buffer / 4L);
 
-	if( index >= nbbloc )
+	if (index >= nbbloc)
 	{
-        	Close( handle ) ;
-		return 0L ;
+		Close(handle);
+		return 0L;
 	}
 
-	Seek( handle, index * 4L, SEEK_START ) ;
-	Read( handle, &seekindex, 4L ) ;
+	Seek(handle, index * 4L, SEEK_START);
+	Read(handle, &seekindex, 4L);
 
-	Seek( handle, seekindex, SEEK_START ) ;
-	Read( handle, &header, sizeof( header ) ) ;
+	Seek(handle, seekindex, SEEK_START);
+	Read(handle, &header, sizeof(header));
 
-	switch( header.CompressMethod )
+	switch (header.CompressMethod)
 	{
-		case 0:		/* Stored */
-			Read(	handle,	ptrdest, header.SizeFile ) ;
-			break ;
+	case 0: /* Stored */
+		Read(handle, ptrdest, header.SizeFile);
+		break;
 
-		case 1:		/* LZS */
-			ptrdecomp = (UBYTE*)ptrdest + header.SizeFile - header.CompressedSizeFile + RECOVER_AREA ;
-			Read(	handle, ptrdecomp, header.CompressedSizeFile ) ;
-			Expand( ptrdecomp, ptrdest, header.SizeFile ) ;
-			break ;
+	case 1: /* LZS */
+		ptrdecomp = (UBYTE *)ptrdest + header.SizeFile - header.CompressedSizeFile + RECOVER_AREA;
+		Read(handle, ptrdecomp, header.CompressedSizeFile);
+		Expand(ptrdecomp, ptrdest, header.SizeFile);
+		break;
 
-		default:
-			Close( handle ) ;
-			return 0L ;	/* UnKnown version */
+	default:
+		Close(handle);
+		return 0L; /* UnKnown version */
 	}
 
-	Close( handle ) ;
+	Close(handle);
 
-	return header.SizeFile ;
+	return header.SizeFile;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-ULONG	Size_HQR( char *name, UWORD index )
+ULONG Size_HQR(char *name, UWORD index)
 {
-	FILE*		handle ;
-	UWORD		nbbloc ;
-	ULONG		buffer ;
-	ULONG		seekindex ;
-	UBYTE		*ptrdecomp ;
-	T_HEADER	header ;
+	FILE *handle;
+	UWORD nbbloc;
+	ULONG buffer;
+	ULONG seekindex;
+	UBYTE *ptrdecomp;
+	T_HEADER header;
 
-	handle = OpenRead( name ) ;
-	if( !handle )	return 0 ;
+	handle = OpenRead(name);
+	if (!handle)
+		return 0;
 
-	Read( handle, &buffer, 4 ) ;
-	nbbloc = (UWORD)(buffer / 4) ;
+	Read(handle, &buffer, 4);
+	nbbloc = (UWORD)(buffer / 4);
 
-	if( index >= nbbloc )
+	if (index >= nbbloc)
 	{
-		Close( handle ) ;
-		return 0 ;
+		Close(handle);
+		return 0;
 	}
 
-	Seek( handle, index * 4, SEEK_START ) ;
-	Read( handle, &seekindex, 4 ) ;
+	Seek(handle, index * 4, SEEK_START);
+	Read(handle, &seekindex, 4);
 
-	if( seekindex )
+	if (seekindex)
 	{
-		Seek( handle, seekindex, SEEK_START ) ;
-		Read( handle, &header, sizeof( T_HEADER ) ) ;
+		Seek(handle, seekindex, SEEK_START);
+		Read(handle, &header, sizeof(T_HEADER));
 
-		Close( handle ) ;
+		Close(handle);
 
-		return header.SizeFile ;
+		return header.SizeFile;
 	}
 	else
 	{
-		Close( handle ) ;
-		return 0 ;
+		Close(handle);
+		return 0;
 	}
 }
 
@@ -193,437 +198,443 @@ ULONG	Size_HQR( char *name, UWORD index )
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-T_HQR_HEADER	*HQR_Init_Ressource(	char *hqrname,
-					ULONG maxsize,
-					UWORD maxindex )
+T_HQR_HEADER *HQR_Init_Ressource(char *hqrname,
+								 ULONG maxsize,
+								 UWORD maxindex)
 {
-	T_HQR_HEADER	*header ;
-	void		*buffer ;
+	T_HQR_HEADER *header;
+	void *buffer;
 
-	if( !FileSize( hqrname ) )	return 0 ;	// fichier ok ?
+	if (!FileSize(hqrname))
+		return 0; // fichier ok ?
 
-	header =	Malloc(	sizeof(T_HQR_HEADER)
-				+
-				sizeof(T_HQR_BLOC) * maxindex	) ;
+	header = Malloc(sizeof(T_HQR_HEADER) +
+					sizeof(T_HQR_BLOC) * maxindex);
 
-	if( !header )	return 0 ;			// mem ok ?
+	if (!header)
+		return 0; // mem ok ?
 
-	buffer = Malloc( maxsize + RECOVER_AREA ) ;
-	if( !buffer )	return 0 ;			// mem ok ?
+	buffer = Malloc(maxsize + RECOVER_AREA);
+	if (!buffer)
+		return 0; // mem ok ?
 
-	strcpy( header->Name, hqrname ) ;
+	strcpy(header->Name, hqrname);
 	header->MaxSize =
-	header->FreeSize = maxsize ;
-	header->MaxIndex = maxindex ;
-	header->NbIndex = 0 ;
-	header->Buffer = buffer ;
+		header->FreeSize = maxsize;
+	header->MaxIndex = maxindex;
+	header->NbIndex = 0;
+	header->Buffer = buffer;
 
-	return header ;					// header
+	return header; // header
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	HQR_Reset_Ressource( T_HQR_HEADER *header )
+void HQR_Reset_Ressource(T_HQR_HEADER *header)
 {
-	header->FreeSize = header->MaxSize ;
-	header->NbIndex = 0 ;
+	header->FreeSize = header->MaxSize;
+	header->NbIndex = 0;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-LONG	HQR_Change_Ressource( T_HQR_HEADER *header, char *newhqrname )
+LONG HQR_Change_Ressource(T_HQR_HEADER *header, char *newhqrname)
 {
-	if( !FileSize( newhqrname ) )	return FALSE ;	// fichier ok ?
+	if (!FileSize(newhqrname))
+		return FALSE; // fichier ok ?
 
-	strcpy( header->Name, newhqrname ) ;
+	strcpy(header->Name, newhqrname);
 
-	header->FreeSize = header->MaxSize ;
-	header->NbIndex = 0 ;
+	header->FreeSize = header->MaxSize;
+	header->NbIndex = 0;
 
-	return TRUE ;
+	return TRUE;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void    HQR_Free_Ressource( T_HQR_HEADER *header )
+void HQR_Free_Ressource(T_HQR_HEADER *header)
 {
-	if( header )
+	if (header)
 	{
-		Free( header->Buffer ) ;
-		Free( header ) ;
+		Free(header->Buffer);
+		Free(header);
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-UWORD	HQR_Del_Bloc( T_HQR_HEADER *header, WORD index )
+UWORD HQR_Del_Bloc(T_HQR_HEADER *header, WORD index)
 {
-	UWORD		n ;
-	T_HQR_BLOC	*ptrbloc ;
-	ULONG		delsize ;
-	UBYTE		*ptr, *ptrs, *ptrd ;
+	UWORD n;
+	T_HQR_BLOC *ptrbloc;
+	ULONG delsize;
+	UBYTE *ptr, *ptrs, *ptrd;
 
-	ptr = (UBYTE*)(header) + sizeof(T_HQR_HEADER) ;
-	ptrbloc = (T_HQR_BLOC*)(ptr) ;
-	delsize = ptrbloc[index].Size ;
+	ptr = (UBYTE *)(header) + sizeof(T_HQR_HEADER);
+	ptrbloc = (T_HQR_BLOC *)(ptr);
+	delsize = ptrbloc[index].Size;
 
-	if( index < (header->NbIndex-1) )
+	if (index < (header->NbIndex - 1))
 	{
 		// shift buffer
-		ptrd = header->Buffer + ptrbloc[index].Offset ;
-		ptrs = ptrd + delsize ;
+		ptrd = header->Buffer + ptrbloc[index].Offset;
+		ptrs = ptrd + delsize;
 		memmove(ptrd,
-			ptrs,
-			((header->Buffer+header->MaxSize) - ptrs) ) ;
+				ptrs,
+				((header->Buffer + header->MaxSize) - ptrs));
 
 		// shift index table
 
-		ptrd = (UBYTE*)&ptrbloc[index] ;
-		ptrs = ptrd + sizeof( T_HQR_BLOC ) ;
+		ptrd = (UBYTE *)&ptrbloc[index];
+		ptrs = ptrd + sizeof(T_HQR_BLOC);
 		memmove(ptrd,
-			ptrs,
-			(header->MaxIndex - (index + 1))*sizeof(T_HQR_BLOC) ) ;
+				ptrs,
+				(header->MaxIndex - (index + 1)) * sizeof(T_HQR_BLOC));
 
 		// shift index value
 
-		for(n=index; n<(header->NbIndex-1); n++ )
+		for (n = index; n < (header->NbIndex - 1); n++)
 		{
-			ptrbloc[n].Offset -= delsize ;
+			ptrbloc[n].Offset -= delsize;
 		}
 	}
 
-	header->NbIndex-- ;
-	header->FreeSize += delsize ;
+	header->NbIndex--;
+	header->FreeSize += delsize;
 
-	return delsize ;
+	return delsize;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	*HQR_Get( T_HQR_HEADER *header, WORD index )
+void *HQR_Get(T_HQR_HEADER *header, WORD index)
 {
-	UWORD		n, oldest ;
-	ULONG		time, testtime ;
-	UBYTE		*ptr ;
-	T_HQR_BLOC	*ptrbloc ;
-	ULONG		size ;
-	ULONG		offset ;
+	UWORD n, oldest;
+	ULONG time, testtime;
+	UBYTE *ptr;
+	T_HQR_BLOC *ptrbloc;
+	ULONG size;
+	ULONG offset;
 
 	// ressources
-	FILE*		handle ;
-	UWORD		nbbloc ;
-	ULONG		buffer ;
-	ULONG		seekindex ;
-	UBYTE		*ptrdecomp ;
-	T_HEADER	lzssheader ;
+	FILE *handle;
+	UWORD nbbloc;
+	ULONG buffer;
+	ULONG seekindex;
+	UBYTE *ptrdecomp;
+	T_HEADER lzssheader;
 
-	if( index < 0 )		return 0 ;
+	if (index < 0)
+		return 0;
 
-	if( (ptrbloc = HQR_GiveIndex(
-				index,
-				header->NbIndex,
-				(UBYTE*)header+sizeof(T_HQR_HEADER) )) != 0 )
-	{	// existing index
-		ptrbloc->Time = TimerRef ;
+	if ((ptrbloc = HQR_GiveIndex(
+			 index,
+			 header->NbIndex,
+			 (UBYTE *)header + sizeof(T_HQR_HEADER))) != 0)
+	{ // existing index
+		ptrbloc->Time = TimerRef;
 
-		HQR_Flag = FALSE ;	// marque non chargement ressource
+		HQR_Flag = FALSE; // marque non chargement ressource
 
-		return( header->Buffer + ptrbloc->Offset ) ;
+		return (header->Buffer + ptrbloc->Offset);
 	}
-	else	// need load
+	else // need load
 	{
-//		SaveTimer() ;
-		size = Size_HQR( header->Name, index ) ;
+		//		SaveTimer() ;
+		size = Size_HQR(header->Name, index);
 
 		// load and expand hqr bloc
 
-		handle = OpenRead( header->Name ) ;
-		if( !handle )	return 0 ;
+		handle = OpenRead(header->Name);
+		if (!handle)
+			return 0;
 
-		Read( handle, &buffer, 4 ) ;
-		nbbloc = (UWORD)(buffer / 4) ;
+		Read(handle, &buffer, 4);
+		nbbloc = (UWORD)(buffer / 4);
 
-		if( index >= nbbloc )
+		if (index >= nbbloc)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
-		Seek( handle, index * 4, SEEK_START ) ;
-		Read( handle, &seekindex, 4 ) ;
+		Seek(handle, index * 4, SEEK_START);
+		Read(handle, &seekindex, 4);
 
-		if( !seekindex )
+		if (!seekindex)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
-		Seek( handle, seekindex, SEEK_START ) ;
-		Read( handle, &lzssheader, sizeof( T_HEADER ) ) ;
+		Seek(handle, seekindex, SEEK_START);
+		Read(handle, &lzssheader, sizeof(T_HEADER));
 
 		// taille decompacte
-		size = lzssheader.SizeFile ;
+		size = lzssheader.SizeFile;
 
-		if( !size )
+		if (!size)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
 		// gestion mémoire
 
-		time = TimerRef ;
+		time = TimerRef;
 
-		ptr = (UBYTE*)(header) + sizeof(T_HQR_HEADER) ;
-		ptrbloc = (T_HQR_BLOC*)(ptr) ;
+		ptr = (UBYTE *)(header) + sizeof(T_HQR_HEADER);
+		ptrbloc = (T_HQR_BLOC *)(ptr);
 
 		// check if enough space for bloc or index
 
-		while( (size > header->FreeSize) OR (header->NbIndex >= header->MaxIndex) )
+		while ((size > header->FreeSize) OR(header->NbIndex >= header->MaxIndex))
 		{
 			// delete oldest bloc
-			oldest = 0 ;
-			testtime = 0 ;
+			oldest = 0;
+			testtime = 0;
 
-			for( n=0; n<header->NbIndex; n++ )
+			for (n = 0; n < header->NbIndex; n++)
 			{
-				if( (time-ptrbloc[n].Time) > testtime )
+				if ((time - ptrbloc[n].Time) > testtime)
 				{
-					testtime = time - ptrbloc[oldest].Time ;
-					oldest = n ;
+					testtime = time - ptrbloc[oldest].Time;
+					oldest = n;
 				}
 			}
-			HQR_Del_Bloc( header, oldest ) ;
+			HQR_Del_Bloc(header, oldest);
 		}
 
 		// space size ok, load it
 
-		ptr = header->Buffer + header->MaxSize - header->FreeSize ;
+		ptr = header->Buffer + header->MaxSize - header->FreeSize;
 
-//		Load_HQR( header->Name, ptr, index ) ;
+		//		Load_HQR( header->Name, ptr, index ) ;
 
-		switch( lzssheader.CompressMethod )
+		switch (lzssheader.CompressMethod)
 		{
-			case 0:		/* Stored */
-				Read(	handle,	ptr, lzssheader.SizeFile ) ;
-				break ;
+		case 0: /* Stored */
+			Read(handle, ptr, lzssheader.SizeFile);
+			break;
 
-			case 1:		/* LZS */
-				ptrdecomp = (UBYTE*)ptr + lzssheader.SizeFile - lzssheader.CompressedSizeFile + RECOVER_AREA ;
-				Read(	handle, ptrdecomp, lzssheader.CompressedSizeFile ) ;
-				Expand( ptrdecomp, ptr, lzssheader.SizeFile ) ;
-				break ;
+		case 1: /* LZS */
+			ptrdecomp = (UBYTE *)ptr + lzssheader.SizeFile - lzssheader.CompressedSizeFile + RECOVER_AREA;
+			Read(handle, ptrdecomp, lzssheader.CompressedSizeFile);
+			Expand(ptrdecomp, ptr, lzssheader.SizeFile);
+			break;
 
-			default:
-				Close( handle ) ;
-				return 0 ;	/* UnKnown version */
+		default:
+			Close(handle);
+			return 0; /* UnKnown version */
 		}
 
-		Close( handle ) ;
+		Close(handle);
 
-		HQR_Flag = TRUE ;		// indicate loaded
+		HQR_Flag = TRUE; // indicate loaded
 
-		ptrbloc[header->NbIndex].Index  = index ;
-		ptrbloc[header->NbIndex].Time   = TimerRef ;
-		ptrbloc[header->NbIndex].Offset = header->MaxSize - header->FreeSize ;
-		ptrbloc[header->NbIndex].Size	= size ;
+		ptrbloc[header->NbIndex].Index = index;
+		ptrbloc[header->NbIndex].Time = TimerRef;
+		ptrbloc[header->NbIndex].Offset = header->MaxSize - header->FreeSize;
+		ptrbloc[header->NbIndex].Size = size;
 
-		header->NbIndex++ ;
-		header->FreeSize -= size ;
+		header->NbIndex++;
+		header->FreeSize -= size;
 
-//		RestoreTimer() ;
+		//		RestoreTimer() ;
 
-		return ptr ;
+		return ptr;
 	}
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-UWORD	HQR_Del_Bloc_Sample( T_HQR_HEADER *header, WORD index )
+UWORD HQR_Del_Bloc_Sample(T_HQR_HEADER *header, WORD index)
 {
-	UWORD		n ;
-	T_HQR_BLOC	*ptrbloc ;
-	ULONG		delsize ;
-	UBYTE		*ptr, *ptrs, *ptrd ;
+	UWORD n;
+	T_HQR_BLOC *ptrbloc;
+	ULONG delsize;
+	UBYTE *ptr, *ptrs, *ptrd;
 
-	ptr = (UBYTE*)(header) + sizeof(T_HQR_HEADER) ;
-	ptrbloc = (T_HQR_BLOC*)(ptr) ;
-	delsize = ptrbloc[index].Size ;
+	ptr = (UBYTE *)(header) + sizeof(T_HQR_HEADER);
+	ptrbloc = (T_HQR_BLOC *)(ptr);
+	delsize = ptrbloc[index].Size;
 
-	if( index < (header->NbIndex-1) )
+	if (index < (header->NbIndex - 1))
 	{
 		// shift buffer
-		ptrd = header->Buffer + ptrbloc[index].Offset ;
-		ptrs = ptrd + delsize ;
-/*		memmove(ptrd,
-			ptrs,
-			((header->Buffer+header->MaxSize) - ptrs) ) ;
-*/
+		ptrd = header->Buffer + ptrbloc[index].Offset;
+		ptrs = ptrd + delsize;
+		/*		memmove(ptrd,
+					ptrs,
+					((header->Buffer+header->MaxSize) - ptrs) ) ;
+		*/
 		WaveMove(ptrd,
-			 ptrs,
-			 ((header->Buffer+header->MaxSize) - ptrs) ) ;
+				 ptrs,
+				 ((header->Buffer + header->MaxSize) - ptrs));
 
 		// shift index table
 
-		ptrd = (UBYTE*)&ptrbloc[index] ;
-		ptrs = ptrd + sizeof( T_HQR_BLOC ) ;
+		ptrd = (UBYTE *)&ptrbloc[index];
+		ptrs = ptrd + sizeof(T_HQR_BLOC);
 		memmove(ptrd,
-			ptrs,
-			(header->MaxIndex - (index + 1))*sizeof(T_HQR_BLOC) ) ;
+				ptrs,
+				(header->MaxIndex - (index + 1)) * sizeof(T_HQR_BLOC));
 
 		// shift index value
 
-		for(n=index; n<(header->NbIndex-1); n++ )
+		for (n = index; n < (header->NbIndex - 1); n++)
 		{
-			ptrbloc[n].Offset -= delsize ;
+			ptrbloc[n].Offset -= delsize;
 		}
 	}
 
-	header->NbIndex-- ;
-	header->FreeSize += delsize ;
+	header->NbIndex--;
+	header->FreeSize += delsize;
 
-	return delsize ;
+	return delsize;
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-void	*HQR_GetSample( T_HQR_HEADER *header, WORD index )
+void *HQR_GetSample(T_HQR_HEADER *header, WORD index)
 {
-	UWORD		n, oldest ;
-	ULONG		time, testtime ;
-	UBYTE		*ptr ;
-	T_HQR_BLOC	*ptrbloc ;
-	ULONG		size ;
-	ULONG		offset ;
+	UWORD n, oldest;
+	ULONG time, testtime;
+	UBYTE *ptr;
+	T_HQR_BLOC *ptrbloc;
+	ULONG size;
+	ULONG offset;
 
 	// ressources
-	FILE*		handle ;
-	UWORD		nbbloc ;
-	ULONG		buffer ;
-	ULONG		seekindex ;
-	UBYTE		*ptrdecomp ;
-	T_HEADER	lzssheader ;
+	FILE *handle;
+	UWORD nbbloc;
+	ULONG buffer;
+	ULONG seekindex;
+	UBYTE *ptrdecomp;
+	T_HEADER lzssheader;
 
-	if( index < 0 )		return 0 ;
+	if (index < 0)
+		return 0;
 
-	if( (ptrbloc = HQR_GiveIndex(
-				index,
-				header->NbIndex,
-				(UBYTE*)header+sizeof(T_HQR_HEADER) )) != 0 )
-	{	// existing index
-		ptrbloc->Time = TimerRef ;
+	if ((ptrbloc = HQR_GiveIndex(
+			 index,
+			 header->NbIndex,
+			 (UBYTE *)header + sizeof(T_HQR_HEADER))) != 0)
+	{ // existing index
+		ptrbloc->Time = TimerRef;
 
-		HQR_Flag = FALSE ;	// marque non chargement ressource
+		HQR_Flag = FALSE; // marque non chargement ressource
 
-		return( header->Buffer + ptrbloc->Offset ) ;
+		return (header->Buffer + ptrbloc->Offset);
 	}
-	else	// need load
+	else // need load
 	{
-//		SaveTimer() ;
-		size = Size_HQR( header->Name, index ) ;
+		//		SaveTimer() ;
+		size = Size_HQR(header->Name, index);
 
 		// load and expand hqr bloc
 
-		handle = OpenRead( header->Name ) ;
-		if( !handle )	return 0 ;
+		handle = OpenRead(header->Name);
+		if (!handle)
+			return 0;
 
-		Read( handle, &buffer, 4 ) ;
-		nbbloc = (UWORD)(buffer / 4) ;
+		Read(handle, &buffer, 4);
+		nbbloc = (UWORD)(buffer / 4);
 
-		if( index >= nbbloc )
+		if (index >= nbbloc)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
-		Seek( handle, index * 4, SEEK_START ) ;
-		Read( handle, &seekindex, 4 ) ;
+		Seek(handle, index * 4, SEEK_START);
+		Read(handle, &seekindex, 4);
 
-		if( !seekindex )
+		if (!seekindex)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
-		Seek( handle, seekindex, SEEK_START ) ;
-		Read( handle, &lzssheader, sizeof( T_HEADER ) ) ;
+		Seek(handle, seekindex, SEEK_START);
+		Read(handle, &lzssheader, sizeof(T_HEADER));
 
 		// taille decompacte
-		size = lzssheader.SizeFile ;
+		size = lzssheader.SizeFile;
 
-		if( !size )
+		if (!size)
 		{
-			Close( handle ) ;
-			return 0 ;
+			Close(handle);
+			return 0;
 		}
 
 		// gestion mémoire
 
-		time = TimerRef ;
+		time = TimerRef;
 
-		ptr = (UBYTE*)(header) + sizeof(T_HQR_HEADER) ;
-		ptrbloc = (T_HQR_BLOC*)(ptr) ;
+		ptr = (UBYTE *)(header) + sizeof(T_HQR_HEADER);
+		ptrbloc = (T_HQR_BLOC *)(ptr);
 
 		// check if enough space for bloc or index
 
-		while( (size > header->FreeSize) OR (header->NbIndex >= header->MaxIndex) )
+		while ((size > header->FreeSize) OR(header->NbIndex >= header->MaxIndex))
 		{
 			// delete oldest bloc
-			oldest = 0 ;
-			testtime = 0 ;
+			oldest = 0;
+			testtime = 0;
 
-			for( n=0; n<header->NbIndex; n++ )
+			for (n = 0; n < header->NbIndex; n++)
 			{
-				if( (time-ptrbloc[n].Time) > testtime )
+				if ((time - ptrbloc[n].Time) > testtime)
 				{
-					testtime = time - ptrbloc[oldest].Time ;
-					oldest = n ;
+					testtime = time - ptrbloc[oldest].Time;
+					oldest = n;
 				}
 			}
 			// méthode violente (attendre réflexions désagréables...)
-			WaveStopOne( ptrbloc[oldest].Index ) ;
+			WaveStopOne(ptrbloc[oldest].Index);
 
-			HQR_Del_Bloc_Sample( header, oldest ) ;
+			HQR_Del_Bloc_Sample(header, oldest);
 		}
 
 		// space size ok, load it
 
-		ptr = header->Buffer + header->MaxSize - header->FreeSize ;
+		ptr = header->Buffer + header->MaxSize - header->FreeSize;
 
-//		Load_HQR( header->Name, ptr, index ) ;
+		//		Load_HQR( header->Name, ptr, index ) ;
 
-		switch( lzssheader.CompressMethod )
+		switch (lzssheader.CompressMethod)
 		{
-			case 0:		/* Stored */
-				Read(	handle,	ptr, lzssheader.SizeFile ) ;
-				break ;
+		case 0: /* Stored */
+			Read(handle, ptr, lzssheader.SizeFile);
+			break;
 
-			case 1:		/* LZS */
-				ptrdecomp = (UBYTE*)ptr + lzssheader.SizeFile - lzssheader.CompressedSizeFile + RECOVER_AREA ;
-				Read(	handle, ptrdecomp, lzssheader.CompressedSizeFile ) ;
-				Expand( ptrdecomp, ptr, lzssheader.SizeFile ) ;
-				break ;
+		case 1: /* LZS */
+			ptrdecomp = (UBYTE *)ptr + lzssheader.SizeFile - lzssheader.CompressedSizeFile + RECOVER_AREA;
+			Read(handle, ptrdecomp, lzssheader.CompressedSizeFile);
+			Expand(ptrdecomp, ptr, lzssheader.SizeFile);
+			break;
 
-			default:
-				Close( handle ) ;
-				return 0 ;	/* UnKnown version */
+		default:
+			Close(handle);
+			return 0; /* UnKnown version */
 		}
 
-		Close( handle ) ;
+		Close(handle);
 
-		HQR_Flag = TRUE ;		// indicate loaded
+		HQR_Flag = TRUE; // indicate loaded
 
-		ptrbloc[header->NbIndex].Index  = index ;
-		ptrbloc[header->NbIndex].Time   = TimerRef ;
-		ptrbloc[header->NbIndex].Offset = header->MaxSize - header->FreeSize ;
-		ptrbloc[header->NbIndex].Size	= size ;
+		ptrbloc[header->NbIndex].Index = index;
+		ptrbloc[header->NbIndex].Time = TimerRef;
+		ptrbloc[header->NbIndex].Offset = header->MaxSize - header->FreeSize;
+		ptrbloc[header->NbIndex].Size = size;
 
-		header->NbIndex++ ;
-		header->FreeSize -= size ;
+		header->NbIndex++;
+		header->FreeSize -= size;
 
-//		RestoreTimer() ;
+		//		RestoreTimer() ;
 
-		return ptr ;
+		return ptr;
 	}
 }
-

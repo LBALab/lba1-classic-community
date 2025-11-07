@@ -14,7 +14,8 @@ void RazMem(void *pt, ULONG size)
 
 LONG CompBuf(void *pt0, void *pt1, ULONG size)
 {
-	if (memcmp(pt0, pt1, size) == 0) {
+	if (memcmp(pt0, pt1, size) == 0)
+	{
 		return 1;
 	}
 	return 0;

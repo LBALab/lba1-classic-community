@@ -1,17 +1,13 @@
-#include 	"C_EXTERN.H"
+#include "C_EXTERN.H"
 
-#include	<process.h>
+#include <process.h>
 
-#ifdef	DEMO
-char	*Version	= "LBA Demo ("
-			  __DATE__
-			  " / "
-			  __TIME__
-			  ")/n"		;
+#ifdef DEMO
+char *Version = "LBA Demo (" __DATE__
+				" / " __TIME__
+				")/n";
 #else
-char	*Version	= "LBA/Relentless ("
-			  __DATE__
-			  " / "
-			  __TIME__
-			  ")/n"		;
+char *Version = "LBA/Relentless (" __DATE__
+				" / " __TIME__
+				")/n";
 #endif

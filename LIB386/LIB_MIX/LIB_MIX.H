@@ -1,4 +1,4 @@
-extern	LONG	Mixer_Driver_Enable;
+extern LONG Mixer_Driver_Enable;
 
 /*----------------------------------------------------------------------*/
 /*	MixerAskVars	: Get list of vars for the lib			*/
@@ -13,9 +13,8 @@ extern	LONG	Mixer_Driver_Enable;
 /*									*/
 /*	Returns		: nothing					*/
 /*----------------------------------------------------------------------*/
-void	MixerAskVars( 		char ***listidentifier,
-				LONG **ptrvars 		);
-
+void MixerAskVars(char ***listidentifier,
+				  LONG **ptrvars);
 
 /*----------------------------------------------------------------------*/
 /*	MixerChangeVolume : Change the hardware volume for MIDI,	*/
@@ -31,12 +30,11 @@ void	MixerAskVars( 		char ***listidentifier,
 /*									*/
 /*	Returns		  : nothing					*/
 /*----------------------------------------------------------------------*/
-void	MixerChangeVolume(	LONG VolWave,
-				LONG VolMidi,
-				LONG VolCD,
-				LONG VolLine,
-				LONG VolMaster		);
-
+void MixerChangeVolume(LONG VolWave,
+					   LONG VolMidi,
+					   LONG VolCD,
+					   LONG VolLine,
+					   LONG VolMaster);
 
 /*----------------------------------------------------------------------*/
 /*	MixerGetVolume : Get the hardware volume for MIDI, WAVE,	*/
@@ -52,12 +50,11 @@ void	MixerChangeVolume(	LONG VolWave,
 /*									*/
 /*	Returns	       : nothing					*/
 /*----------------------------------------------------------------------*/
-void	MixerGetVolume(		LONG *VolWave,
-				LONG *VolMidi,
-				LONG *VolCD,
-				LONG *VolLine,
-				LONG *VolMaster		);
-
+void MixerGetVolume(LONG *VolWave,
+					LONG *VolMidi,
+					LONG *VolCD,
+					LONG *VolLine,
+					LONG *VolMaster);
 
 /*----------------------------------------------------------------------*/
 /*	MixerGetInfo   : Get the hardware volume capabilities		*/
@@ -72,8 +69,8 @@ void	MixerGetVolume(		LONG *VolWave,
 /*									*/
 /*	Returns	       : nothing					*/
 /*----------------------------------------------------------------------*/
-void	MixerGetInfo(		LONG *VolWave,
-				LONG *VolMidi,
-				LONG *VolCD,
-				LONG *VolLine,
-				LONG *VolMaster		);
+void MixerGetInfo(LONG *VolWave,
+				  LONG *VolMidi,
+				  LONG *VolCD,
+				  LONG *VolLine,
+				  LONG *VolMaster);

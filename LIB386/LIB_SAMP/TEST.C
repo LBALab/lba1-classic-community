@@ -1,10 +1,10 @@
-//#include	<stdlib.h>
+// #include	<stdlib.h>
 
-void	InitWave()
+void InitWave()
 {
-	int		i;
-	void		*bad_handle[10];
+	int i;
+	void *bad_handle[10];
 
-	for(i=0; i<10; i++)
-		bad_handle[i]=NULL;
+	for (i = 0; i < 10; i++)
+		bad_handle[i] = NULL;
 }

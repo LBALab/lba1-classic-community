@@ -4,47 +4,46 @@
 /*			      (c) Adeline 1993			    	    */
 /*--------------------------------------------------------------------------*/
 
-#include	"lib_sys/adeline.h"
-#include	"lib_sys/lib_sys.h"
+#include "lib_sys/adeline.h"
+#include "lib_sys/lib_sys.h"
 
-#include	"lib_svga/lib_svga.h"
+#include "lib_svga/lib_svga.h"
 
-#include	<dos.h>
-#include 	<i86.h>
-#include 	<stdio.h>
-#include 	<string.h>
+#include <dos.h>
+#include <i86.h>
+#include <stdio.h>
+#include <string.h>
 
 /*--------------------------------------------------------------------------*/
-void	InitGraphSvga()
+void InitGraphSvga()
 {
 	InitSvga();
 
-	Log = Malloc(640L*480L);	/* 307200L	*/
+	Log = Malloc(640L * 480L); /* 307200L	*/
 	MemoLog = Log;
 }
 
 /*--------------------------------------------------------------------------*/
-void	ClearGraphSvga()
+void ClearGraphSvga()
 {
-	Free(MemoLog)		;
-	ClearVideo()		;
+	Free(MemoLog);
+	ClearVideo();
 }
 
 /*--------------------------------------------------------------------------*/
-void	InitGraphMcga()
+void InitGraphMcga()
 {
 	InitMcga();
 
-	Log = Malloc(320L*200L);	/* 64000L	*/
+	Log = Malloc(320L * 200L); /* 64000L	*/
 	MemoLog = Log;
 }
 
 /*--------------------------------------------------------------------------*/
-void	ClearGraphMcga()
+void ClearGraphMcga()
 {
-	Free(MemoLog)		;
-	ClearVideo()		;
+	Free(MemoLog);
+	ClearVideo();
 }
 
 /*--------------------------------------------------------------------------*/
-
