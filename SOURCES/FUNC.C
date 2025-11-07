@@ -49,8 +49,10 @@ void SmallSort(void *objetlist, LONG nbobjets, LONG structsize)
 	UBYTE *pObj;
 	UBYTE *pNext;
 	UBYTE *pSmallest;
-	UBYTE tmp[256];
+	ULONG tmp[64];  // Changed from UBYTE tmp[256] - swap uses DWORDs
 	LONG n;
+	LONG numDwords;
+	ULONG *pSrc, *pDest, *pTmp;
 	
 	if (nbobjets <= 1) {
 		return;
@@ -58,22 +60,33 @@ void SmallSort(void *objetlist, LONG nbobjets, LONG structsize)
 	
 	pObj = (UBYTE *)objetlist;
 	nbobjets--;
+	numDwords = structsize >> 2;  // structsize / 4
 	
 	while (nbobjets > 0) {
 		pSmallest = pObj;
 		pNext = pObj + structsize;
 		
 		for (n = nbobjets; n > 0; n--) {
-			if (*((UWORD *)pNext) < *((UWORD *)pSmallest)) {
+			if (*((WORD *)pNext) < *((WORD *)pSmallest)) {  // SIGNED comparison (jl)
 				pSmallest = pNext;
 			}
 			pNext += structsize;
 		}
 		
 		if (pSmallest != pObj) {
-			memcpy(tmp, pSmallest, structsize);
-			memcpy(pSmallest, pObj, structsize);
-			memcpy(pObj, tmp, structsize);
+			// Swap using DWORDs like the assembly version
+			pSrc = (ULONG *)pSmallest;
+			pDest = (ULONG *)pObj;
+			pTmp = tmp;
+			
+			for (n = numDwords; n > 0; n--) {
+				*pTmp = *pSrc;
+				*pSrc = *pDest;
+				*pDest = *pTmp;
+				pSrc++;
+				pDest++;
+				pTmp++;
+			}
 		}
 		
 		pObj += structsize;
