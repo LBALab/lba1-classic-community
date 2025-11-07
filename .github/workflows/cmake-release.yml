@@ -70,7 +70,7 @@ jobs:
           cmake -B build -G Ninja \
             -DCMAKE_BUILD_TYPE=Release \
             -DBUILD_DOS=ON \
-            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/openwatcom-dos4gw.cmake
+            -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/openwatcom.cmake
 
       - name: Build DOS executable
         run: |
