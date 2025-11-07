@@ -1,10 +1,11 @@
 # LIB_SAMP - Wave/Sample Library (LIB_WAVE)
-# Mixed C and Assembly library for wave audio
+# High-level wave/sample API (platform-agnostic interface)
+# Hardware implementation moved to LIB_SAMP_DOS
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_WAVE_SOURCES
-    WAVE.C
-    WAVE_I.ASM
+    WAVE.C        # High-level wave API
+    # WAVE_I.ASM    # Moved to LIB_SAMP_DOS (hardware interface)
 )
 
 # Create static library

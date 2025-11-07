@@ -1,4 +1,6 @@
 #include "DEFINES.H"
+#include "../LIB386/LIB_SYS/SYS_TIME.H"
+#include "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 
 extern ULONG TabOffLine;
 extern UBYTE *Screen;
@@ -17,31 +19,7 @@ static UBYTE PalXor = 0;
 
 ULONG ComputeTime(void)
 {
-#ifdef __DOS__
-	ULONG cpttime = 0;
-	ULONG cptdate = 0;
-	union REGS regs;
-	
-	regs.h.ah = 0x2C;
-	int86(0x21, &regs, &regs);
-	cpttime = regs.h.ch;
-	cpttime <<= 6;
-	cpttime |= regs.h.cl;
-	cpttime <<= 5;
-	cpttime |= (regs.h.dh >> 1);
-	
-	regs.h.ah = 0x2A;
-	int86(0x21, &regs, &regs);
-	cptdate = regs.x.cx - 1980;
-	cptdate <<= 4;
-	cptdate |= regs.h.dh;
-	cptdate <<= 5;
-	cptdate |= regs.h.dl;
-	
-	return cpttime + cptdate;
-#else
-    return TimerRef;
-#endif
+	return SYS_ComputeTime();
 }
 
 void SmallSort(void *objetlist, LONG nbobjets, LONG structsize)
@@ -202,22 +180,5 @@ void ShadeBox(LONG x0, LONG y0, LONG x1, LONG y1, LONG deccoul)
 
 ULONG GetHDFreeSize(void)
 {
-#ifdef __DOS__
-	union REGS regs;
-	ULONG eax, ebx, ecx;
-	
-	regs.h.ah = 0x36;
-	regs.h.dl = 0;
-	int86(0x21, &regs, &regs);
-	
-	eax = regs.x.ax;
-	ebx = regs.x.bx;
-	ecx = regs.x.cx;
-	
-	eax = eax * ebx * ecx;
-	
-	return eax;
-#else
-    return 700 * 1024 * 1024;
-#endif
+	return SYS_GetDiskFreeSpace();
 }

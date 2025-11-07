@@ -3,6 +3,10 @@
 #include "ail.h"      // Audio Interface Library API function header
 #endif
 
+#ifndef _MAX_PATH
+#define _MAX_PATH 260
+#endif
+
 extern	char	Midi_Driver[_MAX_PATH] ;
 extern  char	Midi_Driver_Name[80] ;
 extern	WORD	Midi_Driver_Enable ;

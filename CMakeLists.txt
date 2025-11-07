@@ -9,20 +9,16 @@ set(CMAKE_ASM_MASM_SOURCE_FILE_EXTENSIONS ASM;asm)
 
 # Target Platform
 option(BUILD_DOS "Build DOS version (LBAD.EXE)" ON)
-option(BUILD_WIN9X "Build Windows 9x version (LBAW.exe)" ON)
 
 # Enable debug tools
 # add_definitions(-DDEBUG_TOOLS)
 
-if(NOT BUILD_DOS AND NOT BUILD_WIN9X)
-    message(FATAL_ERROR "At least one platform must be enabled (BUILD_DOS or BUILD_WIN9X)")
+if(NOT BUILD_DOS)
+    message(FATAL_ERROR "At least one platform must be enabled (BUILD_DOS)")
 endif()
 
 if(BUILD_DOS)
     message(STATUS "Building DOS version: LBAD.EXE")
-endif()
-if(BUILD_WIN9X)
-    message(STATUS "Building Windows 9x version: LBAW.exe")
 endif()
 
 # Project definition
@@ -89,14 +85,13 @@ add_subdirectory(LIB386/LIB_SYS)
 # Add platform-specific libraries based on build options
 if(BUILD_DOS)
     message(STATUS "Including DOS platform-specific implementations")
-    add_subdirectory(LIB386/LIB_SYS_DOS)
-    add_subdirectory(LIB386/LIB_SVGA_DOS)
-endif()
-
-if(BUILD_WIN9X)
-    message(STATUS "Including Windows platform-specific implementations")
-    add_subdirectory(LIB386/LIB_SYS_WIN)
-    add_subdirectory(LIB386/LIB_SVGA_WIN)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_CD)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_MENU)
+    # add_subdirectory(LIB386/PLATFORM/DOS/LIB_MIDI)  # Requires AIL32 SDK (see LIB_MIDI/README.md)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_MIX)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_SAMP)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_SYS)
+    add_subdirectory(LIB386/PLATFORM/DOS/LIB_SVGA)
 endif()
 
 # Add main source directory (will create executables based on BUILD_* options)

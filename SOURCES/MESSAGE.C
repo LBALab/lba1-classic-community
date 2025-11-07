@@ -32,8 +32,11 @@
 #include        <conio.h>
 #include        <dos.h>
 #include        <i86.h>
+
+#include        "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 #else
 #include        "c_extern.h"
+#include        "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 #endif
 #ifdef  LORAN
 //================================================================= L O R A N
@@ -325,11 +328,11 @@ LONG    FindText( LONG text )
 void	InitVoiceFile()
 {
 	char	pathname[_MAX_PATH];
-	struct	find_t	fileinfo;
+	SYS_FileInfo fileinfo;
 	ULONG	time		;
 	ULONG	rc		;
 
-	rc = _dos_findfirst( PATH_NAR_HD"*.VOX", _A_NORMAL, &fileinfo ) 	;
+	rc = SYS_FindFirst( PATH_NAR_HD"*.VOX", SYS_FA_NORMAL, &fileinfo ) 	;
 
 	while( !rc )
 	{
@@ -341,8 +344,10 @@ void	InitVoiceFile()
 #ifdef	LORAN
 		AffStatusVoiceFile()		;
 #endif
-		rc = _dos_findnext( &fileinfo ) ;
+		rc = SYS_FindNext( &fileinfo ) ;
 	}
+	
+	SYS_FindClose( &fileinfo ) ;
 }
 /*-------------------------------------------------------------------------*/
 void	ClearVoiceFile()

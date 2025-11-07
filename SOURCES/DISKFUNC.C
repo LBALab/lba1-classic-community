@@ -1,7 +1,7 @@
 #include	"c_extern.h"
 #include	"direct.h"
 
-#include	<dos.h>
+#include	"../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 
 UBYTE	*PtrSce ;
 UBYTE	*PtrScene ;
@@ -20,14 +20,14 @@ void	GetDiskEnv( UBYTE *progpath )
 {
 	_splitpath( (char*)progpath, ProgDrive, ProgDir, Name, Ext ) ;
 	getcwd( OrgDir, _MAX_DIR ) ;
-	_dos_getdrive( &OrgDrive ) ;
+	OrgDrive = SYS_GetDrive() ;
 }
 
 void	RestoreDiskEnv()
 {
 	UINT	total ;
 
-	_dos_setdrive( OrgDrive, &total ) ;
+	SYS_SetDrive( OrgDrive, &total ) ;
 	chdir( OrgDir ) ;
 }
 

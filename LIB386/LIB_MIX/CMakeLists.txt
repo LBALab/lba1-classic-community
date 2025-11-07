@@ -1,10 +1,11 @@
 # LIB_MIX - Audio Mixer Library
-# Mixed C and Assembly library for audio mixing
+# High-level mixer API (platform-agnostic interface)
+# Hardware implementation moved to LIB_MIX_DOS
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIX_SOURCES
-    MIXER.C
-    MIXER_I.ASM
+    MIXER.C      # High-level mixer API
+    # MIXER_I.ASM  # Moved to LIB_MIX_DOS (hardware interface)
 )
 
 # Create static library

@@ -5,6 +5,8 @@
 set(SVGA_DOS_ASM_SOURCES
     VESA.ASM
     INITSVGA.ASM
+    S_PHYS.ASM   # Physical screen operations (bank switching, Flip, CopyBlockPhys)
+    S_PAL.ASM    # VGA palette I/O operations
 )
 
 # Compile Assembly sources
@@ -12,7 +14,7 @@ foreach(src ${SVGA_DOS_ASM_SOURCES})
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${src}.obj
         COMMAND ${CMAKE_ASM_MASM_COMPILER}
-        ARGS ${CMAKE_ASM_MASM_FLAGS} -Fo${CMAKE_CURRENT_BINARY_DIR}/${src}.obj ${CMAKE_CURRENT_SOURCE_DIR}/${src}
+        ARGS ${CMAKE_ASM_MASM_FLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../../../LIB_SVGA -Fo${CMAKE_CURRENT_BINARY_DIR}/${src}.obj ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Assembling LIB_SVGA_DOS file ${src}"

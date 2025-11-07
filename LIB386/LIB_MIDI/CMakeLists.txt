@@ -1,9 +1,11 @@
 # LIB_MIDI - MIDI Music Library
-# C library for MIDI playback
+# Platform-agnostic MIDI API (stub implementation - real implementation in LIB_MIDI_DOS)
+# Future: Cross-platform MIDI playback interface
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIDI_SOURCES
-    MIDI.C
+    MIDI_STUB.C  # Stub implementation when AIL32 is not available
+    # MIDI.C  # Moved to LIB_MIDI_DOS (uses AIL32/Miles Sound System)
 )
 
 # Create static library
@@ -28,3 +30,5 @@ set_target_properties(LIB_MIDI PROPERTIES
     ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
     LINKER_LANGUAGE C
 )
+
+

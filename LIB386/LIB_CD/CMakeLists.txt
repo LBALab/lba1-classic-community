@@ -1,20 +1,15 @@
 # LIB_CD - CD-ROM Library
-# Assembly library for CD-ROM access
+# Platform-agnostic CD-ROM API (currently empty - implementation in LIB_CD_DOS)
+# Future: Cross-platform CD audio interface
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_CD_SOURCES
-    CDROM.ASM
+    # CDROM.ASM  # Moved to LIB_CD_DOS (uses MSCDEX, DPMI, int 2Fh)
 )
 
-# Create static library
-add_library(LIB_CD STATIC ${LIB_CD_SOURCES})
+# Create interface library (empty for now, serves as placeholder for future platform-agnostic API)
+add_library(LIB_CD INTERFACE)
 
 # Include current directory for headers
-target_include_directories(LIB_CD PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(LIB_CD INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Set library output name and linker language
-set_target_properties(LIB_CD PROPERTIES
-    OUTPUT_NAME "LIB_CD"
-    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
-    LINKER_LANGUAGE C
-)

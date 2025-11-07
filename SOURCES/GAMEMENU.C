@@ -1,4 +1,5 @@
 #include 	"c_extern.h"
+#include 	"../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 
 /*══════════════════════════════════════════════════════════════════════════*
  *══════════════════════════════════════════════════════════════════════════*/
@@ -1211,7 +1212,7 @@ void	CopyBlockPhysMCGA( LONG x0, LONG y0, LONG x1, LONG y1 )
 
 WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WORD showNewGame )
 {
-	struct	find_t	fileinfo ;
+	SYS_FileInfo fileinfo ;
 	ULONG	rc ;
 	UBYTE	wbyte ;
 	UBYTE	pathname[_MAX_PATH] ;
@@ -1244,7 +1245,7 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 		strcat(pathname, AUTO_SAVE_NAME".LBA");
 
 		//Get Auto save file first
-		rc = _dos_findfirst(pathname, _A_NORMAL, &fileinfo);
+		rc = SYS_FindFirst(pathname, SYS_FA_NORMAL, &fileinfo);
 		if (!rc)
 		{
 			int i = 0;
@@ -1266,13 +1267,13 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 	strcpy(pathname, PATH_RESSOURCE"*.LBA");
 
 	//Get all the other save files
-	rc = _dos_findfirst( pathname, _A_NORMAL, &fileinfo ) ;
+	rc = SYS_FindFirst( pathname, SYS_FA_NORMAL, &fileinfo ) ;
 	while( !rc )
 	{
 		//ignore auto save file
 		if (strcmp(fileinfo.name, AUTO_SAVE_NAME".LBA") == 0)
 		{
-			rc = _dos_findnext(&fileinfo);
+			rc = SYS_FindNext(&fileinfo);
 			continue;
 		}
 
@@ -1295,10 +1296,12 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 			Close( handle ) ;
 
 			nb++ ;
-			if( nb == MAX_PLAYER )	return nb ;
+			if( nb == MAX_PLAYER )	break ;
 		}
-		rc = _dos_findnext( &fileinfo ) ;
+		rc = SYS_FindNext( &fileinfo ) ;
 	}
+	
+	SYS_FindClose( &fileinfo ) ;
 	return nb ;
 }
 
@@ -1306,7 +1309,7 @@ WORD	PlayerGameList( UBYTE **ptrlistname, UBYTE *listname, WORD showAutoSave, WO
 
 WORD	FindPlayerFile()
 {
-	struct	find_t	fileinfo ;
+	SYS_FileInfo fileinfo ;
 	ULONG	rc ;
 	UBYTE	pathname[_MAX_PATH] ;
 	UBYTE	playername[MAX_SIZE_PLAYER_NAME+1] ;
@@ -1316,7 +1319,7 @@ WORD	FindPlayerFile()
 
 	strcpy( pathname, PATH_RESSOURCE"*.LBA" ) ;
 
-	rc = _dos_findfirst( pathname, _A_NORMAL, &fileinfo ) ;
+	rc = SYS_FindFirst( pathname, SYS_FA_NORMAL, &fileinfo ) ;
 	while( !rc )
 	{
 		strcpy( pathname, PATH_RESSOURCE ) ;
@@ -1340,11 +1343,14 @@ WORD	FindPlayerFile()
 		{
 			strcpy( GamePathname, PATH_RESSOURCE ) ;
 			strcat( GamePathname, fileinfo.name ) ;
+			SYS_FindClose( &fileinfo ) ;
 			return TRUE ;
 		}
 
-		rc = _dos_findnext( &fileinfo ) ;
+		rc = SYS_FindNext( &fileinfo ) ;
 	}
+	
+	SYS_FindClose( &fileinfo ) ;
 	return FALSE ;
 }
 

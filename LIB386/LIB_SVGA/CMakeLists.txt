@@ -16,10 +16,11 @@ set(LIB_SVGA_SOURCES
     MASK_A.ASM
     FONT_A.ASM
     # OBJETS3
-    S_SCREEN.ASM
+    #S_SCREEN.ASM
+    S_SCREEN.C
     S_BLOCK.ASM
     S_BLOCK2.ASM
-    S_PAL.ASM
+    # S_PAL.ASM  # Moved to LIB_SVGA_DOS (uses VGA port I/O)
     # OBJETS4
     S_PLOT.ASM
     S_BOX.ASM
@@ -33,7 +34,7 @@ set(LIB_SVGA_SOURCES
     MASKGPH.C
     GRAPHMSK.ASM
     # OBJETS6
-    S_PHYS.ASM
+    # S_PHYS.ASM  # Moved to LIB_SVGA_DOS (uses bank switching, 0xA0000 video memory)
     TEXTURE.ASM
     S_BLOCK3.ASM
     LBM.C

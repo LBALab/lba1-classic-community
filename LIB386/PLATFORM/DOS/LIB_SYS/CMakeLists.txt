@@ -1,6 +1,7 @@
 # LIB_SYS_DOS - DOS-Specific System Implementation
 # Implements platform functions defined in lib_sys/lib_sys_platform.h
 # Timer, Keyboard, Memory (DosMalloc), Critical Error Handler
+# File System, Time (Platform Abstraction Layer)
 
 # C source files
 set(SYS_DOS_C_SOURCES
@@ -11,6 +12,9 @@ set(SYS_DOS_C_SOURCES
     KEYBOARD.C
     TIMER_A.C
     FILES_A.C
+    # Platform abstraction layer
+    FILESYSTEM.C
+    TIME.C
 )
 
 # Assembly source files
@@ -25,7 +29,7 @@ foreach(src ${SYS_DOS_C_SOURCES})
     add_custom_command(
         OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${src}${CMAKE_C_OUTPUT_EXTENSION}
         COMMAND ${CMAKE_C_COMPILER}
-        ARGS ${CMAKE_C_FLAGS} -i=${LIB386_PATH} -fo=${CMAKE_CURRENT_BINARY_DIR}/${src}${CMAKE_C_OUTPUT_EXTENSION} ${CMAKE_CURRENT_SOURCE_DIR}/${src}
+        ARGS ${CMAKE_C_FLAGS} -i=${LIB386_PATH} -i=${CMAKE_SOURCE_DIR}/LIB386 -fo=${CMAKE_CURRENT_BINARY_DIR}/${src}${CMAKE_C_OUTPUT_EXTENSION} ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${src}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Compiling LIB_SYS_DOS C file ${src}"
