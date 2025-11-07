@@ -32,7 +32,7 @@ AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 .SILENT
 
-OBJETS1  = wave.obj wave_i.obj
+OBJETS1  = wave.obj
 
 !ifeq WATCOM9 yes
 LIB      = LB9_WAVE

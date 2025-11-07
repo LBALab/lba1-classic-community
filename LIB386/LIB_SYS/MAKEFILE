@@ -35,7 +35,7 @@ AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 OBJETS1  = FILES.obj LOADMALL.obj LOADSAVE.obj DEF_FILE.obj
 OBJETS2  = System.obj Buffer_A.obj DIVERS.obj
 OBJETS3  = Expand.obj HQ_ress.obj hqr.obj
-OBJETS4  = DllLoad.obj Adeline.obj HQ_mem.obj HQ_r_m.obj Files_A.obj
+OBJETS4  = DllLoad.obj Adeline.obj HQ_mem.obj HQ_r_m.obj
 
 !ifeq WATCOM9 yes
 LIB      = LB9_SYS

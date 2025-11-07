@@ -31,7 +31,7 @@ LFLAGS = -b -n -c -q
 AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 
-OBJETS1  = midi.obj # ail32.obj
+OBJETS1  = midi_stub.obj # ail32.obj
 OBJETS2  =
 OBJETS3  =
 OBJETS4  =
