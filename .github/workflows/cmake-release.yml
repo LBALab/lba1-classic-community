@@ -13,7 +13,7 @@ on:
 
 jobs:
   build-and-release:
-    runs-on: ubuntu-latest
+    runs-on: macos-13  # macOS Intel (x86_64)
 
     steps:
       - name: Checkout repository
@@ -25,18 +25,17 @@ jobs:
         uses: open-watcom/setup-watcom@v0
         with:
           version: "2.0-64"
-          location: https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-linux-x64
+          location: https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
 
       - name: Install dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y cmake ninja-build dos2unix
+          brew install cmake ninja
 
       - name: Setup Open Watcom environment
         run: |
           echo "WATCOM=/opt/watcom" >> $GITHUB_ENV
-          echo "PATH=/opt/watcom/binl64:/opt/watcom/binl:$PATH" >> $GITHUB_ENV
-          echo "INCLUDE=/opt/watcom/lh" >> $GITHUB_ENV
+          echo "PATH=/opt/watcom/bino64:/opt/watcom/bino:$PATH" >> $GITHUB_ENV
+          echo "INCLUDE=/opt/watcom/h" >> $GITHUB_ENV
           echo "EDPATH=/opt/watcom/eddat" >> $GITHUB_ENV
           echo "WIPFC=/opt/watcom/wipfc" >> $GITHUB_ENV
 
@@ -46,8 +45,8 @@ jobs:
           which wcc386 || echo "wcc386 not found in PATH"
           which wasm || echo "wasm not found in PATH"
           which wlink || echo "wlink not found in PATH"
-          ls -la /opt/watcom/binl64/ || echo "binl64 not found"
-          ls -la /opt/watcom/binl/ || echo "binl not found"
+          ls -la /opt/watcom/bino64/ || echo "bino64 not found"
+          ls -la /opt/watcom/bino/ || echo "bino not found"
 
       - name: Determine version
         id: version
