@@ -21,29 +21,72 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history for changelog generation
 
-      - name: Setup Open Watcom v2.0
-        uses: open-watcom/setup-watcom@v0
-        with:
-          version: "2.0-64"
-          location: https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
-
       - name: Install dependencies
         run: |
           brew install cmake ninja
+
+      - name: Setup Open Watcom v2.0
+        run: |
+          echo "Downloading and installing Open Watcom for macOS..."
+          cd /tmp
+          curl -L -o watcom.zip https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
+          
+          # Create installation directory
+          sudo mkdir -p /opt/watcom
+          
+          # Extract (if it's a zip/tar, otherwise it might be a binary installer)
+          if file watcom.zip | grep -q "Zip archive"; then
+            unzip -q watcom.zip -d /opt/watcom
+          elif file watcom.zip | grep -q "gzip compressed"; then
+            tar -xzf watcom.zip -C /opt/watcom
+          else
+            # Might be a self-extracting archive or different format
+            chmod +x watcom.zip
+            sudo ./watcom.zip /opt/watcom || true
+          fi
+          
+          echo "Checking installation..."
+          ls -la /opt/watcom
+          
+          # Find the actual installation directory (might be nested)
+          if [ -d "/opt/watcom/watcom" ]; then
+            echo "Found nested installation, moving files..."
+            sudo mv /opt/watcom/watcom/* /opt/watcom/
+            sudo rmdir /opt/watcom/watcom
+          fi
+          
+          ls -la /opt/watcom
 
       - name: Discover and setup Open Watcom environment
         run: |
           echo "Searching for Open Watcom installation..."
           
-          # Try to find WATCOM installation
+          # Unset WATCOM if it's set to a URL (from setup-watcom action)
+          if [[ "$WATCOM" == http* ]]; then
+            echo "Clearing invalid WATCOM URL: $WATCOM"
+            unset WATCOM
+          fi
+          
+          # Try to find WATCOM installation in common locations
           if [ -d "/opt/watcom" ]; then
             WATCOM_ROOT="/opt/watcom"
           elif [ -d "$HOME/watcom" ]; then
             WATCOM_ROOT="$HOME/watcom"
           elif [ -d "/usr/local/watcom" ]; then
             WATCOM_ROOT="/usr/local/watcom"
+          elif [ -d "$GITHUB_WORKSPACE/watcom" ]; then
+            WATCOM_ROOT="$GITHUB_WORKSPACE/watcom"
           else
             echo "ERROR: Cannot find Open Watcom installation"
+            echo "Searched locations:"
+            echo "  /opt/watcom"
+            echo "  $HOME/watcom"
+            echo "  /usr/local/watcom"
+            echo "  $GITHUB_WORKSPACE/watcom"
+            echo ""
+            echo "Contents of common directories:"
+            ls -la /opt/ 2>/dev/null || echo "  /opt/ not accessible"
+            ls -la "$HOME" | grep -i watcom || echo "  No watcom in HOME"
             exit 1
           fi
           
