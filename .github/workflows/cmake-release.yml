@@ -24,6 +24,18 @@ jobs:
       - name: Install dependencies
         run: |
           brew install cmake ninja
+          
+          # Install JWasm for assembling ASM files
+          brew tap JWasm/JWasm
+          brew install jwasm || brew install jwasm/jwasm/jwasm || {
+            echo "Installing JWasm from source..."
+            cd /tmp
+            git clone https://github.com/JWasm/JWasm.git
+            cd JWasm
+            make -f GccUnix.mak
+            sudo cp GccUnixR/jwasm /usr/local/bin/
+            chmod +x /usr/local/bin/jwasm
+          }
 
       - name: Setup Open Watcom v2.0
         run: |
@@ -41,11 +53,22 @@ jobs:
 
       - name: Setup Open Watcom environment
         run: |
-          # Set environment variables
+          # Set environment variables for DOS cross-compilation
           echo "WATCOM=/opt/watcom" >> $GITHUB_ENV
           echo "PATH=/opt/watcom/binl64:/opt/watcom/binl:$PATH" >> $GITHUB_ENV
-          echo "INCLUDE=/opt/watcom/lh" >> $GITHUB_ENV
+          echo "INCLUDE=/opt/watcom/h" >> $GITHUB_ENV  # DOS headers, not lh (Linux headers)
           echo "EDPATH=/opt/watcom/eddat" >> $GITHUB_ENV
+          
+          # Verify DOS headers exist
+          if [ -d "/opt/watcom/h" ]; then
+            echo "DOS headers found in /opt/watcom/h"
+            ls /opt/watcom/h/dos.h || echo "Warning: dos.h not found"
+          else
+            echo "ERROR: /opt/watcom/h directory not found"
+            echo "Available header directories:"
+            ls -la /opt/watcom/ | grep "^d"
+            exit 1
+          fi
 
       - name: Verify Open Watcom
         run: |
