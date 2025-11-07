@@ -32,24 +32,16 @@ AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 .SILENT
 
-OBJETS1  = MALLOC.obj
-OBJETS2  = Timer_a.obj Timer.obj
-OBJETS3  = Keyb.obj Keyboard.obj
-OBJETS4  = Files_A.obj
-OBJETS5  = FILESYSTEM.obj TIME.obj
+OBJETS1  = MIDI.obj INCLUDE.obj
 
 !ifeq WATCOM9 yes
-LIB      = LB9_SYS_DOS
+LIB      = LB9_MIDI_DOS
 !else
-LIB      = LIB_SYS_DOS
+LIB      = LIB_MIDI_DOS
 !endif
 
-$(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3) $(OBJETS4) $(OBJETS5)
+$(LIB).LIB: $(OBJETS1)
 	@echo $(OBJETS1) > clibmak.rsp
-	@echo $(OBJETS2) >> clibmak.rsp
-	@echo $(OBJETS3) >> clibmak.rsp
-	@echo $(OBJETS4) >> clibmak.rsp
-	@echo $(OBJETS5) >> clibmak.rsp
 
 	@$(WL) $(LFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp

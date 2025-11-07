@@ -33,6 +33,7 @@ AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
 OBJETS1  = InitSvga.obj
 OBJETS2  = vesa.obj
+OBJETS3  = S_PAL.obj S_PHYS.obj
 
 !ifeq WATCOM9 yes
 LIB      = LB9_SVGA_DOS
@@ -40,12 +41,13 @@ LIB      = LB9_SVGA_DOS
 LIB      = LIB_SVGA_DOS
 !endif
 
-$(LIB).LIB: $(OBJETS1) $(OBJETS2)
+$(LIB).LIB: $(OBJETS1) $(OBJETS2) $(OBJETS3)
 
 	@echo $(OBJETS1) > clibmak.rsp
 	@echo $(OBJETS2) >> clibmak.rsp
+	@echo $(OBJETS3) >> clibmak.rsp
 
-	@$(WL) $(LIBFLAGS) $(LIB) @clibmak.rsp
+	@$(WL) $(LFLAGS) $(LIB) @clibmak.rsp
 	@del clibmak.rsp
 
 .asm.obj:
