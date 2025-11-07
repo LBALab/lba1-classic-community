@@ -507,7 +507,7 @@ void PlayAnimFla(char *name_anim)
 		FlagFirst = TRUE ;
 		while (sortie == FALSE )
 		{
-			if( Key == K_ESC ) sortie = TRUE;
+			if( Key == K_ESC || Fire == F_RETURN ) sortie = TRUE;
 			cadence = TimerRef;
 
 			DrawNextFrameFla();
