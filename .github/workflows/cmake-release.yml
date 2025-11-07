@@ -31,22 +31,72 @@ jobs:
         run: |
           brew install cmake ninja
 
-      - name: Setup Open Watcom environment
+      - name: Discover and setup Open Watcom environment
         run: |
-          echo "WATCOM=/opt/watcom" >> $GITHUB_ENV
-          echo "PATH=/opt/watcom/bino64:/opt/watcom/bino:$PATH" >> $GITHUB_ENV
-          echo "INCLUDE=/opt/watcom/h" >> $GITHUB_ENV
-          echo "EDPATH=/opt/watcom/eddat" >> $GITHUB_ENV
-          echo "WIPFC=/opt/watcom/wipfc" >> $GITHUB_ENV
+          echo "Searching for Open Watcom installation..."
+          
+          # Try to find WATCOM installation
+          if [ -d "/opt/watcom" ]; then
+            WATCOM_ROOT="/opt/watcom"
+          elif [ -d "$HOME/watcom" ]; then
+            WATCOM_ROOT="$HOME/watcom"
+          elif [ -d "/usr/local/watcom" ]; then
+            WATCOM_ROOT="/usr/local/watcom"
+          else
+            echo "ERROR: Cannot find Open Watcom installation"
+            exit 1
+          fi
+          
+          echo "Found WATCOM at: $WATCOM_ROOT"
+          ls -la "$WATCOM_ROOT" || true
+          
+          # Determine correct bin directory
+          if [ -d "$WATCOM_ROOT/bino64" ]; then
+            BIN_DIR="$WATCOM_ROOT/bino64:$WATCOM_ROOT/bino"
+          elif [ -d "$WATCOM_ROOT/binl64" ]; then
+            BIN_DIR="$WATCOM_ROOT/binl64:$WATCOM_ROOT/binl"
+          elif [ -d "$WATCOM_ROOT/bin" ]; then
+            BIN_DIR="$WATCOM_ROOT/bin"
+          else
+            echo "ERROR: Cannot find bin directory in WATCOM installation"
+            ls -la "$WATCOM_ROOT"
+            exit 1
+          fi
+          
+          # Determine correct header directory
+          if [ -d "$WATCOM_ROOT/h" ]; then
+            INCLUDE_DIR="$WATCOM_ROOT/h"
+          elif [ -d "$WATCOM_ROOT/lh" ]; then
+            INCLUDE_DIR="$WATCOM_ROOT/lh"
+          else
+            echo "WARNING: Cannot find header directory, using default"
+            INCLUDE_DIR="$WATCOM_ROOT/h"
+          fi
+          
+          echo "WATCOM=$WATCOM_ROOT" >> $GITHUB_ENV
+          echo "PATH=$BIN_DIR:$PATH" >> $GITHUB_ENV
+          echo "INCLUDE=$INCLUDE_DIR" >> $GITHUB_ENV
+          echo "EDPATH=$WATCOM_ROOT/eddat" >> $GITHUB_ENV
+          echo "WIPFC=$WATCOM_ROOT/wipfc" >> $GITHUB_ENV
+          
+          echo "Environment configured:"
+          echo "  WATCOM=$WATCOM_ROOT"
+          echo "  BIN_DIR=$BIN_DIR"
+          echo "  INCLUDE=$INCLUDE_DIR"
 
       - name: Verify Open Watcom installation
         run: |
           echo "Checking Open Watcom installation..."
+          echo "WATCOM=$WATCOM"
+          echo "PATH=$PATH"
+          
           which wcc386 || echo "wcc386 not found in PATH"
           which wasm || echo "wasm not found in PATH"
           which wlink || echo "wlink not found in PATH"
-          ls -la /opt/watcom/bino64/ || echo "bino64 not found"
-          ls -la /opt/watcom/bino/ || echo "bino not found"
+          
+          echo ""
+          echo "Listing WATCOM directory structure:"
+          ls -la "$WATCOM" || true
 
       - name: Determine version
         id: version
