@@ -29,20 +29,31 @@ jobs:
         run: |
           echo "Downloading and installing Open Watcom for macOS..."
           cd /tmp
-          curl -L -o watcom.zip https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
+          
+          # Download the archive
+          curl -L -o watcom.tar.gz https://github.com/open-watcom/open-watcom-v2/releases/download/2024-04-25-Build/open-watcom-2_0-c-osx-x64
+          
+          echo "Downloaded file info:"
+          file watcom.tar.gz
+          ls -lh watcom.tar.gz
           
           # Create installation directory
           sudo mkdir -p /opt/watcom
           
-          # Extract (if it's a zip/tar, otherwise it might be a binary installer)
-          if file watcom.zip | grep -q "Zip archive"; then
-            unzip -q watcom.zip -d /opt/watcom
-          elif file watcom.zip | grep -q "gzip compressed"; then
-            tar -xzf watcom.zip -C /opt/watcom
+          # Try to extract - the file might be gzipped tar or just tar
+          echo "Attempting to extract..."
+          if file watcom.tar.gz | grep -q "gzip compressed"; then
+            echo "Extracting gzipped tar..."
+            sudo tar -xzf watcom.tar.gz -C /opt/watcom
+          elif file watcom.tar.gz | grep -q "POSIX tar archive"; then
+            echo "Extracting tar..."
+            sudo tar -xf watcom.tar.gz -C /opt/watcom
+          elif file watcom.tar.gz | grep -q "Zip archive"; then
+            echo "Extracting zip..."
+            sudo unzip -q watcom.tar.gz -d /opt/watcom
           else
-            # Might be a self-extracting archive or different format
-            chmod +x watcom.zip
-            sudo ./watcom.zip /opt/watcom || true
+            echo "Unknown file format, trying tar anyway..."
+            sudo tar -xzf watcom.tar.gz -C /opt/watcom || sudo tar -xf watcom.tar.gz -C /opt/watcom
           fi
           
           echo "Checking installation..."
@@ -50,12 +61,26 @@ jobs:
           
           # Find the actual installation directory (might be nested)
           if [ -d "/opt/watcom/watcom" ]; then
-            echo "Found nested installation, moving files..."
+            echo "Found nested watcom directory, moving files..."
             sudo mv /opt/watcom/watcom/* /opt/watcom/
             sudo rmdir /opt/watcom/watcom
           fi
           
+          # Check if files are in a subdirectory
+          SUBDIR_COUNT=$(sudo find /opt/watcom -maxdepth 1 -type d | wc -l)
+          if [ "$SUBDIR_COUNT" -eq 2 ]; then
+            SUBDIR=$(sudo find /opt/watcom -maxdepth 1 -mindepth 1 -type d)
+            echo "Found single subdirectory: $SUBDIR"
+            echo "Moving contents up..."
+            sudo mv "$SUBDIR"/* /opt/watcom/
+            sudo rmdir "$SUBDIR"
+          fi
+          
+          echo "Final installation structure:"
           ls -la /opt/watcom
+          echo ""
+          echo "Looking for binaries:"
+          sudo find /opt/watcom -name "wcc386" -o -name "wasm" -o -name "wlink" | head -5
 
       - name: Discover and setup Open Watcom environment
         run: |
