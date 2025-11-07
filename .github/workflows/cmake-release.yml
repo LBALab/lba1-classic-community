@@ -25,17 +25,17 @@ jobs:
         run: |
           brew install cmake ninja
           
-          # Install JWasm for assembling ASM files
-          brew tap JWasm/JWasm
-          brew install jwasm || brew install jwasm/jwasm/jwasm || {
-            echo "Installing JWasm from source..."
-            cd /tmp
-            git clone https://github.com/JWasm/JWasm.git
-            cd JWasm
-            make -f GccUnix.mak
-            sudo cp GccUnixR/jwasm /usr/local/bin/
-            chmod +x /usr/local/bin/jwasm
-          }
+      - name: Install JWasm assembler
+        run: |
+          echo "Building JWasm from source..."
+          cd /tmp
+          git clone https://github.com/JWasm/JWasm.git
+          cd JWasm
+          make -f GccUnix.mak
+          sudo cp GccUnixR/jwasm /usr/local/bin/
+          sudo chmod +x /usr/local/bin/jwasm
+          jwasm -? || true
+          echo "JWasm installed successfully"
 
       - name: Setup Open Watcom v2.0
         run: |
