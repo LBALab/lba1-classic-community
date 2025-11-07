@@ -30,7 +30,7 @@ LFLAGS = /c /q /b /n
 #AFLAGS  = /m2 /mx /z /zi /t /jMASM51 /jQUIRKS
 AFLAGS = /Cx /c /W0 /Sa /DNoLanguage=SYSCALL /omf
 
-OBJETS1  = menu.obj selector.obj menufunc.obj
+OBJETS1  = menu.obj menufunc.obj
 OBJETS2  =
 OBJETS3  =
 OBJETS4  =
