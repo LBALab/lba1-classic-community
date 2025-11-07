@@ -11,7 +11,7 @@
 - [ ] Add Wide Screen Support for non DOS/WIN9X builds
 - [x] W/Z Keys for Action
 - [ ] LBA2 Style Behaviour quick access
-- [ ] Skipable Adeline Logo
+- [x] Skipable Adeline Logo
 - [ ] Add Support for Japanese version (as its own language id)
 - [ ] Custom text messages directly from TEXT.HQR
 - [ ] Jump while Running (LBA2 Anim Style)
@@ -42,7 +42,7 @@
 - [ ] Midi
 
 ## Targeted Platforms
-- [X] DOS
+- [x] DOS
 - [ ] Windows 9X
 - [ ] Windows 32/64
 - [ ] Linux (Steam Deck)
