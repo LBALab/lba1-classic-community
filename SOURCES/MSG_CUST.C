@@ -18,7 +18,7 @@
 #define CSV_INVALID_INT_VALUE -1
 #define CSV_INVALID_TEXT_VALUE ""
 
-#define LBA_ENGINE_LINE_BREAK " @ " // used to replace a '\n' in a multi-line column with the string value that the engine interprets as a line break (found in dialogs).
+#define LBA_ENGINE_LINE_BREAK " @ "
 
 #define ASCII_MIN_INT 48
 #define ASCII_MAX_INT 57
@@ -27,42 +27,44 @@
 
 FILE *_customMultiTextFile;
 
+struct customMessageEntry
+{
+    LONG id;
+    char *text;
+};
+
+static struct customMessageEntry *_messageCache = NULL;
+static int _messageCacheSize = 0;
+static char *_cachedLanguage = NULL;
+static bool _cacheLoaded = false;
+
 char *fgets_dynamic(char **line, size_t *bufferSize, FILE *file);
 
-// struct returned upon calling readLong function
 struct csvLongValue
 {
-    int lastLineIndex; // helper variable to indicate the index of the line where an integer column ended
+    int lastLineIndex;
     LONG value;
 };
 
-// struct returned upon calling readText function
 struct csvTextValue
 {
-    int lastLineIndex; // helper variable to indicate the index of the line where a text column ended
+    int lastLineIndex;
     char *value;
 };
 
-// struct returned upon calling treatSingleColumn function
 struct treatSingleColumnResult
 {
-    int lastLineIndex; // helper variable to indicate the index of the line where a text column ended (taking into consideration a multi-line column case)
+    int lastLineIndex;
     int treatedColLength;
     char *value;
 };
 
-// struct returned upon calling CheckIfLineHasEndingQuote function
 struct endingQuoteResult
 {
-    int lastLineIndex; // helper variable to indicate the index of the line where a multi-line quote ended
+    int lastLineIndex;
     bool result;
 };
 
-/*
- * In CSV, if a column starts with a quotation mark, it must end with a quotation mark.
- * Everything will be assimilated as part of the text until a final quotation mark is found.
- * If this final quotation mark is not found, there must be an error in the CSV formatting.
- */
 bool hasQuotationMarks(char *line, int lineLength, int index)
 {
     return index < lineLength ? line[index] == CSV_QUOTATION : false;
@@ -90,15 +92,6 @@ struct treatSingleColumnResult *createSingleColumnResult(int lineLength)
     return result;
 }
 
-/*
- * Returns the result of the parsed column after treatment of CSV formatting. result.value for the treated string, result.lastLineIndex for the last index of the line read
- * result.treatedColLength for the length of the treated string.
- *
- * Parameters:
- *   line: the current line being read from the file
- *   lineLength: the length of the line (typically equivalent to strlen)
- *   index: the index value to start reading in the line
- */
 struct treatSingleColumnResult *treatSingleColumnWithoutQuotes(char *line, int lineLength, int index)
 {
     struct treatSingleColumnResult *result = createSingleColumnResult(lineLength);
@@ -113,17 +106,14 @@ struct treatSingleColumnResult *treatSingleColumnWithoutQuotes(char *line, int l
 
     while (i < lineLength && treatedColIndex < lineLength)
     {
-        // Ignore NUL characters
         if (line[i] == '\0')
         {
             ++i;
             continue;
         }
 
-        // If current character is a delimitator or a line break, then this text has reached it's end.
         if (line[i] == '\n' || isIndexDelimitator(line, lineLength, i))
             break;
-        // Else append character to treatedColumn
         else
             result->value[treatedColIndex++] = line[i];
 
@@ -136,15 +126,6 @@ struct treatSingleColumnResult *treatSingleColumnWithoutQuotes(char *line, int l
     return result;
 }
 
-/*
- * Returns the result of the parsed column after treatment of CSV formatting. result.value for the treated string, result.lastLineIndex for the last index of the line read
- * result.treatedColLength for the length of the treated string.
- *
- * Parameters:
- *   line: the current line being read from the file
- *   lineLength: the length of the line (typically equivalent of strlen)
- *   index: the index value to start reading in the line
- */
 struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int lineLength, int index)
 {
     struct treatSingleColumnResult *result = createSingleColumnResult(lineLength);
@@ -158,35 +139,29 @@ struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int line
     if (!line)
         return result;
 
-    // Iterate through each character of the line, starting from the index where the text column starts
     while (i < lineLength && treatedColIndex < lineLength)
     {
-        // Ignore NUL characters
         if (line[i] == '\0')
         {
             ++i;
             continue;
         }
 
-        // If current character is a quotation mark, evaluate what to do next
         if (line[i] == CSV_QUOTATION)
         {
             int nextI = i + 1;
 
-            // If the next character is a quotation mark (double quotations), treat it as a quote mark part of the text to be printed
             if (nextI < lineLength && line[nextI] == CSV_QUOTATION)
             {
                 result->value[treatedColIndex++] = line[nextI];
                 i += 2;
             }
-            // If the next character is not a quotation mark, we have reached the end of the column
             else
             {
                 ++i;
                 break;
             }
         }
-        // Otherwise, if the current character is still under quotations, and a line break is found, it means the text has a new paragraph
         else if (line[i] == '\n')
         {
             size_t bufferSize = CSV_BUFFER_SIZE;
@@ -198,13 +173,11 @@ struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int line
             if (feof(_customMultiTextFile))
                 break;
 
-            // Get the next line from the file
             fgets_dynamic(OUT & line, OUT & bufferSize, _customMultiTextFile);
 
             if (!line)
                 break;
 
-            // Recursively call this function to treat the next line
             nextLineResult = treatSingleColumnWithQuotes(line, strlen(line), 0);
 
             if (!nextLineResult ||
@@ -221,19 +194,14 @@ struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int line
                 if (tempValue)
                 {
                     result->value = tempValue;
-                    // concatenate a new line indication to the treated string, using LBA's engine specific line break (used in game dialogs)
                     strcat(result->value, LBA_ENGINE_LINE_BREAK);
-                    // concatenate the next line to result->value
                     strcat(result->value, nextLineResult->value);
-
-                    // Add the length of the new treated line to treatedColIndex
                     treatedColIndex = tempIndex;
                 }
             }
 
             break;
         }
-        // If the character doesn't match the previous conditions, simply append it to treatedColumn (including delimitators)
         else
         {
             result->value[treatedColIndex++] = line[i];
@@ -243,7 +211,6 @@ struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int line
 
     result->lastLineIndex = nextLineResult && nextLineResult->lastLineIndex != CSV_INVALID_INT_VALUE ? nextLineResult->lastLineIndex : i;
     result->treatedColLength = treatedColIndex;
-    // result->value = realloc(result->value, treatedColIndex);
 
     if (nextLineResult)
     {
@@ -254,10 +221,8 @@ struct treatSingleColumnResult *treatSingleColumnWithQuotes(char *line, int line
     return result;
 }
 
-// Function that parses a text column
 struct csvTextValue readText(char *line, int lineLength, int index)
 {
-    // Set initial values to invalid incase the parsing fails
     struct csvTextValue returnValue = {CSV_INVALID_INT_VALUE, CSV_INVALID_TEXT_VALUE};
 
     bool lineWithQuotes = hasQuotationMarks(line, lineLength, index);
@@ -288,10 +253,8 @@ struct csvTextValue readText(char *line, int lineLength, int index)
     return returnValue;
 }
 
-// Function that parses an integer column
 struct csvLongValue readLong(char *line, int lineLength, int index)
 {
-    // Set initial values to invalid incase the parsing fails
     struct csvLongValue returnValue = {CSV_INVALID_INT_VALUE, CSV_INVALID_INT_VALUE};
 
     char *column;
@@ -299,16 +262,12 @@ struct csvLongValue readLong(char *line, int lineLength, int index)
 
     int i = index;
 
-    // Iterate through each character
     while (i < lineLength)
     {
-        // Check if the character is in the ASCII range for integers
         bool isIndexValidNumber = line[i] >= ASCII_MIN_INT && line[i] <= ASCII_MAX_INT;
 
-        // If the current character is a delimitator, we have reached the end of this column
         if (isIndexDelimitator(line, lineLength, i))
             break;
-        // If a non integer character is found, it means we cannot use this column. Break the loop.
         else if (!isIndexValidNumber)
         {
             columnLen = 0;
@@ -319,18 +278,14 @@ struct csvLongValue readLong(char *line, int lineLength, int index)
         ++i;
     }
 
-    // If we have a valid number with a length
     if (columnLen > 0)
     {
         column = calloc(columnLen + 1, sizeof(char));
 
         if (column)
         {
-            // copy the part of the line that corresponds to the integer
             strncpy(column, line, columnLen);
-
             returnValue.lastLineIndex = i;
-            // Convert ascii to long
             returnValue.value = atol(column);
         }
         else
@@ -345,8 +300,6 @@ struct csvLongValue readLong(char *line, int lineLength, int index)
     return returnValue;
 }
 
-// Function that checks if a line has a csv quotation mark that is unended (indicating that next lines in the file are to be treated as part of the column)
-// Returns 1 if there is an unended quote, 0 if not.
 bool CheckIfLineHasUnendedQuote(char *line, int lineLength, int index)
 {
     bool hasUnendedQuote = false;
@@ -401,8 +354,6 @@ bool CheckIfLineHasUnendedQuote(char *line, int lineLength, int index)
     return hasUnendedQuote;
 }
 
-// Function to be called under an unended quote state (multi-line text column detected)
-// Returns a struct with a 'result' boolean indicating if the ending quote was found, and 'lastLineIndex' indicating the index on the line where it was found.
 struct endingQuoteResult CheckIfLineHasEndingQuote(char *line, int lineLength)
 {
     struct endingQuoteResult hasEndingQuote;
@@ -452,7 +403,6 @@ struct endingQuoteResult CheckIfLineHasEndingQuote(char *line, int lineLength)
     return hasEndingQuote;
 }
 
-// Function that calls fopen in the desired filepath and initializes the FILE* in context
 void InitializeCustomMessageFile()
 {
     char *systemLang = GetCurrentListLanguage();
@@ -471,7 +421,6 @@ void InitializeCustomMessageFile()
     free(filePath);
 }
 
-// Function that calls fclose on the opened FILE* in context
 void CloseCustomMessageFile()
 {
     if (_customMultiTextFile)
@@ -509,29 +458,65 @@ char *fgets_dynamic(char **line, size_t *bufferSize, FILE *file)
     return *line;
 }
 
-/*
- * Function to get text not defined in original assets
- * Return Value: A string with the result for the given numParam. This string should be freed from memory by the caller after being used, by calling the <stdlib.h> function 'void free(void *ptr)'.
- *
- * Parameters:
- *    numParam: the int key code to identify the string that needs to be fetched
- */
-char *GetCustomizedMultiText(LONG numParam)
+void ClearCustomMessageCache()
 {
-    char *returnValue = "";
-    bool inUnendedQuoteState = false;
+    int i;
+
+    if (_messageCache)
+    {
+        for (i = 0; i < _messageCacheSize; i++)
+        {
+            if (_messageCache[i].text)
+            {
+                free(_messageCache[i].text);
+                _messageCache[i].text = NULL;
+            }
+        }
+        free(_messageCache);
+        _messageCache = NULL;
+    }
+
+    if (_cachedLanguage)
+    {
+        free(_cachedLanguage);
+        _cachedLanguage = NULL;
+    }
+
+    _messageCacheSize = 0;
+    _cacheLoaded = false;
+}
+
+void LoadCustomMessagesIntoCache()
+{
     size_t bufferSize = CSV_BUFFER_SIZE;
     char *line = calloc(bufferSize + 1, sizeof(char));
+    bool inUnendedQuoteState = false;
+    int capacity = 16;
+    int count = 0;
+
+    ClearCustomMessageCache();
 
     InitializeCustomMessageFile();
 
-    if (!line)
-        return "";
+    if (!line || !_customMultiTextFile)
+    {
+        if (line)
+            free(line);
+        return;
+    }
 
-    if (!_customMultiTextFile)
-        return "";
+    _messageCache = calloc(capacity, sizeof(struct customMessageEntry));
+    if (!_messageCache)
+    {
+        free(line);
+        CloseCustomMessageFile();
+        return;
+    }
 
-    // Iterate every single line of the file
+    _cachedLanguage = calloc(strlen(GetCurrentListLanguage()) + 1, sizeof(char));
+    if (_cachedLanguage)
+        strcpy(_cachedLanguage, GetCurrentListLanguage());
+
     while (!feof(_customMultiTextFile) && fgets_dynamic(OUT & line, OUT & bufferSize, _customMultiTextFile))
     {
         int index = 0;
@@ -539,13 +524,9 @@ char *GetCustomizedMultiText(LONG numParam)
         struct csvLongValue num;
         struct csvTextValue text;
 
-        // On the off-chance a line is part of a multi-lined text column, and this line starts with the expected format (e.g. 10,Text), this line should be skipped in this flow.
-        // Without this check, text under multi-lined columns could be confused as values to be fetched and displayed by the program.
-        // Multi-line text columns are already parsed in the treatSingleColumn function, in case a valid num is found.
         if (inUnendedQuoteState)
         {
             struct endingQuoteResult hasEndingQuote;
-
             hasEndingQuote = CheckIfLineHasEndingQuote(line, lineLength);
 
             if (hasEndingQuote.result)
@@ -557,30 +538,81 @@ char *GetCustomizedMultiText(LONG numParam)
         inUnendedQuoteState = CheckIfLineHasUnendedQuote(line, lineLength, 0);
 
         num = readLong(line, lineLength, index);
-        // skip line until a valid num is found
-        if (num.value == CSV_INVALID_INT_VALUE || num.value != numParam)
+        if (num.value == CSV_INVALID_INT_VALUE)
             continue;
 
         index = num.lastLineIndex;
 
-        // if for a given num there is no column next to it with text, don't continue and stop the loop.
         if (!isIndexDelimitator(line, lineLength, index))
-            break;
+            continue;
 
         ++index;
 
-        // get the text for a valid num and language
         text = readText(line, lineLength, index);
-        if (text.value)
-            returnValue = text.value;
+        if (!text.value)
+            continue;
 
-        // at this point we've already found a num for a given language: break the loop
-        break;
+        if (count >= capacity)
+        {
+            struct customMessageEntry *newCache;
+            capacity *= 2;
+            newCache = realloc(_messageCache, capacity * sizeof(struct customMessageEntry));
+            if (!newCache)
+            {
+                free(text.value);
+                break;
+            }
+            _messageCache = newCache;
+        }
+
+        _messageCache[count].id = num.value;
+        _messageCache[count].text = text.value;
+        count++;
     }
 
+    _messageCacheSize = count;
+    _cacheLoaded = true;
+
     CloseCustomMessageFile();
-
     free(line);
+}
 
-    return returnValue;
+char *LookupCachedMessage(LONG numParam)
+{
+    int i;
+
+    for (i = 0; i < _messageCacheSize; i++)
+    {
+        if (_messageCache[i].id == numParam)
+        {
+            char *result = calloc(strlen(_messageCache[i].text) + 1, sizeof(char));
+            if (result)
+                strcpy(result, _messageCache[i].text);
+            return result;
+        }
+    }
+
+    return NULL;
+}
+
+/*
+ * Function to get text not defined in original assets
+ * Return Value: A string with the result for the given numParam. This string should be freed from memory by the caller after being used, by calling the <stdlib.h> function 'void free(void *ptr)'.
+ *
+ * Parameters:
+ *    numParam: the int key code to identify the string that needs to be fetched
+ */
+char *GetCustomizedMultiText(LONG numParam)
+{
+    char *currentLanguage = GetCurrentListLanguage();
+    char *result;
+
+    if (!_cacheLoaded || !_cachedLanguage || strcmp(_cachedLanguage, currentLanguage) != 0)
+    {
+        LoadCustomMessagesIntoCache();
+    }
+
+    result = LookupCachedMessage(numParam);
+
+    return result ? result : "";
 }
