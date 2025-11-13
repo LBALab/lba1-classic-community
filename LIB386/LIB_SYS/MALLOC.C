@@ -25,7 +25,7 @@ void *Malloc(LONG lenalloc)
 
 	if (ptr == NULL)
 	{
-		printf("ERROR: MemoryNotAlloc (Malloc): Size = %d/n", lenalloc);
+		printf("ERROR: MemoryNotAlloc (Malloc): Size = %d\n", lenalloc);
 	}
 
 	return ptr;

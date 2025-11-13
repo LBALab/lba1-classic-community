@@ -2,6 +2,8 @@
 
 ## Bugs
 - [x] Save/Load doesn't seem to work properly
+- [ ] Remove player name screen (do it on the first save only)
+- [ ] Reduce adeline logo fade to white time
 
 ## Migration
 - [x] Game ASM to C

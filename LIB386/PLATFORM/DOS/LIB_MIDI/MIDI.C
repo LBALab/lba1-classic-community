@@ -177,14 +177,14 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 	dll = FILE_read(driverpathname, NULL);
 	if (dll == NULL)
 	{
-		printf("%s Could not load driver '%s'./n", DriverError, driverpathname);
+		printf("%s Could not load driver '%s'.\n", DriverError, driverpathname);
 		return FALSE;
 	}
 
 	drvr = DLL_load(dll, DLLMEM_ALLOC | DLLSRC_MEM, NULL);
 	if (drvr == NULL)
 	{
-		printf("%s Invalid DLL image./n", DriverError);
+		printf("%s Invalid DLL image.\n", DriverError);
 		return FALSE;
 	}
 
@@ -203,7 +203,7 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 	hdriver = AIL_register_driver(drvr);
 	if (hdriver == -1)
 	{
-		printf("%s Driver %s not compatible with linked API version./n",
+		printf("%s Driver %s not compatible with linked API version.\n",
 			   DriverError, driverpathname);
 		AIL_shutdown(NULL);
 		return FALSE;
@@ -218,7 +218,7 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 
 	if (desc->drvr_type != XMIDI_DRVR)
 	{
-		printf("%s Driver %s not an XMIDI driver./n", DriverError, driverpathname);
+		printf("%s Driver %s not an XMIDI driver.\n", DriverError, driverpathname);
 		AIL_shutdown(NULL);
 		return FALSE;
 	}
@@ -227,18 +227,18 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 	// Print Driver name and copyright notice
 	//
 
-	printf("AIL/32 midi driver for:/n");
+	printf("AIL/32 midi driver for:\n");
 
 	str = desc->dev_name_table;
 	while (*str != 0)
 	{
-		printf("%s/n", str);
+		printf("%s\n", str);
 		while (*str != 0)
 			str++;
 		str++;
 	}
 
-	printf("/nCopyright (C) 1991,1992 Miles Design, Inc./n/n");
+	printf("\nCopyright (C) 1991,1992 Miles Design, Inc.\n\n");
 #endif
 	return TRUE;
 }
@@ -270,7 +270,7 @@ LONG InitMidi()
 						   desc->default_DMA, desc->default_DRQ))
 	{
 		AIL_shutdown(NULL);
-		printf("%s Sound Hardware not found./n", DriverError);
+		printf("%s Sound Hardware not found.\n", DriverError);
 		return FALSE;
 	}
 
@@ -362,7 +362,7 @@ void PlayMidi(/*char *filename*/ UBYTE *ail_buffer)
 									  state,
 									  NULL)) == -1)
 	{
-		//		printf("Sequence %u not present in XMIDI file /"%s/"./n",seqnum,argv[1]);
+		//		printf("Sequence %u not present in XMIDI file /"%s/".\n",seqnum,argv[1]);
 		return;
 	}
 
@@ -383,7 +383,7 @@ void PlayMidi(/*char *filename*/ UBYTE *ail_buffer)
 
 		if (timb != NULL)
 		{
-			//			printf("Installed timbre bank %u, patch %u/n",bank,patch);
+			//			printf("Installed timbre bank %u, patch %u\n",bank,patch);
 			AIL_install_timbre(hdriver, ail_bank, patch, timb);
 			//			free(timb);
 		}
@@ -400,7 +400,7 @@ void PlayMidi(/*char *filename*/ UBYTE *ail_buffer)
 	// Start music playback
 	//
 
-	/*   printf("Playing sequence %u from XMIDI file /"%s/" .../n/n",
+	/*   printf("Playing sequence %u from XMIDI file /"%s/" ...\n\n",
 		  seqnum,argv[1]);	*/
 
 	AIL_start_sequence(hdriver, hseq);

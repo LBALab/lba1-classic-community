@@ -36,14 +36,14 @@ LONG WaveInitDLL(char *driverpathname)
 	dll = FILE_read(driverpathname, NULL);
 	if (dll == NULL)
 	{
-		printf("%s Could not load driver '%s'./n", WaveError, driverpathname);
+		printf("%s Could not load driver '%s'.\n", WaveError, driverpathname);
 		return FALSE;
 	}
 
 	drvr = DLL_load(dll, DLLMEM_ALLOC | DLLSRC_MEM, NULL);
 	if (drvr == NULL)
 	{
-		printf("%s Invalid DLL image./n", WaveError);
+		printf("%s Invalid DLL image.\n", WaveError);
 		return FALSE;
 	}
 
@@ -94,7 +94,7 @@ ULONG InitWave()
 
 	if (BUFFER_DMA == NULL)
 	{
-		printf("%s Couldn't allocate a contiguous buffer in DOS memory./n", WaveError);
+		printf("%s Couldn't allocate a contiguous buffer in DOS memory.\n", WaveError);
 		return 0;
 	}
 
@@ -103,7 +103,7 @@ ULONG InitWave()
 
 	if (!Wave_Driver_Enable)
 	{
-		printf("%s Sound card not found./n", WaveError);
+		printf("%s Sound card not found.\n", WaveError);
 	}
 
 	return Wave_Driver_Enable;
