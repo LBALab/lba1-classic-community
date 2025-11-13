@@ -1,6 +1,5 @@
 # LIB_MENU - Menu System Library
 # Platform-agnostic menu UI (rendering and interaction)
-# File system code moved to LIB_MENU_DOS
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MENU_SOURCES

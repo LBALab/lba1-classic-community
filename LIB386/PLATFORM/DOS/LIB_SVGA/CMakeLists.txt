@@ -2,41 +2,33 @@
 # Implements platform functions defined in lib_svga/lib_svga_platform.h
 # VESA BIOS interface, mode setting, bank switching
 
-set(SVGA_DOS_ASM_SOURCES
+# Source files (from MAKEFILE OBJETS1)
+set(LIB_SVGA_DOS_SOURCES
     VESA.ASM
     INITSVGA.ASM
-    S_PHYS.ASM   # Physical screen operations (bank switching, Flip, CopyBlockPhys)
-    S_PAL.ASM    # VGA palette I/O operations
+    S_PHYS.ASM
+    S_PAL.ASM
 )
 
-# Compile Assembly sources
-foreach(src ${SVGA_DOS_ASM_SOURCES})
-    add_custom_command(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/${src}.obj
-        COMMAND ${CMAKE_ASM_MASM_COMPILER}
-        ARGS ${CMAKE_ASM_MASM_FLAGS} -I${CMAKE_CURRENT_SOURCE_DIR}/../../../LIB_SVGA -Fo${CMAKE_CURRENT_BINARY_DIR}/${src}.obj ${CMAKE_CURRENT_SOURCE_DIR}/${src}
-        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/${src}
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-        COMMENT "Assembling LIB_SVGA_DOS file ${src}"
-    )
-    list(APPEND SVGA_DOS_OBJECTS ${CMAKE_CURRENT_BINARY_DIR}/${src}.obj)
+# Create static library
+add_library(LIB_SVGA_DOS STATIC ${LIB_SVGA_DOS_SOURCES})
+
+# Explicitly set language for source files with uppercase extensions
+foreach(src ${LIB_SVGA_DOS_SOURCES})
+    get_filename_component(ext ${src} EXT)
+    if(ext STREQUAL ".C")
+        set_source_files_properties(${src} PROPERTIES LANGUAGE C)
+    elseif(ext STREQUAL ".ASM")
+        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
+    endif()
 endforeach()
 
-# Create static library as an imported library
-add_custom_command(
-    OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/svga_dos.lib
-    COMMAND ${CMAKE_AR}
-    ARGS -n ${CMAKE_CURRENT_BINARY_DIR}/svga_dos.lib ${SVGA_DOS_OBJECTS}
-    DEPENDS ${SVGA_DOS_OBJECTS}
-    COMMENT "Creating LIB_SVGA_DOS library"
-)
+# Include current directory for headers
+target_include_directories(LIB_SVGA_DOS PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Create a custom target for building
-add_custom_target(svga_dos_build ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/svga_dos.lib)
-
-# Create an imported library that can be linked
-add_library(svga_dos STATIC IMPORTED GLOBAL)
-set_target_properties(svga_dos PROPERTIES
-    IMPORTED_LOCATION ${CMAKE_CURRENT_BINARY_DIR}/svga_dos.lib
+# Set library output name and linker language
+set_target_properties(LIB_SVGA_DOS PROPERTIES
+    OUTPUT_NAME "LIB_SVGA_DOS"
+    ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib
+    LINKER_LANGUAGE C
 )
-add_dependencies(svga_dos svga_dos_build)

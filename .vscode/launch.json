@@ -1,0 +1,49 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Run LBA1 (DOS) - Quick Launch (No Build)",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/usr/local/bin/dosbox-x",
+            "runtimeArgs": [
+                "${workspaceFolder}/build/bin/LBAD.exe",
+                "--conf",
+                "${workspaceFolder}/.dosbox.conf"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "Run LBA1 (DOS) with DOSBox-X",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/usr/local/bin/dosbox-x",
+            "runtimeArgs": [
+                "${workspaceFolder}/build/bin/LBAD.exe",
+                "--conf",
+                "${workspaceFolder}/.dosbox.conf"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: Build LBAD"
+        },
+        {
+            "name": "Debug LBA1 (DOS) with DOSBox-X Debugger",
+            "type": "node",
+            "request": "launch",
+            "runtimeExecutable": "/usr/local/bin/dosbox-x",
+            "runtimeArgs": [
+                "${workspaceFolder}/build/bin/LBAD.exe",
+                "--conf",
+                "${workspaceFolder}/.dosbox-debug.conf",
+                "-debug",
+                "-c",
+                "logcpu"
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "preLaunchTask": "CMake: Build LBAD"
+        }
+    ]
+}

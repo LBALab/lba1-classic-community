@@ -7,11 +7,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <dos.h>
-
-#ifndef WATCOM9
-#include <mem.h>
-#endif
 
 /*══════════════════════════════════════════════════════════════════════════*/
 

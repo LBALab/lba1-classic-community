@@ -82,8 +82,8 @@ if(BUILD_DOS)
     endforeach()
     
     # Link libraries
-    target_link_libraries(LBAD ${COMMON_LIBRARIES} cd_dos menu_dos mix_dos samp_dos sys_dos svga_dos)
-    # midi_dos not linked - requires AIL32 SDK, using stub implementation instead
+    target_link_libraries(LBAD ${COMMON_LIBRARIES} LIB_CD_DOS LIB_MENU_DOS LIB_MIX_DOS LIB_SAMP_DOS LIB_SYS_DOS LIB_SVGA_DOS)
+    # LIB_MIDI_DOS not linked - requires AIL32 SDK, using stub implementation instead
     
     # Include directories
     target_include_directories(LBAD PRIVATE ${COMMON_INCLUDES})
@@ -101,9 +101,6 @@ if(BUILD_DOS)
             LINK_FLAGS "OPTION stack=7000 SYSTEM dos4g"
         )
     endif()
-    
-    # Dependencies
-    add_dependencies(LBAD ${COMMON_LIBRARIES} sys_dos_build svga_dos_build)
     
     # Copy CSV files
     add_custom_command(TARGET LBAD POST_BUILD

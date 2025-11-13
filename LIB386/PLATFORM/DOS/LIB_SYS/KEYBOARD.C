@@ -195,7 +195,31 @@ void _interrupt _far NewIntPM09(void)
 
 	if (AsciiMode != 0)
 	{
-		_chain_intr(Old_Int_09);
+		// Chain to old interrupt handler without sending EOI
+		// This allows the old handler to process the keystroke and put it in BIOS buffer
+		// The old handler will send the EOI
+		if (Old_PM09_Sel != 0 && Old_PM09_Off != 0)
+		{
+			// Use inline assembly to chain exactly like the original ASM code
+			// The old handler expects to be jumped to, not called
+			_asm {
+				// Set up far pointer to old handler
+				mov ecx, [Old_PM09_Off]
+				mov ax, [Old_PM09_Sel]
+				// Stack manipulation to set up far return address
+				// [esp+4*4] = EIP (return offset)
+				// [esp+5*4] = CS (return selector)
+				xchg ecx, [esp+4*4]
+				xchg eax, [esp+5*4]
+				// Now stack has old handler address as return address
+			}
+			// Function will return with retf, jumping to old handler
+			return;
+		}
+		else
+		{
+			outp(0x20, 0x20);
+		}
 	}
 	else
 	{
@@ -205,37 +229,28 @@ void _interrupt _far NewIntPM09(void)
 
 UWORD GetAscii(void)
 {
-	union REGS regs;
-
-	regs.h.ah = 1;
-	int386(0x16, &regs, &regs);
-
-	if (regs.x.cflag)
-	{
-		return 0;
+	UWORD result = 0;
+	
+	// Replicate the original assembly exactly
+	// INT 16h is reflected by DOS/4GW from protected mode to real mode
+	_asm {
+		mov ah, 1        // Function 1: Check for keystroke
+		int 16h          // Call BIOS - sets ZF if no key
+		jz nokey         // Jump if zero flag set (no key)
+		mov ah, 0        // Function 0: Read keystroke  
+		int 16h          // Call BIOS - returns key in AX
+		mov result, ax   // Store result
+	nokey:
 	}
-
-	regs.h.ah = 0;
-	int386(0x16, &regs, &regs);
-
-	return regs.w.ax;
+	
+	return result;  // Returns full 16-bit value: AH=scan code, AL=ASCII
 }
 
 void ClearAsciiBuffer(void)
 {
-	union REGS regs;
-
-	do
+	// Use conio.h functions which work properly in protected mode
+	while (kbhit())
 	{
-		regs.h.ah = 1;
-		int386(0x16, &regs, &regs);
-
-		if (regs.x.cflag)
-		{
-			break;
-		}
-
-		regs.h.ah = 0;
-		int386(0x16, &regs, &regs);
-	} while (1);
+		getch();
+	}
 }
