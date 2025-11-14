@@ -2875,8 +2875,8 @@ LONG MainGameMenu()
 
 		case 20: // newgame
 
-			if (!InputPlayerName(42, 0))
-				break;
+			// if (!InputPlayerName(42, 0))
+			// 	break;
 
 			/**do
 			{
