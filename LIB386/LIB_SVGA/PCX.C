@@ -6,8 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <dos.h>
-#include <conio.h>
 #include <ctype.h>
 
 /*══════════════════════════════════════════════════════════════════════════*
@@ -27,9 +25,9 @@ struct ffblk
 	char ff_name[13];
 };
 
-union REGS reg;
+// union REGS reg;
 
-struct SREGS segregs;
+// struct SREGS segregs;
 
 static struct
 {

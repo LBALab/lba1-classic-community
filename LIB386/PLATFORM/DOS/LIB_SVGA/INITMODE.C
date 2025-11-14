@@ -9,8 +9,6 @@
 
 #include "lib_svga/lib_svga.h"
 
-#include <dos.h>
-#include <i86.h>
 #include <stdio.h>
 #include <string.h>
 

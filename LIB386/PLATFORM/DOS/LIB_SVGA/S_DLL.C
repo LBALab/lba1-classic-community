@@ -7,8 +7,6 @@
 #include "lib_sys/lib_sys.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <dos.h>
-#include <i86.h>
 
 extern void *NewBank;
 extern void *InitSvgaMode;

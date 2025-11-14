@@ -13,6 +13,9 @@ set(LIB_SYS_DOS_SOURCES
     FILES_A.C
     FILESYSTEM.C
     TIME.C
+    # DOS-specific system files moved from LIB_SYS
+    SYSTEM.C      # DOS interrupt vector management
+    DLLLOAD.C     # DOS4GW LX DLL loader
 )
 
 # Create static library
@@ -29,7 +32,10 @@ foreach(src ${LIB_SYS_DOS_SOURCES})
 endforeach()
 
 # Include current directory for headers
-target_include_directories(LIB_SYS_DOS PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(LIB_SYS_DOS PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../LIB_SYS  # For parent lib_sys headers
+)
 
 # Set library output name and linker language
 set_target_properties(LIB_SYS_DOS PROPERTIES

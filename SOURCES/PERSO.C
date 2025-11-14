@@ -1600,7 +1600,7 @@ void main(int argc, UBYTE *argv[])
 
 	// FLA intro
 
-	// PlayAnimFla("DRAGON3");
+	PlayAnimFla("DRAGON3");
 #endif
 
 	// main game menu

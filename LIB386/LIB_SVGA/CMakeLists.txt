@@ -5,14 +5,16 @@
 # Platform-specific files moved to LIB_SVGA_DOS/LIB_SVGA_WIN:
 #   - INITSVGA.ASM (SVGA initialization)
 #   - VESA.ASM (VESA BIOS interface)
+#   - S_MOUSE.C (DOS mouse driver INT 33h)
+#   - INITMODE.C (DOS video mode initialization)
+#   - S_DLL.C (DOS SVGA DLL loader)
+#   - S_MODE.ASM, DLL.ASM, DLL_I.ASM, S_FIND.ASM (INT 10h BIOS video mode setting)
 set(LIB_SVGA_SOURCES
     # OBJETS1
-    INITMODE.C
     GRAPH_A.ASM
     # OBJETS2
     S_TEXT.C
     S_STRING.ASM
-    S_MOUSE.C
     MASK_A.ASM
     FONT_A.ASM
     # OBJETS3
@@ -40,7 +42,6 @@ set(LIB_SVGA_SOURCES
     LBM.C
     PCX.C
     # OBJETS7
-    S_DLL.C
     GIF.C
 )
 

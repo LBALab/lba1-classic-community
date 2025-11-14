@@ -19,8 +19,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <dos.h>
-#include <conio.h>
 #include <ctype.h>
 
 /*

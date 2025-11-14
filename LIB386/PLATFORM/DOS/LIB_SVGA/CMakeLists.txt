@@ -8,6 +8,15 @@ set(LIB_SVGA_DOS_SOURCES
     INITSVGA.ASM
     S_PHYS.ASM
     S_PAL.ASM
+    # DOS-specific files moved from LIB_SVGA
+    S_MOUSE.C      # DOS mouse driver (INT 33h)
+    INITMODE.C     # DOS video mode initialization
+    S_DLL.C        # DOS SVGA DLL loader
+    # NOTE: The following 16-bit ASM files are not compatible with 32-bit FLAT model:
+    # S_MODE.ASM     # 16-bit SMALL model (obsolete, replaced by VESA.ASM)
+    # DLL.ASM        # 16-bit SMALL model (obsolete, replaced by DLL drivers)
+    # DLL_I.ASM      # 16-bit SMALL model (obsolete)
+    # S_FIND.ASM     # 16-bit SMALL model (obsolete, VESA detection in VESA.ASM)
 )
 
 # Create static library
@@ -24,7 +33,10 @@ foreach(src ${LIB_SVGA_DOS_SOURCES})
 endforeach()
 
 # Include current directory for headers
-target_include_directories(LIB_SVGA_DOS PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(LIB_SVGA_DOS PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../LIB_SVGA  # For parent lib_svga headers
+)
 
 # Set library output name and linker language
 set_target_properties(LIB_SVGA_DOS PROPERTIES

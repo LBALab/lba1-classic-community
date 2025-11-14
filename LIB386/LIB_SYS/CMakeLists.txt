@@ -8,8 +8,7 @@ set(LIB_SYS_SOURCES
     LOADMALL.C
     LOADSAVE.C
     DEF_FILE.C
-    # OBJETS2 - System and buffers
-    SYSTEM.C
+    # OBJETS2 - System and buffers (SYSTEM.C moved to LIB_SYS_DOS)
     BUFFER_A.C
     #BUFFER_A.ASM
     DIVERS.C
@@ -18,8 +17,7 @@ set(LIB_SYS_SOURCES
     #EXPAND.ASM
     HQ_RESS.C
     HQR.ASM
-    # OBJETS4 - DLL loading and memory management
-    DLLLOAD.C
+    # OBJETS4 - DLL loading and memory management (DLLLOAD.C moved to LIB_SYS_DOS)
     ADELINE.C
     HQ_MEM.C
     HQ_R_M.C

@@ -14,6 +14,8 @@ set(LIB_SAMP_DOS_SOURCES
     WAVE_A.ASM
     WAVE_I.ASM
     # GUS.C          # Requires Gravis Ultrasound SDK
+    # DOS-specific files moved from LIB_SAMP
+    WAVE.C         # DOS wave driver with DosMalloc for DMA buffers
 )
 
 # Create static library
@@ -30,7 +32,10 @@ foreach(src ${LIB_SAMP_DOS_SOURCES})
 endforeach()
 
 # Include current directory for headers
-target_include_directories(LIB_SAMP_DOS PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(LIB_SAMP_DOS PUBLIC 
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../../LIB_SAMP  # For parent lib_samp headers
+)
 
 # Set library output name and linker language
 set_target_properties(LIB_SAMP_DOS PROPERTIES
