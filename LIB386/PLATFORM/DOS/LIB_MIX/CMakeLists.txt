@@ -4,11 +4,15 @@
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIX_DOS_SOURCES
+    MIXER_A.ASM
     MIXER_I.ASM
 )
 
 # Create static library
 add_library(LIB_MIX_DOS STATIC ${LIB_MIX_DOS_SOURCES})
+
+# Define SBPRO for Sound Blaster Pro mixer support
+target_compile_definitions(LIB_MIX_DOS PRIVATE SBPRO)
 
 # Explicitly set language for source files with uppercase extensions
 foreach(src ${LIB_MIX_DOS_SOURCES})

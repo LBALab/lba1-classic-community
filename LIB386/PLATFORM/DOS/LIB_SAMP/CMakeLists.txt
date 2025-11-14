@@ -3,8 +3,17 @@
 # Supports Sound Blaster, Gravis Ultrasound, and compatible cards
 
 # Source files (from MAKEFILE OBJETS1)
+# NOTE: WAVE_A.ASM, N_WAVE.ASM, and WAVE_I.ASM require wave.inc which is not available
+# They appear to be sound driver implementations that may not be needed
+# NOTE: GUS.C requires Gravis Ultrasound SDK headers (forte.h, gf1proto.h, extern.h, ultraerr.h)
 set(LIB_SAMP_DOS_SOURCES
+    BALANCE.ASM
+    DMA_CODE.ASM
+    N_WAVE.ASM
+    REAL.ASM
+    WAVE_A.ASM
     WAVE_I.ASM
+    # GUS.C          # Requires Gravis Ultrasound SDK
 )
 
 # Create static library

@@ -1,13 +1,17 @@
+		.386p
+
+		.model SMALL, C
+
 		.DATA
 
 Status          EQU     08h     ;DMAC status port (read)     \  same port
 Command         EQU     08h     ;DMAC command port (write)   /  (read/write)
 Request         EQU     09h     ;DMAC channel request (write-only)
-DMA_Mask        EQU     0Ah     ;DMAC DMA_Mask (write-only)
+DMA_Mask_reg    EQU     0Ah     ;DMAC DMA_Mask (write-only)
 Mode            EQU     0Bh     ;DMAC mode (write)
 byte_ptr        EQU     0Ch     ;byte pointer flip-flop
 
-addr            EQU	000h	; per-channel base address
+dma_addr_off    EQU	000h	; per-channel base address
 count           EQU	001h	; per-channel byte count
 
 read_cmd        EQU     058h    ; autoinitialising read
@@ -29,7 +33,7 @@ dmac2        	DB	0    	; Flag set to non-zero when using the 2nd DMA controller
 
 		.CODE
 
-MACRO 		adjust reg	; Adjust register port for 2nd DMA cont
+adjust 		MACRO reg	; Adjust register port for 2nd DMA cont
 		local no_adjust
 
 		cmp	byte ptr[dmac2], 0
@@ -38,7 +42,7 @@ MACRO 		adjust reg	; Adjust register port for 2nd DMA cont
 		add	reg, 0C0h
 no_adjust:
 
-ENDM adjust
+		ENDM
 
 ;+---------------------------------------------------------------------------+
 ;| int dma_setup(int Channel, char far *Buffer, unsigned Length)             |
@@ -66,7 +70,7 @@ dma_setup	PROC USES EBX,\
 ; Adjust channel number
 
 		mov	byte ptr[dmac2], 0
-		mov	bx, Channel
+		mov	ebx, Channel
 		cmp	bx, 4
 		jb	OkChannel
 		and	bx, 3
@@ -115,7 +119,9 @@ AddrOk:
 ;By writing any value to it, the DMA controller registers are prepared
 ;to accept the address and length values LSB first.
 
-		mov	dx, byte_pt		;Reset byte pointer Flip/flop
+		cli				;Disable interrupts during DMA programming
+
+		mov	dx, byte_ptr		;Reset byte pointer Flip/flop
 		adjust	dx
 		out	dx, al
 
@@ -149,10 +155,12 @@ AddrOk:
 		mov  	ax, si              	;Load pre-calculated mode
 		out  	dx, al              	;Write it to the DSP
 
-		mov  	dx, DMA_Mask	        ;dx=DMAX DMA_Mask register
+		mov  	dx, DMA_Mask_reg	;dx=DMAX DMA_Mask register
 		adjust 	dx
 		mov  	al, cl              	;al=pre-calulated DMA_Mask value
 		out  	dx, al              	;Write DMA_Mask (allow dma on this channel)
+
+		sti				;Re-enable interrupts
 
 		ret
 
@@ -172,7 +180,7 @@ prevent_dma	PROC ,\
 
 ; Check channel number range
 
-		mov	dx, DMA_Mask
+		mov	dx, DMA_Mask_reg
 
 		mov	eax, Channel
 		cmp	al, 4
@@ -201,7 +209,7 @@ allow_dma	PROC ,\
 
 ; Check channel number range
 
-		mov	dx, DMA_Mask
+		mov	dx, DMA_Mask_reg
 
 		mov	eax, Channel
 		cmp	al, 4
@@ -226,7 +234,7 @@ allow_dma	ENDP
 ;|          else returns the number of bytes/words left to transfer          |
 ;+---------------------------------------------------------------------------+
 
-PROC		dma_count ,\
+dma_count	PROC ,\
 		Channel:DWORD
 
 		mov  	eax, Channel
@@ -237,10 +245,10 @@ PROC		dma_count ,\
 		add  	dx, count
 
 		cmp  	al, 4
-		jb   	OkChannel
+		jb   	@@ok_ch2
 		shl  	dx, 1
 		add  	dx, 0C0h
-OkChannel:
+@@ok_ch2:
 		xor	eax, eax
 		cli
 		in   	al, dx
@@ -273,10 +281,10 @@ dma_addr	PROC ,\
 		shl  	dx, 1
 
 		cmp	al, 4
-		jb	OkChannel
+		jb	@@ok_ch3
 		shl	dx, 1
 		add	dx, 0C0h
-OkChannel:
+@@ok_ch3:
 		xor	eax, eax
 		cli
 		in   	al, dx
@@ -289,90 +297,4 @@ OkChannel:
 
 dma_addr	ENDP
 
-
-
-VOID	*DMABuffer, *DMAAllocBuffer;
-BYTE	LockedDMARegion;
-
-#define	MAX_DMABUFFERATTEMPTS	10;
-
-;+---------------------------------------------------------------------------+
-;| BYTE *AlignOn4KBoundry( BYTE *Buf )                                       |
-;| ------------------------------------------------------------------------- |
-;| Align Buf to the nearest 4K page					     |
-;+---------------------------------------------------------------------------+
-
-#define	AlignOn4KBoundry(Buf)	((Buf + 0x00000FFF) & 0xFFFFF000)
-
-;+---------------------------------------------------------------------------+
-;| BYTE *AllocateDMABuffer( WORD BufferSize )                                |
-;| ------------------------------------------------------------------------- |
-;| BufferSize = 0-64K                                                        |
-;| ------------------------------------------------------------------------- |
-;| Returns: Buffer if successful                                             |
-;| 	    NULL if error						     |
-;+---------------------------------------------------------------------------+
-
-BYTE *AllocateDMABuffer( WORD BufferSize )
-{
-   VOID	  *Tried[ MAX_DMABUFFERATTEMPTS ] ;
-   VOID   *Buf, *DMAAddr ;
-   int    Tries, Error ;
-
-   for (Tries = 0; Tries < MAX_DMABUFFERATTEMPTS; Tries++)
-      Tried[ Tries ] = NULL ;
-
-   Tries             = 0;
-   LockedDMARegion   = FALSE;
-
-   do
-   {
-//      printf( "DMA buffer allocation attempt: %d\n", Tries + 1 ) ;
-      if ((DMAAllocBuffer = (VOID *)DosMalloc( BufferSize + 0xFFF)) != NULL)
-      {
-	 DMABuffer = AlignOn4KBoundry(DMAAllocBuffer);
-
-	 if ( ((LONG)DMABuffer & 0xF0000) !=
-	      (((LONG)DMABuffer + BufferSize) & 0xF0000) )
-	 {
-	    Tried[ Tries ] = DMAAllocBuffer ;
-	    DMAAllocBuffer = NULL ;
-	    DMABuffer	   = NULL ;
-
-	 }
-      }
-      Tries++ ;
-      DMAAllocBuf = Buf;
-      DMABuffer   = DMAAddr ;
-   }
-   while ((DMAAllocBuf == NULL) && (Tries < MAX_DMABUFFERATTEMPTS)) ;
-
-   for (wTries = 0; wTries < MAX_DMABUFFERATTEMPTS; wTries++)
-   {
-      if (alpTried[ wTries ])
-	 free( alpTried[ wTries ] ) ;
-      else
-	 break ;
-   }
-
-   return( DMABuffer ) ;
-
-
-;+---------------------------------------------------------------------------+
-;| VOID FreeDMABuffer( VOID )                                                |
-;| ------------------------------------------------------------------------- |
-;| Free the DMA buffer							     |
-;+---------------------------------------------------------------------------+
-
-VOID FreeDMABuffer( VOID )
-{
-   if (LockedDMARegion)
-      UnlockDMARegion( &gDDS, 0 ) ;
-
-   if (DMAAllocBuf)
-   {
-      free( glpDMAAllocBuf ) ;
-      DMAAllocBuf = NULL ;
-   }
-
-}
+		END

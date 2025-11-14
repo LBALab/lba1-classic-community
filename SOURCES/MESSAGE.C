@@ -2,10 +2,10 @@
 #ifdef TITRE
 /*-------------------------------------------------------------------------*/
 
-█┐   █┐ ██████┐ ██████┐ ██████┐ ██████┐ ██████┐ ██████┐
-	//	    ██┐ ██│ ██┌───┘ ██┌───┘ ██┌───┘ ██┌─██│ ██┌───┘ ██┌───┘
+		█┐   █┐ ██████┐ ██████┐ ██████┐ ██████┐ ██████┐ ██████┐
+		██┐ ██│ ██┌───┘ ██┌───┘ ██┌───┘ ██┌─██│ ██┌───┘ ██┌───┘
 	    ██████│ █████┐  ██████┐ ██████┐ ██████│ ██│███┐ █████┐
-	//	    ██┌─██│ ██┌──┘  └───██│ └───██│ ██┌─██│ ██│└██│ ██┌──┘
+		██┌─██│ ██┌──┘  └───██│ └───██│ ██┌─██│ ██│└██│ ██┌──┘
 	    ██│ ██│ ██████┐ ██████│ ██████│ ██│ ██│ ██████│ ██████┐
 	    └─┘ └─┘ └─────┘ └─────┘ └─────┘ └─┘ └─┘ └─────┘ └─────┘
 /*-------------------------------------------------------------------------*/
@@ -13,64 +13,11 @@
 
 // #define	CRYPTAGE	1
 
-// #define LORAN	1
 // #define LBA_EDITOR 1
 /*-------------------------------------------------------------------------*/
 
-#ifdef LORAN
-#include "lib_sys/adeline.h"
-#include "lib_sys/lib_sys.h"
-#include "lib_svga/lib_svga.h"
-#include "lib_menu/lib_menu.h"
-#include "lib_cd/lib_cd.h"
-#include "lib_3d/lib_3d.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <conio.h>
-#include <dos.h>
-#include <i86.h>
-
-#include "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
-#else
 #include "c_extern.h"
 #include "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
-#endif
-#ifdef LORAN
-//================================================================= L O R A N
-#define PathConfigFile "c://adeline.def"
-#define CDROM 1
-
-	LONG Island;
-extern UBYTE *BufSpeak;
-/*-------------------------------------------------------------------------*/
-void DrawCadre(LONG x0, LONG y0, LONG x1, LONG y1)
-{
-	Rect(x0, y0, x1, y1, 15);
-}
-/*-------------------------------------------------------------------------*/
-void *LoadTestMalloc(char *name)
-{
-	return (LoadMalloc(name));
-}
-/*-------------------------------------------------------------------------*/
-LONG GetMusicCD()
-{
-	return (GetMusicCDR());
-}
-/*-------------------------------------------------------------------------*/
-void StopMusicCD()
-{
-	StopCDR();
-}
-/*-------------------------------------------------------------------------*/
-UBYTE *Screen;
-UBYTE *LbaFont;
-UBYTE *PalOrg;
-WORD QuickMessage = FALSE;
-//===========================================================================
-#endif
 
 #ifdef ONE_GAME_DIRECTORY
 #define PATH_TXT ""
@@ -321,14 +268,14 @@ LONG FindText(LONG text)
 }
 #ifdef TITRE
 /*-------------------------------------------------------------------------*/
-█▀▀▀▀ █▀▀▀▄ █▀▀▀█ █▀▀▀█ █▄ ▄█       █▀▀▀█ █▀▀▀█ █▀▀▀█ ▀▀█▀▀
-	//	  ██    ██  █ ██▀█▀ ██  █ ██▀ █       ██▀▀▀ ██▀▀█ ██▀█▀   ██
-	  ▀▀▀▀▀ ▀▀▀▀  ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀       ▀▀    ▀▀  ▀ ▀▀  ▀   ▀▀
+	█▀▀▀▀ █▀▀▀▄ █▀▀▀█ █▀▀▀█ █▄ ▄█       █▀▀▀█ █▀▀▀█ █▀▀▀█ ▀▀█▀▀
+	██    ██  █ ██▀█▀ ██  █ ██▀ █       ██▀▀▀ ██▀▀█ ██▀█▀   ██
+	▀▀▀▀▀ ▀▀▀▀  ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀       ▀▀    ▀▀  ▀ ▀▀  ▀   ▀▀
 /*-------------------------------------------------------------------------*/
 #endif
 #ifdef CDROM
-	/*-------------------------------------------------------------------------*/
-	//	Pour prendre en compte les eventuels fichiers déjà sur HD
+/*-------------------------------------------------------------------------*/
+//	Pour prendre en compte les eventuels fichiers déjà sur HD
 	void InitVoiceFile()
 {
 	char pathname[_MAX_PATH];
@@ -345,9 +292,6 @@ LONG FindText(LONG text)
 		strcpy(pathname, PATH_NAR_HD);
 		strcat(pathname, fileinfo.name);
 		AddFileNameOnHD(pathname, fileinfo.size, time);
-#ifdef LORAN
-		AffStatusVoiceFile();
-#endif
 		rc = SYS_FindNext(&fileinfo);
 	}
 
@@ -389,26 +333,6 @@ void CalcTotalSizeFileOnHD()
 	for (i = 0; i < NbFileOnHD; i++, pt++)
 		TotalSizeFileHD += pt->SizeFileHD;
 }
-/*-------------------------------------------------------------------------*/
-#ifdef LORAN
-void AffStatusVoiceFile()
-{
-	T_FILEONHD *pt;
-	LONG i;
-
-	Text(10, 8, "%FStatus des fichiers voix :");
-
-	pt = TabFileOnHD;
-	for (i = 0; i < NbFileOnHD; i++, pt++)
-	{
-		Text(10, i * 10 + 16, "%FName : %s  Size : %L  Time : %L", pt->NameHD, pt->SizeFileHD, pt->SaveTimer);
-	}
-	while (!Key)
-		;
-	while (Key)
-		;
-}
-#endif
 /*-------------------------------------------------------------------------*/
 void AddFileNameOnHD(char *filename, ULONG size, ULONG timer)
 {
@@ -708,11 +632,7 @@ void PlaySpeakVoc(LONG fd)
 	if (WaveInList(SPEAK_SAMPLE))
 		WaveStopOne(SPEAK_SAMPLE);
 
-#ifdef LORAN
-	WavePlay(SPEAK_SAMPLE, 0x1000, 1, 0, 1024, 1024, BufSpeak);
-#else
 	WavePlay(SPEAK_SAMPLE, 0x1000, 1, 0, volleft, volright, BufSpeak);
-#endif
 
 	NumObjSpeak = -1;
 }
@@ -871,12 +791,12 @@ void StopSpeak()
 #ifdef TITRE
 /*-------------------------------------------------------------------------*/
 █▀▀▀▀ █▀▀▀▄ █▀▀▀█ █▀▀▀█ █▄ ▄█       █▀▀▀▀ ██▄ █ █▀▀▀▄
-	//           ██    ██  █ ██▀█▀ ██  █ ██▀ █       ██▀▀  ██▀██ ██  █
-	     ▀▀▀▀▀ ▀▀▀▀  ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀       ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀
+██    ██  █ ██▀█▀ ██  █ ██▀ █       ██▀▀  ██▀██ ██  █
+▀▀▀▀▀ ▀▀▀▀  ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀       ▀▀▀▀▀ ▀▀  ▀ ▀▀▀▀
 /*-------------------------------------------------------------------------*/
 #endif
-	/*-------------------------------------------------------------------------*/
-	void InitDial(LONG file)
+/*-------------------------------------------------------------------------*/
+void InitDial(LONG file)
 {
 	char *pt;
 	LONG i, j, size;
@@ -1449,7 +1369,6 @@ void Dial(LONG text)
 
 	StopSpeak();
 	CloseDial();
-#ifndef LORAN
 	if ((ret == 0) AND(!flagabort))
 	{
 		while (!((!Key)AND(!Fire) AND(!Joy)))
@@ -1458,7 +1377,6 @@ void Dial(LONG text)
 		while ((!Key)AND(!Fire) AND(!Joy))
 			;
 	}
-#endif
 	/*
 		if( FlagMessageShade )
 			while( Key == K_ESC ) ; // attente relachement que pour escape
@@ -1527,7 +1445,6 @@ void Dial(LONG text)
 			break;
 	}
 	CloseDial();
-#ifndef LORAN
 	if (ret == 0)
 	{
 		while (!((!Key)AND(!Fire) AND(!Joy)))
@@ -1536,7 +1453,6 @@ void Dial(LONG text)
 		while ((!Key)AND(!Fire) AND(!Joy))
 			;
 	}
-#endif
 	/*
 		if( FlagMessageShade )
 			while( Key == K_ESC ) ; // attente relachement que pour escape

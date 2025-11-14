@@ -29,6 +29,14 @@ ENDIF
 
 
 ;*--------------------------------------------------------------------------*
+; Forward declarations for procedures used before they are defined
+;*--------------------------------------------------------------------------*
+
+AckIrq		PROTO
+ResetCard	PROTO
+CloseCard	PROTO
+
+;*--------------------------------------------------------------------------*
 
 		PUBLIC	driver_start
 

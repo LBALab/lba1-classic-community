@@ -8,8 +8,6 @@
 #include "lib_mix/lib_mix.h"
 #include <stdlib.h>
 #include <stdio.h>
-#include <dos.h>
-#include <i86.h>
 
 char *MixerError = "Error MixerDriver:";
 

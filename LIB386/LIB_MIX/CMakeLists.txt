@@ -5,7 +5,6 @@
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIX_SOURCES
     MIXER.C      # High-level mixer API
-    # MIXER_I.ASM  # Moved to LIB_MIX_DOS (hardware interface)
 )
 
 # Create static library

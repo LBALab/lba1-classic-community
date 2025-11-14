@@ -177,7 +177,7 @@ static void *cdecl DLL_read(ULONG src, ULONG srcoff, ULONG flags,
 /**********************************************************/
 ULONG cdecl DLL_size(void *source, ULONG flags)
 {
-   BYTE cword[] = "  /0";
+   BYTE cword[] = "  \0";
    void *src_ptr;
    LX_header_struct LX_hdr;
    object_table_struct object_table;
@@ -255,7 +255,7 @@ void *cdecl DLL_load(void *source, ULONG flags, void *dll)
    void *object_table_pos, *object_page_table_pos, *fixup_page_table_pos;
    object_table_struct object_table;
    object_page_table_struct object_page_table;
-   BYTE cword[] = "  /0";
+   BYTE cword[] = "  \0";
    UBYTE *dll_ptr;
    UBYTE *object_ptr[10], *page_ptr[100];
    UBYTE src, fix_flags, f_object;

@@ -10,6 +10,9 @@ set(CMAKE_ASM_MASM_SOURCE_FILE_EXTENSIONS ASM;asm)
 # Target Platform
 option(BUILD_DOS "Build DOS version (LBAD.EXE)" ON)
 
+# Build Options
+option(ENABLE_CDROM "Enable CD-ROM specific features" ON)
+
 # Enable debug tools
 # add_definitions(-DDEBUG_TOOLS)
 
@@ -19,6 +22,11 @@ endif()
 
 if(BUILD_DOS)
     message(STATUS "Building DOS version: LBAD.EXE")
+endif()
+
+if(ENABLE_CDROM)
+    message(STATUS "CD-ROM features enabled")
+    add_definitions(-DCDROM)
 endif()
 
 # Project definition
