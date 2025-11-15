@@ -1,11 +1,6 @@
 ; Simplified VESA initialization for DOSBox compatibility
 ; This version removes complex DPMI calls and uses direct VESA BIOS
 
-; To apply this patch:
-; 1. Backup original: cp LIB386/LIB_SVGA/VESA.ASM LIB386/LIB_SVGA/VESA.ASM.original
-; 2. Copy this file: cp VESA_DOSBOX_PATCH.ASM LIB386/LIB_SVGA/VESA.ASM
-; 3. Rebuild: cmake --build build --clean-first
-
 ;*--------------------------------------------------------------------------*
 ;                                VESA.ASM 386
 ;                             (c) Adeline 1993

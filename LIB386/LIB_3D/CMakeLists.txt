@@ -3,9 +3,10 @@
 
 # Source files (from MAKEFILE OBJETS1-4)
 set(LIB_3D_SOURCES
-    P_SINTAB.C
     #P_SINTAB.ASM
-    P_ANIM.ASM
+    P_SINTAB.C
+    #P_ANIM.ASM
+    P_ANIM.C
     P_OB_ISO.ASM
     P_TRIGO.ASM
     P_FUNC.ASM

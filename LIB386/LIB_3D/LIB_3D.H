@@ -79,6 +79,7 @@ extern LONG MatriceRot, MatriceDummy;
 extern LONG Distance;
 
 extern LONG CmptMemoTimerRef;
+extern ULONG MemoTimerRef;
 
 void InitRealValue(WORD start,
 				   WORD end,
@@ -94,6 +95,21 @@ WORD GetRealValue(T_REAL_VALUE *ptrstruct);
 WORD GetRealAngle(T_REAL_VALUE *ptrstruct);
 
 WORD StockInterAnim(UBYTE *BufferAnim, UBYTE *PtrObj);
+void CopyInterAnim(UBYTE *PtrObjs, UBYTE *PtrObjd);
+
+void SaveTimer(void);
+void RestoreTimer(void);
+
+void SetAngleGroupe(LONG numgroupe, WORD palpha, WORD pbeta, WORD pgamma, UBYTE *ptrobj);
+void GetAngleGroupe(LONG numgroupe, UBYTE *ptrobj);
+
+WORD GetNbFramesAnim(UBYTE *ptranim);
+WORD GetBouclageAnim(UBYTE *ptranim);
+
+LONG SetAnimObjet(WORD numframe, UBYTE *ptranim, UBYTE *ptrobj);
+LONG SetInterAnimObjet(WORD framedest, UBYTE *ptranimdest, UBYTE *ptrobj);
+LONG SetInterAnimObjet2(WORD framedest, UBYTE *ptranimdest, UBYTE *ptrobj);
+LONG SetInterDepObjet(WORD framedest, UBYTE *ptranimdest, UBYTE *ptrobj);
 
 LONG RegleTrois32(LONG val1, LONG val2, LONG nbstep, LONG step);
 
