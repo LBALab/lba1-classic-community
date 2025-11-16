@@ -41,8 +41,6 @@ Software Rendering Library
 * P_ANIM - 3D Models Animations
 * P_FUNC - 3D Helper Functions
 * P_OB_ISO - Rendering 3D Static Models (e.g. holomap)
-* P_OBJ_3D - Rendering 3D Models
-* P_OBJET - Other Rendering (for example text dialog polygon arrow)
 * P_SINTAB - Sine Table
 * P_TRIGO - Trigonometry Helper Functions
 
