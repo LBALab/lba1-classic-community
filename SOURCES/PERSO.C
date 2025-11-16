@@ -1423,7 +1423,7 @@ void main(int argc, UBYTE *argv[])
 	if (!Screen)
 		TheEnd(NOT_ENOUGH_MEM, "Screen");
 
-#ifndef DEBUG_TOOLS
+#ifndef SKIP_INTRO
 
 	// logo adeline
 	AdelineLogo();
@@ -1580,7 +1580,7 @@ void main(int argc, UBYTE *argv[])
 		TheEnd(NOT_ENOUGH_MEM, "HQR_Anims");
 	}
 
-#ifndef DEBUG_TOOLS
+#ifndef SKIP_INTRO
 	// bumper
 	FadeToBlack(PalettePcx);
 
