@@ -91,6 +91,11 @@ void InitRealAngle(WORD start,
 				   WORD time,
 				   T_REAL_VALUE *ptrstruct);
 
+void InitRealAngleConst(WORD start,
+			     WORD end,
+			     LONG duration,
+			     T_REAL_VALUE *ptrstruct);
+
 WORD GetRealValue(T_REAL_VALUE *ptrstruct);
 WORD GetRealAngle(T_REAL_VALUE *ptrstruct);
 
@@ -113,9 +118,13 @@ LONG SetInterDepObjet(WORD framedest, UBYTE *ptranimdest, UBYTE *ptrobj);
 
 LONG RegleTrois32(LONG val1, LONG val2, LONG nbstep, LONG step);
 
+LONG BoundRegleTrois(LONG val1, LONG val2, LONG nbstep, LONG step);
+
 LONG Distance2D(LONG x0, LONG z0, LONG x1, LONG z1);
 LONG Distance3D(LONG x0, LONG y0, LONG z0,
 				LONG x1, LONG y1, LONG z1);
+
+LONG GetAngle(LONG x0, LONG z0, LONG x1, LONG z1);
 
 void Rot2D(LONG x, LONG y, LONG angle);
 

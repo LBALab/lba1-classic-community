@@ -10,6 +10,7 @@ set(LIB_3D_SOURCES
     P_OB_ISO.ASM
     P_TRIGO.ASM
     P_FUNC.ASM
+    #P_FUNC.C
 )
 
 # Create static library
