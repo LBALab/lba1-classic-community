@@ -2179,7 +2179,7 @@ void DoDir(WORD numobj)
 					if( MyKey == K_F3 )	SetComportement( C_AGRESSIF ) ;
 					if( MyKey == K_F4 )	SetComportement( C_DISCRET ) ;
 			*/
-			if (MyKey & K_W || MyKey & K_Z)
+			if (MyKey == K_W || MyKey == K_Z)
 			{
 				ActionNormal = TRUE;
 			}
