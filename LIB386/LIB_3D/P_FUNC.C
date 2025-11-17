@@ -128,88 +128,37 @@ LONG RegleTrois32(LONG val1, LONG val2, LONG nbstep, LONG step)
 	return (((val2 - val1) * step) / nbstep) + val1;
 }
 
-static ULONG bsr32(ULONG value)
-{
-	ULONG bit = 31;
-
-	if ((value & 0xFFFF0000UL) == 0)
-	{
-		value <<= 16;
-		bit = 15;
-	}
-
-	if ((value & 0xFF000000UL) == 0)
-	{
-		value <<= 8;
-		bit -= 8;
-	}
-
-	if ((value & 0xF0000000UL) == 0)
-	{
-		value <<= 4;
-		bit -= 4;
-	}
-
-	if ((value & 0xC0000000UL) == 0)
-	{
-		value <<= 2;
-		bit -= 2;
-	}
-
-	if ((value & 0x80000000UL) == 0)
-	{
-		--bit;
-	}
-
-	return bit;
-}
-
-static ULONG shld32(ULONG dest, ULONG src, ULONG count)
-{
-	dest <<= count;
-	count = 32 - count;
-	dest |= (src >> count);
-	return dest;
-}
-
 ULONG Sqr(ULONG value)
 {
-    ULONG src;
-    ULONG bit;
-    ULONG acc;
-    ULONG res = 1;
+	ULONG res = 0;
+	ULONG bit = 1UL << 30;
 
-	if (value <= 3)
+	if (value <= 1)
 	{
-		return (value == 0) ? 0 : 1;
+		return value;
 	}
 
-    src = value;
-    bit = bsr32(src);
-    bit = (33 - bit) & 0xFFFFFFFEUL;
-    acc = shld32(0, src, bit) - 1;
-    src <<= bit;
+	while (bit > value)
+	{
+		bit >>= 2;
+	}
 
-    for (bit >>= 1; bit > 0; --bit)
-    {
-        acc = shld32(acc, src, 2);
-        src <<= 2;
-        res <<= 1;
+	while (bit != 0)
+	{
+		if (value >= res + bit)
+		{
+			value -= res + bit;
+			res = (res >> 1) + bit;
+		}
+		else
+		{
+			res >>= 1;
+		}
 
-        if (acc >= res)
-        {
-            ++res;
-            if (acc >= res)
-            {
-                acc -= res;
-                ++res;
-            }
-        }
+		bit >>= 2;
+	}
 
-        res >>= 1;
-    }
-
-    return res;
+	return res;
 }
 
 LONG Distance2D(LONG x0, LONG z0, LONG x1, LONG z1)
