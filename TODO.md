@@ -20,6 +20,8 @@
 - [ ] Climb Ladder while Moving (LBA2 Anim Style)
 - [ ] Demo support within the same build
 - [ ] Detect and Support multiple versions of the Game data (Demo, Preview, Floppy, CD, EU, US, JP, GOG, Steam, DotEmu, 2.21)
+- [ ] SaveGame Thumbnails
+- [ ] SaveGame List page rotation
 
 ## Inputs
 - [ ] Gamepad Support (non-tank controls)

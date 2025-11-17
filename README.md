@@ -8,7 +8,7 @@ The engine uses Assembly code and was originally compiled with non-open source l
 ### Build using CMake and OpenWatcom 2
 
 This project supports building for multiple platforms:
-- **DOS** (32-bit protected mode with DOS/4GW) → `LBAD.EXE`
+- **DOS** (32-bit protected mode with DOS/4GW) → `LBAD.EXE` (original assembly) and `LBADC.EXE` (translated C modules)
 - **Windows 9x/NT** (Win32 PE executable) → `LBAW.exe`
 
 #### Quick Start
@@ -25,6 +25,8 @@ cmake --build . --config Release
 ```bash
 dosbox-x build/bin/LBAD.EXE
 ```
+
+The translated C build lives at `build/bin/LBADC.EXE`, linking against C variants of the core `LIB386` libraries where replacements exist. Disable either flavour with `-DBUILD_DOS=OFF` or `-DBUILD_DOS_C=OFF` when configuring.
 
 **Test Windows version:**
 ```bash

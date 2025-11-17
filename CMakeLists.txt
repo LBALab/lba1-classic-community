@@ -8,7 +8,8 @@ set(CMAKE_C_SOURCE_FILE_EXTENSIONS C;c)
 set(CMAKE_ASM_MASM_SOURCE_FILE_EXTENSIONS ASM;asm)
 
 # Target Platform
-option(BUILD_DOS "Build DOS version (LBAD.EXE)" ON)
+option(BUILD_DOS "Build DOS version with original assembly modules (LBAD.EXE)" ON)
+option(BUILD_DOS_C "Build DOS version with C-converted assembly modules (LBADC.EXE)" ON)
 
 # Build Options
 option(ENABLE_CDROM "Enable CD-ROM specific features" ON)
@@ -16,12 +17,16 @@ option(ENABLE_CDROM "Enable CD-ROM specific features" ON)
 # Enable debug tools
 # add_definitions(-DDEBUG_TOOLS)
 
-if(NOT BUILD_DOS)
-    message(FATAL_ERROR "At least one platform must be enabled (BUILD_DOS)")
+if(NOT BUILD_DOS AND NOT BUILD_DOS_C)
+    message(FATAL_ERROR "At least one DOS target must be enabled (BUILD_DOS or BUILD_DOS_C)")
 endif()
 
 if(BUILD_DOS)
-    message(STATUS "Building DOS version: LBAD.EXE")
+    message(STATUS "Building DOS version (assembly): LBAD.EXE")
+endif()
+
+if(BUILD_DOS_C)
+    message(STATUS "Building DOS version (translated C): LBADC.EXE")
 endif()
 
 if(ENABLE_CDROM)
@@ -91,7 +96,7 @@ add_subdirectory(LIB386/LIB_SVGA)
 add_subdirectory(LIB386/LIB_SYS)
 
 # Add platform-specific libraries based on build options
-if(BUILD_DOS)
+if(BUILD_DOS OR BUILD_DOS_C)
     message(STATUS "Including DOS platform-specific implementations")
     add_subdirectory(LIB386/PLATFORM/DOS/LIB_CD)
     add_subdirectory(LIB386/PLATFORM/DOS/LIB_MENU)
@@ -109,7 +114,7 @@ add_subdirectory(SOURCES)
 # Copy DOS/4GW Extender (DOS target only)
 # DOS/4GW is required to run the 32-bit protected mode executable in DOS
 #------------------------------------------------------------------------------
-if(BUILD_DOS)
+if(BUILD_DOS OR BUILD_DOS_C)
     if(DEFINED ENV{WATCOM})
         set(DOS4GW_SOURCE "$ENV{WATCOM}/binw/dos4gw.exe")
         if(EXISTS "${DOS4GW_SOURCE}")
