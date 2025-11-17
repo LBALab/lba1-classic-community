@@ -2072,16 +2072,18 @@ WORD ChoosePlayerName(WORD mess, WORD showAutoSave, WORD showNewGame)
 
 		if (Joy & J_DOWN)
 		{
-			if (select < (nb - 1))
+			DrawOneString(320, ys, ptrlist[select], 0);
+			select++;
+			if (select >= nb)
 			{
-				DrawOneString(320, ys, ptrlist[select], 0);
-				select++;
-				flag = 1;
+				select = 0;
+				start = 0;
 			}
+			flag = 1;
 
 			if (select >= (start + 6))
 			{
-				if (start < (nb - 1))
+				if (start < (nb - 6))
 				{
 					start++;
 				}
@@ -2090,12 +2092,14 @@ WORD ChoosePlayerName(WORD mess, WORD showAutoSave, WORD showNewGame)
 
 		if (Joy & J_UP)
 		{
-			if (select > 0)
+			DrawOneString(320, ys, ptrlist[select], 0);
+			select--;
+			if (select < 0)
 			{
-				DrawOneString(320, ys, ptrlist[select], 0);
-				select--;
-				flag = 1;
+				select = nb - 1;
+				start = (nb > 6) ? (nb - 6) : 0;
 			}
+			flag = 1;
 			if (select < start)
 			{
 				start--;
