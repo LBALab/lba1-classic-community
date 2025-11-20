@@ -13,8 +13,9 @@
 - [ ] Add Wide Screen Support for non DOS/WIN9X builds
 - [x] W/Z Keys for Action
 - [ ] LBA2 Style Behaviour quick access
-- [ ] LBA2 Style Weapon quick access
+- [x] LBA2 Style Weapon quick access
 - [x] Skipable Adeline Logo
+- [ ] Behaviour Menu while in Protopack mode
 - [ ] Add Support for Japanese version (as its own language id)
 - [ ] Custom text messages directly from TEXT.HQR
 - [ ] Jump while Running (LBA2 Anim Style)
