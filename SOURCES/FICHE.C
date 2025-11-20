@@ -1,5 +1,4 @@
 #include "c_extern.h"
-#include <dos.h>
 
 #ifdef COMPILATOR
 extern UBYTE *PtrCompil;

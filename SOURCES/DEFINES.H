@@ -53,8 +53,6 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <dos.h>
-#include <conio.h>
 #include <stdio.h>
 
 #include "LIB_SYS/ADELINE.H"

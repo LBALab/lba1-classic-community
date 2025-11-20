@@ -1,7 +1,5 @@
 #include "c_extern.h"
 
-#include <process.h>
-
 extern char *Version;
 
 extern LONG MixMusic;
@@ -1376,15 +1374,6 @@ void TheEnd(WORD num, UBYTE *error)
 	exit(0);
 }
 
-/*══════════════════════════════════════════════════════════════════════════*/
-int _FAR Critical_Error_Handler(unsigned deverr,
-								unsigned errcode,
-								unsigned _FAR *devhdr)
-{
-	return (_HARDERR_RETRY);
-}
-
-/*══════════════════════════════════════════════════════════════════════════*/
 
 #ifdef DEBUG_TOOLS
 void Message(UBYTE *mess, WORD flag)
@@ -1424,8 +1413,6 @@ void main(int argc, UBYTE *argv[])
 	ULONG memory;
 	ULONG memotimer;
 	UBYTE string[256];
-
-	_harderr(Critical_Error_Handler);
 
 #ifdef DEBUG_TOOLS
 	MemoMemory = (ULONG)Malloc(-1);				// memory at start
