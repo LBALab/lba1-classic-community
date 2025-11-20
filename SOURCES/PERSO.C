@@ -411,12 +411,12 @@ LONG MainLoop()
 			AffDebugMenu();
 		}
 
-		if (MyKey == K_F11)
-		{
-			AsciiMode ^= 1;
-			while (Key)
-				;
-		}
+		// if (MyKey == K_F11)
+		// {
+		// 	AsciiMode ^= 1;
+		// 	while (Key)
+		// 		;
+		// }
 
 		if (MyKey == K_W)
 		{
@@ -493,12 +493,12 @@ LONG MainLoop()
 				}
 			}
 
-			if (MyKey == K_F6) // options menu
+			if (MyKey == K_F4) // options menu
 			{
 				LONG memoflagspeak = FlagSpeak;
 
 				SaveTimer();
-				TestRestoreModeSVGA(TRUE);
+				// TestRestoreModeSVGA(TRUE);
 				HQ_StopSample();
 				GameOptionMenu[5] = 15; // retour au jeu
 
@@ -706,16 +706,78 @@ LONG MainLoop()
 				AffScene(TRUE);
 			}
 
-			if ((MyKey >= K_F1) AND(MyKey <= K_F4)
+			if ((MyKey >= K_F5) AND(MyKey <= K_F8)
 					AND(ListObjet[NUM_PERSO].Body != -1)
 						AND(ListObjet[NUM_PERSO].Move == MOVE_MANUAL))
 			{
 				SaveTimer();
 				TestRestoreModeSVGA(TRUE);
-				SetComportement(C_NORMAL + MyKey - K_F1);
+				SetComportement(C_NORMAL + MyKey - K_F5);
 				MenuComportement();
 				RestoreTimer();
 				AffScene(TRUE);
+			}
+
+			if (MyKey == K_1) // balle magique
+			{
+				if (ListFlagGame[FLAG_BALLE_MAGIQUE])
+				{
+					if (Weapon == 1)
+					{
+						InitBody(GEN_BODY_NORMAL, NUM_PERSO);
+					}
+					Weapon = 0;
+				}
+			}
+
+			if (MyKey == K_2) // sabre magique
+			{
+				if (ListFlagGame[FLAG_SABRE_MAGIQUE])
+				{
+					if (ListObjet[NUM_PERSO].GenBody != GEN_BODY_SABRE)
+					{
+						if (Comportement == C_PROTOPACK)
+						{
+							SetComportement(C_NORMAL);
+						}
+						// anim degaine sabre
+						InitBody(GEN_BODY_SABRE, NUM_PERSO);
+						InitAnim(GEN_ANIM_DEGAINE, ANIM_THEN, GEN_ANIM_RIEN, NUM_PERSO);
+					}
+					Weapon = 1;
+				}
+			}
+
+			if (MyKey == K_3) // trompe select inventory
+			{
+				if (ListFlagGame[FLAG_TROMPE])
+				{
+					InventoryAction = FLAG_TROMPE;
+				}
+			}
+
+			if (MyKey == K_4 || MyKey == K_J) // protopack
+			{
+				if (ListFlagGame[FLAG_PROTOPACK])
+				{
+					if (ListFlagGame[FLAG_MEDAILLON])
+					{
+						ListObjet[NUM_PERSO].GenBody = GEN_BODY_NORMAL; // avec médaillon
+					}
+					else
+					{
+						ListObjet[NUM_PERSO].GenBody = GEN_BODY_TUNIQUE; // sans médaillon
+					}
+					if (Comportement == C_PROTOPACK)
+					{
+						SetComportement(C_NORMAL);
+					}
+					else
+					{
+						SetComportement(C_PROTOPACK);
+					}
+					Weapon = 0; // balle magique
+				}
 			}
 
 			if (MyFire & F_RETURN) /* recentre sur perso */
@@ -764,7 +826,7 @@ LONG MainLoop()
 				WaveContinue();
 			}
 
-			if (MyKey == K_F5) // zoom on/off
+			if (MyKey == K_F12) // zoom on/off
 			{
 				if (FlagMCGA ^= 1)
 				{
@@ -781,8 +843,8 @@ LONG MainLoop()
 				}
 			}
 
-			// Toggle wall collision damage on/off by pressing F12.
-			if (MyKey == K_F12)
+			// Toggle wall collision damage on/off by pressing F11.
+			if (MyKey == K_F11)
 			{
 				// WallColDamageEnabled set to values 0 or 1 (disabled and enabled)
 				SaveTimer();

@@ -2174,10 +2174,10 @@ void DoDir(WORD numobj)
 		{
 			ActionNormal = FALSE;
 			/*
-					if( MyKey == K_F1 )	SetComportement( C_NORMAL ) ;
-					if( MyKey == K_F2 )	SetComportement( C_SPORTIF ) ;
-					if( MyKey == K_F3 )	SetComportement( C_AGRESSIF ) ;
-					if( MyKey == K_F4 )	SetComportement( C_DISCRET ) ;
+					if( MyKey == K_F5 )	SetComportement( C_NORMAL ) ;
+					if( MyKey == K_F6 )	SetComportement( C_SPORTIF ) ;
+					if( MyKey == K_F7 )	SetComportement( C_AGRESSIF ) ;
+					if( MyKey == K_F8 )	SetComportement( C_DISCRET ) ;
 			*/
 			if (MyKey == K_W || MyKey == K_Z)
 			{
