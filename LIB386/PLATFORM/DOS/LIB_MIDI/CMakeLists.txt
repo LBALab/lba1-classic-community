@@ -2,12 +2,14 @@
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIDI_DOS_SOURCES
+    AIL32/AIL32.ASM
     MIDI.C
-    INCLUDE.C
 )
 
 # Create static library
 add_library(LIB_MIDI_DOS STATIC ${LIB_MIDI_DOS_SOURCES})
+
+target_compile_definitions(LIB_MIDI_DOS PRIVATE USE_AIL32)
 
 # Explicitly set language for source files with uppercase extensions
 foreach(src ${LIB_MIDI_DOS_SOURCES})
@@ -15,7 +17,7 @@ foreach(src ${LIB_MIDI_DOS_SOURCES})
     if(ext STREQUAL ".C")
         set_source_files_properties(${src} PROPERTIES LANGUAGE C)
     elseif(ext STREQUAL ".ASM")
-        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
+        set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM COMPILE_FLAGS "-Cp -DDPMI")
     endif()
 endforeach()
 

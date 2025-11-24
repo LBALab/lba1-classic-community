@@ -17,7 +17,7 @@ This project supports building for multiple platforms:
 ```bash
 mkdir build
 cd build
-cmake -DCMAKE_TOOLCHAIN_FILE=../cmake/toolchains/openwatcom.cmake -DBUILD_DOS=ON -DBUILD_WIN9X=ON ..
+cmake -DCMAKE_TOOLCHAIN_FILE=cmake/toolchains/openwatcom.cmake -DBUILD_DOS=ON -DBUILD_DOS_C=ON -DENABLE_CDROM=ON -B build
 cmake --build . --config Release
 ```
 

@@ -10,13 +10,8 @@
 #include "lib_mix/lib_mix.h"
 #include "lib_svga/lib_svga.h"
 
+
 char Driver[_MAX_PATH];
-
-// timer proc for ail_lib
-
-// HTIMER	HandleTimer ;
-
-// void	NewProc08() ; // dans timer.asm
 
 extern UBYTE VESA_Error;
 
@@ -307,9 +302,7 @@ void InitAdelineSystem(char *name, LONG inits)
 
 	if (Midi_Driver_Enable)
 	{
-		// HandleTimer = AIL_register_timer( NewProc08 ) ;
-		// AIL_set_timer_frequency( HandleTimer, 50 ) ;
-		// AIL_start_timer( HandleTimer ) ;
+		InitMidiTimer();
 	}
 	else
 	{

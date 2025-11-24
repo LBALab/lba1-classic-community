@@ -4,8 +4,7 @@
 
 # Source files (from MAKEFILE OBJETS1)
 set(LIB_MIDI_SOURCES
-    MIDI_STUB.C  # Stub implementation when AIL32 is not available
-    # MIDI.C  # Moved to LIB_MIDI_DOS (uses AIL32/Miles Sound System)
+    LIB_MIDI.C
 )
 
 # Create static library

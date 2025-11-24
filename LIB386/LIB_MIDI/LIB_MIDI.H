@@ -1,8 +1,3 @@
-#ifdef USE_AIL32
-#include "lib_midi/ail32.h" // Audio Interface Library API function header
-#include "ail.h"            // Audio Interface Library API function header
-#endif
-
 #ifndef _MAX_PATH
 #define _MAX_PATH 260
 #endif
@@ -27,3 +22,5 @@ extern void WaitFadeMidi(void);
 extern void VolumeMidi(short);
 extern void SetLoopMidi(short);
 extern void DoLoopMidi(void);
+
+extern void InitMidiTimer(void);

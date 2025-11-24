@@ -19,10 +19,15 @@
 #include "lib_sys/adeline.h"
 #include "lib_sys/lib_sys.h"
 #include "lib_midi/lib_midi.h"
+#include "ail32/ail32.h"
 
 /***************************************************************/
 
-void NewProc08();
+// timer proc for ail_lib
+HTIMER	HandleTimer ;
+// extern void	NewProc08() ; // dans timer.asm
+
+/***************************************************************/
 
 WORD Midi_Driver_Enable = FALSE;
 
@@ -35,28 +40,9 @@ char *ListIdentifier[] = {"MidiBase",
 
 LONG Midi_Base, Midi_IRQ, Midi_DMA;
 
-#ifdef USE_AIL32
-typedef int HDRIVER;   /* handle to driver                          */
-typedef int HSEQUENCE; /* handle to XMIDI sequence                  */
-
-typedef struct
-{
-	unsigned min_API_version;
-	unsigned drvr_type;
-	char data_suffix[4];
-	void far *dev_name_table;
-	int default_IO;
-	int default_IRQ;
-	int default_DMA;
-	int default_DRQ;
-	int service_rate;
-	unsigned display_size;
-} drvr_desc;
-
 HDRIVER hdriver;
 HSEQUENCE hseq = -1;
 drvr_desc *desc;
-#endif
 
 // FILE *GTL;
 char *ptrGTL;
@@ -166,7 +152,6 @@ void *load_global_timbre(unsigned short bank, unsigned short patch)
 
 LONG InitMidiDLL(UBYTE *driverpathname)
 {
-#ifdef USE_AIL32
 	char *str;
 
 	//
@@ -238,7 +223,6 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 	}
 
 	printf("\nCopyright (C) 1991,1992 Miles Design, Inc.\n\n");
-#endif
 	return TRUE;
 }
 
@@ -246,7 +230,6 @@ LONG InitMidiDLL(UBYTE *driverpathname)
 
 LONG InitMidi()
 {
-#ifdef USE_AIL32
 	char GTL_filename[_MAX_PATH];
 
 	// use if defined new parameters
@@ -307,7 +290,6 @@ LONG InitMidi()
 		return FALSE;
 
 	Load(GTL_filename, ptrGTL);
-#endif
 	return TRUE;
 }
 
@@ -326,20 +308,17 @@ void InitPathMidiSampleFile(UBYTE *path)
 
 void ClearMidi()
 {
-#ifdef USE_AIL32
 	if (!Midi_Driver_Enable)
 		return;
 
 	AIL_shutdown("");
 	hseq = -1;
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 void PlayMidi(/*char *filename*/ UBYTE *ail_buffer)
 {
-#ifdef USE_AIL32
 	if (!Midi_Driver_Enable)
 		return;
 
@@ -403,34 +382,29 @@ void PlayMidi(/*char *filename*/ UBYTE *ail_buffer)
 		  seqnum,argv[1]);	*/
 
 	AIL_start_sequence(hdriver, hseq);
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 void StopMidi()
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		AIL_stop_sequence(hdriver, hseq);
 		AIL_release_sequence_handle(hdriver, hseq);
 		hseq = -1;
 	}
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 LONG IsMidiPlaying()
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		if (AIL_sequence_status(hdriver, hseq) == 1)
 			return TRUE;
 	}
-#endif
 	return FALSE;
 }
 
@@ -438,61 +412,64 @@ LONG IsMidiPlaying()
 
 void FadeMidiDown(WORD nbsec)
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		AIL_set_relative_volume(hdriver, 0, 0, 1000 * nbsec);
 	}
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 void FadeMidiUp(WORD nbsec)
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		AIL_set_relative_volume(hdriver, 0, MaxVolume, 1000 * nbsec);
 	}
-#endif
 }
 // ████████████████████████████████████████████████████████████████████████████
 
 void WaitFadeMidi()
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		while (AIL_relative_volume(hdriver, 0) != 0)
 			;
 	}
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 void VolumeMidi(WORD volume)
 {
-#ifdef USE_AIL32
 	if (hseq != -1)
 	{
 		AIL_set_relative_volume(hdriver, 0, (volume * MaxVolume) / 100, 0);
 	}
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
 
 void DoLoopMidi()
 {
-#ifdef USE_AIL32
 	// loop track
 
 	if (hseq != -1)
 		if (AIL_sequence_status(hdriver, 0) == 2) // seg done
 			AIL_start_sequence(hdriver, hseq);
-#endif
 }
 
 // ████████████████████████████████████████████████████████████████████████████
+
+void InitMidiTimer(void)
+{
+	HandleTimer = AIL_register_timer( NewProc08 ) ;
+	if ( HandleTimer == -1 )
+	{
+		printf("Error MidiDriver: Could not register AIL32 timer.\n") ;
+		InitTimer();
+		return ;
+	}
+	AIL_set_timer_frequency( HandleTimer, 50 ) ;
+	AIL_start_timer( HandleTimer ) ;
+}

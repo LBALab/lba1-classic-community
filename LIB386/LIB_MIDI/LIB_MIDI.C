@@ -3,7 +3,7 @@
 #include "lib_midi/lib_midi.h"
 
 // Stub implementations for when AIL32 is not available
-
+/*
 WORD Midi_Driver_Enable = FALSE;
 LONG MaxVolume = 100;
 
@@ -72,3 +72,4 @@ void DoLoopMidi(void)
 {
     // Stub
 }
+*/

@@ -78,8 +78,7 @@ set(COMMON_INCLUDES
 )
 
 function(lba_configure_dos_executable target output_name common_libs)
-    target_link_libraries(${target} ${common_libs} LIB_CD_DOS LIB_MENU_DOS LIB_MIX_DOS LIB_SAMP_DOS LIB_SYS_DOS LIB_SVGA_DOS)
-    # LIB_MIDI_DOS not linked - requires AIL32 SDK, using stub implementation instead
+    target_link_libraries(${target} ${common_libs} LIB_CD_DOS LIB_MENU_DOS LIB_MIDI_DOS LIB_MIX_DOS LIB_SAMP_DOS LIB_SYS_DOS LIB_SVGA_DOS)
 
     target_include_directories(${target} PRIVATE ${COMMON_INCLUDES})
 

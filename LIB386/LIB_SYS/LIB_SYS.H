@@ -247,6 +247,7 @@ extern UWORD Cmpt_18;
 
 void SetTimer(WORD divisor);
 WORD GetTimer();
+void	NewProc08();
 
 /*──────────────────────────────────────────────────────────────────────────*/
 /*				DEF_FILE.C				*/

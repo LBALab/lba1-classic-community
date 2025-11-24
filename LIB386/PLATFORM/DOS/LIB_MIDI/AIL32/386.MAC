@@ -1,0 +1,207 @@
+;ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
+;лл                                                                         лл
+;лл   386.MAC                                                               лл
+;лл                                                                         лл
+;лл   General purpose 80386 macros for 32-bit DOS development               лл
+;лл                                                                         лл
+;лл   Version 1.00 of  1-Nov-92: Initial version                            лл
+;лл           1.01 of 16-Apr-93: DPMI/INT21 switches added                  лл
+;лл                                                                         лл
+;лл   Project: 386FX Sound & Light(TM)                                      лл
+;лл    Author: John Miles                                                   лл
+;лл                                                                         лл
+;лл   80386 ASM source compatible with Microsoft Assembler v6.0 or later    лл
+;лл                                                                         лл
+;ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
+;лл                                                                         лл
+;лл  Copyright (C) 1991-1993 Miles Design, Inc.                             лл
+;лл                                                                         лл
+;лл  Miles Design, Inc.                                                     лл
+;лл  6702 Cat Creek Trail                                                   лл
+;лл  Austin, TX 78731                                                       лл
+;лл  (512) 345-2642 / FAX (512) 338-9630 / BBS (512) 454-9990               лл
+;лл                                                                         лл
+;ллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллллл
+
+                ;
+                ;Protected-mode POPF
+                ;
+
+POP_F           MACRO                   
+                LOCAL intel_bytes
+
+                push ebp
+                mov ebp,esp
+                test BYTE PTR [ebp+5],00000010b
+                cli
+                jz intel_bytes
+                sti
+intel_bytes:    pop ebp
+                popfd
+
+                ENDM
+
+                ;
+                ;Set DX:EBX = interrupt vector #EAX
+                ;Also return ECX = real-mode interrupt vector, if 
+                ;applicable
+                ;
+
+GET_VECT        MACRO                   
+
+                IFDEF DPMI
+
+                mov ah,35h              ;(Rational DOS/4GW)
+                push es
+                int 21h
+                mov dx,es
+                pop es
+
+                ELSEIFDEF INT21
+
+                push es                 ;(Flashtek X32)
+                mov cl,al               
+                push ecx
+                mov eax,2502h
+                int 21h
+                pop ecx
+                push ebx
+                push es
+                mov eax,2503h
+                int 21h
+                mov ecx,ebx
+                pop edx
+                pop ebx
+                pop es
+
+                ENDIF
+
+                ENDM
+
+                ;
+                ;Set reflected interrupt vector #EAX = BX:EDX
+                ;
+
+SET_VECT        MACRO
+
+                IFDEF DPMI
+
+                mov ah,25h              ;(Rational DOS/4GW)
+                push ds
+                mov ds,bx
+                int 21h
+                pop ds
+
+                ELSEIFDEF INT21
+
+                mov cl,al               ;(Flashtek X32)
+                push ds
+                mov ds,bx
+                mov eax,2506h
+                int 21h
+                pop ds
+
+                ENDIF
+
+                ENDM
+
+                ;
+                ;Set real-mode interrupt vector #EAX CS:IP = EBX
+                ;(if applicable)
+                ;
+
+SET_REAL_VECT   MACRO
+        
+                IFDEF INT21
+                
+                mov cl,al
+                mov eax,2505h
+                int 21h
+
+                ENDIF
+
+                ENDM
+
+                ;
+                ;Set protected-mode interrupt vector #EAX = BX:EDX
+                ;
+
+SET_PROT_VECT   MACRO
+
+                IFDEF DPMI
+
+                mov ah,25h              ;(Rational DOS/4GW)
+                push ds
+                mov ds,bx
+                int 21h
+                pop ds
+
+                ELSEIFDEF INT21
+
+                mov cl,al               ;(Flashtek X32)
+                push ds
+                mov ds,ebx
+                mov eax,2504h
+                int 21h
+                pop ds
+
+                ENDIF
+
+                ENDM
+
+                ;
+                ;Set EAX = contents of BIOS data area at real-mode segment
+                ;40h, offset BX
+                ;
+
+GET_BIOS_DATA   MACRO
+
+                IFDEF DPMI
+
+                push ds
+                and ebx,0ffffh          ;(Rational DOS/4GW)
+                mov eax,40h             
+                mov ds,ax               
+                mov eax,ds:[ebx]  
+                pop ds
+
+                ELSEIFDEF INT21
+
+                IFDEF PHARLAP
+        
+                push ds                 ;(Phar Lap 386|DOS Extender)
+                and ebx,0ffffh
+                mov eax,34h
+                mov ds,ax
+                mov eax,ds:[400h][ebx]
+                pop ds
+
+                ELSE
+
+                push ds                 ;(Flashtek X32)
+                push ebx
+                mov eax,3501h
+                int 21h
+                mov ds,bx
+                mov ecx,400h
+                mov eax,3503h
+                int 21h
+                mov bx,ds
+                mov ecx,-1
+                mov eax,3505h
+                int 21h
+                pop ebx
+                and ebx,0ffffh
+                mov eax,ds:[ebx]
+                push eax
+                mov bx,ds
+                mov eax,3502h
+                int 21h
+                pop eax
+                pop ds
+
+                ENDIF
+                ENDIF
+
+                ENDM
+
