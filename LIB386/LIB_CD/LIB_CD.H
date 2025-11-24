@@ -10,63 +10,63 @@ extern LONG FileCD_Size;
 
 //----------------------------------------------------------------------------
 //      Initialiser le lesteur de cdrom, si pas verif alors chaine vide
-LONG InitCDR(char *nameid);
+extern LONG InitCDR(char *nameid);
 
 //      Jouer seulement une track précise
-LONG PlayTrackCDR(LONG track);
+extern LONG PlayTrackCDR(LONG track);
 
 //      Arreter le PlayTrackCDR
-void StopCDR();
+extern void StopCDR();
 
 //      Verouiller ou déverouiller la porte du lecteur
-void LockCDR();
-void UnLockCDR();
+extern void LockCDR();
+extern void UnLockCDR();
 
 //      Reset, Init ou suite a une erreur par exemple
-void ResetCDR();
+extern void ResetCDR();
 
 //      Ejecter le cdrom quand c'est possible ( pas toujours motorisé )
-void EjectCDR();
+extern void EjectCDR();
 
 //      Fermer tiroir electrique quand c'est possible ( pas toujours motorisé )
-void CloseTrayCDR();
+extern void CloseTrayCDR();
 
 //      Reprends une track apres un stopCDR
-void ResumeCDR();
+extern void ResumeCDR();
 
 //-------------------------------------- Fonction bas niveau
 
 //      Return pointeur sur Copyright File name ( pas forcement file )
-char *GetCopyrightName();
+extern char *GetCopyrightName();
 
 //      Conversion Red to Hsg ( belle jambe non ;-) )
-LONG Red2Hsg(LONG value);
+extern LONG Red2Hsg(LONG value);
 
 //      Return la taille d'une track en HSG
-LONG GetLengthTrackCDR(LONG track);
+extern LONG GetLengthTrackCDR(LONG track);
 
 //      Return secteur depart Track
-LONG StartTrackCDR(LONG track);
+extern LONG StartTrackCDR(LONG track);
 
 //      Return status of CD Drive
-LONG StatusCDR();
+extern LONG StatusCDR();
 
 //      Return Track currently play or 0
-LONG GetMusicCDR();
+extern LONG GetMusicCDR();
 
 //      Change volume selon chanel
-void ControlCDR(WORD chan0, WORD vol0, WORD chan1, WORD vol1);
+extern void ControlCDR(WORD chan0, WORD vol0, WORD chan1, WORD vol1);
 
 //      Return position de la tete
-LONG LocateHeadCDR();
+extern LONG LocateHeadCDR();
 
 //      Play a part of cd
-LONG PlayCDR(LONG debut, LONG duree);
+extern LONG PlayCDR(LONG debut, LONG duree);
 
 //      Lecture data
-LONG ReadLongCDR(LONG start, LONG nbsect, void *buffer);
+extern LONG ReadLongCDR(LONG start, LONG nbsect, void *buffer);
 
 //	Get Directory Entry
-LONG GetFileCDR(char *name);
+extern LONG GetFileCDR(char *name);
 
 //----------------------------------------------------------------------------

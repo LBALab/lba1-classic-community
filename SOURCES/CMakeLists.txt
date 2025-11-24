@@ -120,6 +120,9 @@ if(BUILD_DOS)
         set_source_files_properties(${src} PROPERTIES LANGUAGE ASM_MASM)
     endforeach()
 
+    #target_compile_definitions(LBAD PRIVATE SKIP_INTRO)
+    target_compile_definitions(LBAD PRIVATE CDROM)
+
     lba_configure_dos_executable(LBAD "LBAD" "${COMMON_LIBRARIES_ASM}")
     message(STATUS "DOS executable: LBAD.EXE (original assembly, DOS/4GW 32-bit protected mode)")
 endif()
@@ -131,7 +134,8 @@ if(BUILD_DOS_C)
         set_source_files_properties(${src} PROPERTIES LANGUAGE C)
     endforeach()
 
-    target_compile_definitions(LBADC PRIVATE SKIP_INTRO)
+    #target_compile_definitions(LBADC PRIVATE SKIP_INTRO)
+    target_compile_definitions(LBADC PRIVATE CDROM)
 
     lba_configure_dos_executable(LBADC "LBADC" "${COMMON_LIBRARIES_TRANSLATED}")
     message(STATUS "DOS executable: LBADC.EXE (translated C modules, DOS/4GW 32-bit protected mode)")

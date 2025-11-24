@@ -14,7 +14,7 @@ comment @
 @
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			.386P
-			.model SMALL, C
+			.model SMALL, SYSCALL
 
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 			.data
@@ -25,7 +25,7 @@ comment @
 		public CptTimeOut
 		public DriveCDR
 
-                public FileCD_Start
+		public FileCD_Start
 		public FileCD_Sect
 		public FileCD_Size
 
@@ -45,7 +45,7 @@ BufferData	db	1000 dup(0)
 CptTimeOut	dw	0
 
 PtDosCD		dd	?	;' Pointeur Prot sur Dos Mem
-OffDosCd	dw	?	;' Offset Real sur Dos Mem
+OffDosCD	dw	?	;' Offset Real sur Dos Mem
 
 ;----------------------------------' PtDosCD : Structure IOCTL
 
@@ -643,7 +643,7 @@ Retry:
 			ret
 NoError:
 			mov	ebx, [PtDosCD]
-			movzx	eax, word ptr [ebx+I_BufferData+1]
+			movzx	eax, word ptr [ebx+I_BUFFERDATA+1]
 			ret
 
 StatusCDR		endp
@@ -673,7 +673,7 @@ NoError:
 			mov	ebx, [PtDosCD]
 			test	ax, 200h			;' Buzy
 			jz	NoPlay
-			movzx	eax, byte ptr [ebx+I_BufferData+2];' Num Track
+			movzx	eax, byte ptr [ebx+I_BUFFERDATA+2];' Num Track
 			ret
 
 GetMusicCDR		endp
@@ -842,7 +842,7 @@ StopCDR			endp
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 PlayTrackCDR		proc	uses ebx,\
-			Track:DWORD
+			track:DWORD
 
 			local	len:DWORD
 
@@ -863,7 +863,7 @@ PlayTrackCDR		proc	uses ebx,\
 			mov     word ptr [ebx+I_TRANSPTR+2], ax
 
 			mov	byte ptr [ebx+I_BUFFERDATA], 11 ;' Audio Info
-			mov	eax, Track
+			mov	eax, track
 			mov	byte ptr [ebx+I_BUFFERDATA+1], al
 Retry:
 			call	TalkCDR_O
