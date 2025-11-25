@@ -2,11 +2,9 @@
 #include "C_EXTERN.H"
 #include "BALANCE.H"
 
-#ifdef CDROM
 extern LONG FlagVoiceCD;
 LONG CurrentMusicCD = -1;
 ULONG EndMusicCD = 0;
-#endif
 
 /*══════════════════════════════════════════════════════════════════════════*
 		█▀▀▀█ █▄ ▄█ █▀▀█   █    █▀▀▀█ ██▄ █ █▀▀▀▀ █▀▀▀▀
@@ -30,6 +28,30 @@ ULONG HQ_MixSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WOR
 		return -1; /* Loran ( Come from GereSceneMenu)*/
 
 	ptr = HQR_GetSample(HQR_Samples, numsample);
+	if (ptr)
+	{
+		retvalue =
+			WavePlay(numsample, decalage, repeat, 0, volleft, volright, ptr);
+	}
+
+	return retvalue;
+}
+
+ULONG HQ_MixFlaSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WORD volright)
+{
+	UBYTE string[256];
+	ULONG retvalue;
+	UBYTE *ptr;
+
+	retvalue = -1;
+
+	if (!SamplesEnable)
+		return -1;
+
+	if (numsample == -1)
+		return -1; /* Loran ( Come from GereSceneMenu)*/
+
+	ptr = HQR_GetSample(HQR_FLA_Samples, numsample);
 	if (ptr)
 	{
 		retvalue =
@@ -366,15 +388,13 @@ void FadeRedToPal(UBYTE *ptrpal)
  *══════════════════════════════════════════════════════════════════════════*/
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#ifdef CDROM
-
 void StopMusicCD(void)
 {
+	if (!CDEnable || CurrentMusicCD == -1)
+		return;
 	StopCDR();
 	CurrentMusicCD = -1;
 }
-
-#endif
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
@@ -398,29 +418,25 @@ void PlayMusic(WORD num)
 {
 	if (num == -1)
 	{
-#ifdef CDROM
 		StopMusicCD();
-#endif
 		StopMusicMidi();
 		return;
 	}
 
-#ifdef CDROM
-
-	if (FlagVoiceCD // voix sur CD music fm
-			OR(num < 1)
-				OR(num > 9)) // ou jingle que FM
-	{
+	if (CDEnable) {
+		if (FlagVoiceCD // voix sur CD music fm
+				OR(num < 1)
+					OR(num > 9)) // ou jingle que FM
+		{
+			PlayMidiFile(num);
+		}
+		else // voix sur HD ponheur
+		{
+			PlayCdTrack(num); // 1ere track = 2
+		}
+	} else {
 		PlayMidiFile(num);
 	}
-	else // voix sur HD ponheur
-	{
-		PlayCdTrack(num); // 1ere track = 2
-	}
-
-#else
-	PlayMidiFile(num);
-#endif
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
@@ -430,9 +446,7 @@ void PlayMidiFile(WORD num)
 	if (!Midi_Driver_Enable)
 		return; // hum si on peut
 
-#ifdef CDROM
 	StopMusicCD();
-#endif
 
 	if ((num != NumXmi)
 			OR(!IsMidiPlaying()))
@@ -448,9 +462,10 @@ void PlayMidiFile(WORD num)
 
 /*──────────────────────────────────────────────────────────────────────────*/
 
-#ifdef CDROM
 LONG GetMusicCD()
 {
+	if (!CDEnable)
+		return -1;
 	if (TimerSystem > EndMusicCD)
 		CurrentMusicCD = -1;
 	return CurrentMusicCD;
@@ -507,5 +522,3 @@ void PlayAllMusic(WORD num)
 }
 
 /*──────────────────────────────────────────────────────────────────────────*/
-
-#endif

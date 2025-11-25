@@ -15,9 +15,7 @@ extern WORD ZoneGrm;
 #define RET_WORD 1
 #define RET_STRING 2
 
-#ifdef CDROM
 extern LONG FlagDisplayText;
-#endif
 
 /*══════════════════════════════════════════════════════════════════════════*
 		   Auxiliary Functions
@@ -357,13 +355,8 @@ void DoFuncLife(T_OBJET *ptrobj)
 		break;
 
 	case LF_CDROM:
-#ifdef CDROM
 		// Message( "CDROM TRUE" ) ;
 		Value = 1;
-#else
-		// Message( "CDROM FALSE" ) ;
-		Value = 0;
-#endif
 		break;
 	}
 }
@@ -758,9 +751,9 @@ void DoLife(WORD numobj)
 				if (Bulle)
 					DrawBulle(num);
 				TestCoulDial(ListObjet[num].CoulObj);
-#ifdef CDROM
+
 				NumObjSpeak = num;
-#endif
+
 				Dial(*(WORD *)PtrPrg);
 				PtrPrg += 2;
 				RestoreTimer();
@@ -783,9 +776,9 @@ void DoLife(WORD numobj)
 				if (Bulle)
 					DrawBulle(numobj);
 				TestCoulDial(ptrobj->CoulObj);
-#ifdef CDROM
+
 				NumObjSpeak = numobj;
-#endif
+
 				Dial(*(WORD *)PtrPrg);
 				PtrPrg += 2;
 				RestoreTimer();
@@ -806,11 +799,11 @@ void DoLife(WORD numobj)
 							0, 0,
 							obj, 1, 2);
 			PtrPrg += 2;
-#ifdef CDROM
+
 			SaveTimer();
 			Speak(num);
 			RestoreTimer();
-#endif
+
 			break;
 
 		case LM_SAY_MESSAGE:
@@ -820,11 +813,11 @@ void DoLife(WORD numobj)
 							0, 0,
 							numobj, 1, 2);
 			PtrPrg += 2;
-#ifdef CDROM
+
 			SaveTimer();
 			Speak(num);
 			RestoreTimer();
-#endif
+
 			break;
 
 		case LM_SET_FLAG_CUBE:
@@ -1179,9 +1172,9 @@ void DoLife(WORD numobj)
 			if (Bulle)
 				DrawBulle(numobj);
 			TestCoulDial(ptrobj->CoulObj);
-#ifdef CDROM
+
 			NumObjSpeak = numobj;
-#endif
+
 			Dial(*(WORD *)PtrPrg);
 			PtrPrg += 2;
 			NormalWinDial();
@@ -1301,10 +1294,10 @@ void DoLife(WORD numobj)
 
 			BigWinDial();
 			TestCoulDial(15);
-#ifdef CDROM
+
 			memoflagdisplaytext = FlagDisplayText;
 			FlagDisplayText = TRUE;
-#endif
+
 			FlagMessageShade = FALSE;
 			Dial(6);
 			FlagMessageShade = TRUE;
@@ -1314,9 +1307,9 @@ void DoLife(WORD numobj)
 			Cls();
 			Flip();
 			Palette(PtrPal);
-#ifdef CDROM
+
 			FlagDisplayText = memoflagdisplaytext;
-#endif
+
 			while ((Fire & F_SPACE)
 					   OR(Key == K_ESC))
 				;
@@ -1361,11 +1354,11 @@ void DoLife(WORD numobj)
 			break;
 
 		case LM_PLAY_CD_TRACK:
-#ifdef CDROM
-			PlayCdTrack(*PtrPrg++);
-#else
-			PtrPrg++;
-#endif
+			if (CDEnable) {
+				PlayCdTrack(*PtrPrg++);
+			} else {
+				PtrPrg++;
+			}
 			break;
 
 		case LM_PROJ_ISO:

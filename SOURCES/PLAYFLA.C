@@ -254,7 +254,7 @@ void DrawNextFrameFla()
 			ptr_donnee += sizeof(T_FLA_SAMPLE); /* Jump header type */
 			if (SamplesEnable)
 			{
-				HQ_MixSample(HeaderSampleFlaNew.Numero,
+				HQ_MixFlaSample(HeaderSampleFlaNew.Numero,
 							 HeaderSampleFlaNew.Decalage,
 							 HeaderSampleFlaNew.Repetition,
 							 HeaderSampleFlaNew.VolumeG,
@@ -382,15 +382,15 @@ WORD InitFla(char *name)
 		return (FALSE); // protect CD ?
 #endif
 
-	if (SamplesEnable)
-	{
-		UBYTE string[256];
+	// if (SamplesEnable)
+	// {
+	// 	UBYTE string[256];
 
-		strcpy(string, PathFla);
-		strcat(string, "FLASAMP.HQR");
+	// 	strcpy(string, PathFla);
+	// 	strcat(string, "FLASAMP.HQR");
 
-		HQR_Change_Ressource(HQR_Samples, string);
-	}
+	// 	HQR_Change_Ressource(HQR_FLA_Samples, string);
+	// }
 
 	// lecture de l'entête principale
 	Read(HandleFla, &HeaderFla, sizeof(T_HEADER_FLA));
@@ -413,7 +413,7 @@ WORD InitFla(char *name)
 		//  list reversed)
 		if (SamplesEnable)
 		{
-			HQR_GetSample(HQR_Samples, numero_sample);
+			HQR_GetSample(HQR_FLA_Samples, numero_sample);
 		}
 	}
 
@@ -432,10 +432,10 @@ WORD InitFla(char *name)
 /*-------------------------------------------------------------------------*/
 void ClearFla()
 {
-	if (SamplesEnable)
-	{
-		HQR_Change_Ressource(HQR_Samples, PATH_RESSOURCE "samples.hqr");
-	}
+	// if (SamplesEnable)
+	// {
+	// 	HQR_Change_Ressource(HQR_Samples, PATH_RESSOURCE "samples.hqr");
+	// }
 
 	Close(HandleFla);
 }
@@ -488,9 +488,7 @@ void PlayAnimFla(char *name_anim)
 		return;
 	}
 
-#ifdef CDROM
 	StopMusicCD();
-#endif
 
 	strcpy(ficname, PathFla);
 	strcat(ficname, name_anim);

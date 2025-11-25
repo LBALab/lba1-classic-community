@@ -173,7 +173,7 @@ void ScanDirs(UBYTE *selection)
 	for (n = 0; n < NbDirs; n++)
 	{
 		strcpy(path, IndexDirs[n]);
-		strcat(path, "//");
+		strcat(path, "\\");
 		strcat(path, selection);
 		if (ThereIsFiles(path))
 		{
@@ -476,7 +476,7 @@ WORD FileSelector(UBYTE *titre,
 		{
 			_splitpath(SelectorPathname, SDrive, SDir, SName, SExt);
 			strcpy(SelectorPathname, SearchPathname);
-			strcat(SelectorPathname, "//");
+			strcat(SelectorPathname, "\\");
 			strcat(SelectorPathname, SName);
 			strcat(SelectorPathname, SExt);
 

@@ -980,8 +980,6 @@ void DoFoundObj(WORD numobj)
 
 	// aff text et objet
 
-#ifdef CDROM
-
 	if (IsVoiceFileOnHD(2))
 	{
 		// voix sur hd touche à rien
@@ -991,21 +989,19 @@ void DoFoundObj(WORD numobj)
 	}
 	else // coupe music cd si on
 	{
-		StopMusicCD();
-		memoflagspeak = FlagSpeak;
-		FlagSpeak = FALSE;
+		if (CDEnable) {
+			StopMusicCD();
+			memoflagspeak = FlagSpeak;
+			FlagSpeak = FALSE;
 
-		InitDial(2);
+			InitDial(2);
 
-		FlagSpeak = memoflagspeak;
-		speakfromcd = TRUE;
+			FlagSpeak = memoflagspeak;
+			speakfromcd = TRUE;
+		} else {
+			InitDial(2); // game divers txt
+		}
 	}
-
-#else
-
-	InitDial(2); // game divers txt
-
-#endif
 
 	UnSetClip();
 	OpenDial(numobj);
@@ -1013,7 +1009,6 @@ void DoFoundObj(WORD numobj)
 	dialstat = 1;
 	flag = FALSE;
 	TestCoulDial(4); // coul twinsen
-#ifdef CDROM
 
 	if (speakfromcd)
 	{
@@ -1023,7 +1018,6 @@ void DoFoundObj(WORD numobj)
 	{
 		Speak(numobj);
 	}
-#endif
 
 	numanim = SearchAnim(GEN_ANIM_TROUVE, NUM_PERSO);
 	ptranim = HQR_Get(HQR_Anims, numanim);
@@ -1123,8 +1117,6 @@ void DoFoundObj(WORD numobj)
 argexit:
 #endif
 
-#ifdef CDROM
-
 	if (speakfromcd)
 	{
 		while (TestSpeakFromCD() AND(Key != K_ESC))
@@ -1136,7 +1128,6 @@ argexit:
 			;
 	}
 	StopSpeak();
-#endif
 	Init3DGame();
 
 	InitDial(START_FILE_ISLAND + Island);
@@ -2554,11 +2545,12 @@ LONG OptionsMenu()
 	CopyScreen(Log, Screen);
 
 	HQ_StopSample();
-#ifdef CDROM
-	PlayCdTrack(9);
-#else
-	PlayMidiFile(9);
-#endif
+	if (CDEnable) {
+		PlayCdTrack(9);
+	} else {
+		PlayMidiFile(9);
+	}
+		
 
 	while (!flag)
 	{
@@ -2611,11 +2603,10 @@ void VolumeOptions()
 
 	CopyScreen(Log, Screen);
 
-#ifdef CDROM
-	PlayAllMusic(9); // he oui on lance les 2
-#else
-	PlayMidiFile(9);
-#endif
+	if (CDEnable)
+		PlayAllMusic(9); // he oui on lance les 2
+	else
+		PlayMidiFile(9);
 
 	TimerSample = TimerRef;
 
@@ -2630,9 +2621,7 @@ void VolumeOptions()
 							break ;
 			*/
 		case 26: // quitter
-#ifdef CDROM
 			FadeMusicMidi(1);
-#endif
 			SetVolumes(MusicVolume, SampleVolume, LineVolume, CDVolume, MasterVolume);
 			flag = 1;
 			break;
@@ -2850,11 +2839,11 @@ LONG MainGameMenu()
 	{
 		InitDial(0); //	SYS
 
-#ifdef CDROM
-		PlayCdTrack(9);
-#else
-		PlayMidiFile(9);
-#endif
+		if (CDEnable) {
+			PlayCdTrack(9);
+		} else {
+			PlayMidiFile(9);
+		}
 		HQ_StopSample();
 
 		GetMultiText(49, PleaseWait);
@@ -3050,13 +3039,11 @@ void GameAskChoice(WORD nummess)
 	DoGameMenu(GameChoiceMenu);
 	GameChoice = GameListChoice[GameChoiceMenu[0]]; // ret num mess
 
-#ifdef CDROM
 	NumObjSpeak = NUM_PERSO;
 	Speak(GameChoice);
 	while (TestSpeak() AND(Key != K_ESC))
 		;		 // Wait until silence
 	StopSpeak(); //	Security
-#endif
 }
 
 /*══════════════════════════════════════════════════════════════════════════*

@@ -7,12 +7,10 @@ extern LONG MaxVolume; // Max Music Volume if no Mixer
 extern UWORD GameVolumeMenu[];
 extern UWORD GameOptionMenu[];
 extern LONG FlecheForcee;
-#ifdef CDROM
 extern LONG FlagDisplayText;
 extern UBYTE *BufMemoSeek;
-#endif
 
-ULONG SpriteMem, SampleMem, AnimMem;
+ULONG SpriteMem, SampleMem, FlaSampleMem, AnimMem;
 ULONG ValidPositionTimer;
 ULONG PersoInvulnerableTimer;
 
@@ -254,21 +252,15 @@ void InitGame(int argc, UBYTE *argv[])
 
 void Introduction()
 {
-	// history text
-
-#ifdef CDROM
 	StopMusicCD();
-//	FadeMusicMidi( 1 ) ;
-#endif
+	StopMusicMidi();
 
 	if ((NewCube == 0) AND(Chapitre == 0))
 	{
-#ifdef CDROM
 		LONG memoflagdisplaytext;
 
 		memoflagdisplaytext = FlagDisplayText;
 		FlagDisplayText = TRUE;
-#endif
 
 		Load_HQR(PATH_RESSOURCE "ress.hqr", Screen, RESS_TWINSUN_PCR);
 		CopyScreen(Screen, Log);
@@ -324,9 +316,8 @@ void Introduction()
 		SetBlackPal();
 		Cls();
 		Flip();
-#ifdef CDROM
+
 		FlagDisplayText = memoflagdisplaytext;
-#endif
 	}
 }
 
@@ -438,13 +429,14 @@ LONG MainLoop()
 
 		if (FlagCredits)
 		{
-#ifdef CDROM
-			if (GetMusicCD() != 8)
-				PlayCdTrack(8);
-#else
-			if (!IsMidiPlaying())
-				PlayMidiFile(9);
-#endif
+			if (CDEnable) {
+				if (GetMusicCD() != 8)
+					PlayCdTrack(8);
+			} else {
+				if (!IsMidiPlaying())
+					PlayMidiFile(9);
+			}
+
 			if (Key OR Joy OR Fire)
 			{
 				//			FlagCredits = FALSE ;
@@ -514,9 +506,7 @@ LONG MainLoop()
 				{
 					if (ListFlagGame[90] == 1)
 					{
-#ifdef CDROM
 						PlayCdTrack(8); // funkyrock
-#endif
 					}
 					else
 					{
@@ -583,14 +573,12 @@ LONG MainLoop()
 					FlagMessageShade = FALSE;
 					BigWinDial();
 					TestCoulDial(15);
-#ifdef CDROM
+
 					memoflagdisplaytext = FlagDisplayText;
 					FlagDisplayText = TRUE;
-#endif
 					Dial(161);
-#ifdef CDROM
 					FlagDisplayText = memoflagdisplaytext;
-#endif
+
 					NormalWinDial();
 					FlagMessageShade = TRUE;
 					InitDial(START_FILE_ISLAND + Island);
@@ -1307,9 +1295,7 @@ void InitProgram()
 	AsciiMode = TRUE;
 #endif
 
-#ifdef CDROM
 	InitVoiceFile();
-#endif
 }
 
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -1320,10 +1306,9 @@ void TheEnd(WORD num, UBYTE *error)
 	MemoMinDosMemory = (ULONG)DosMalloc(-1, NULL); // Dos memory after inits
 #endif
 
-#ifdef CDROM
 	ClearVoiceFile();
 	ClearCDR();
-#endif
+
 	ClearAdelineSystem();
 
 	printf(Version); /*	dans version.c	*/
@@ -1334,6 +1319,7 @@ void TheEnd(WORD num, UBYTE *error)
 	printf("* Min Dos Memory was %ld\n", MemoMinDosMemory);
 	printf("* HQR Sprite: %ld\n", SpriteMem);
 	printf("      Sample: %ld\n", SampleMem);
+	printf("      Sample: %ld\n", FlaSampleMem);
 	printf("        Anim: %ld\n", AnimMem);
 
 	printf("* Size HQM Memory was %ld\n", Size_HQM_Memory);
@@ -1371,11 +1357,10 @@ void TheEnd(WORD num, UBYTE *error)
 		break;
 	}
 	RestoreDiskEnv();
-	exit(0);
 }
 
 
-#ifdef DEBUG_TOOLS
+// #ifdef DEBUG_TOOLS
 void Message(UBYTE *mess, WORD flag)
 {
 	WORD x;
@@ -1398,11 +1383,11 @@ void Message(UBYTE *mess, WORD flag)
 	}
 	RestoreClip();
 }
-#else
-void Message(UBYTE *mess, WORD flag)
-{
-}
-#endif
+// #else
+// void Message(UBYTE *mess, WORD flag)
+// {
+// }
+// #endif
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -1488,33 +1473,37 @@ void main(int argc, UBYTE *argv[])
 
 	// check cd rom
 
-#ifdef DEMO
-	FlaFromCD = TRUE;	 // fla sur HD
-	strcpy(PathFla, ""); // version demo fla in current dir
-#else
+// #ifdef DEMO
+// 	FlaFromCD = TRUE;	 // fla sur HD
+// 	strcpy(PathFla, ""); // version demo fla in current dir
+// #else
 
-#ifdef CDROM
+// #ifdef CDROM
 	if (InitCDR("CD_LBA"))
 	{
 		UBYTE *drive = "D:";
-
 		// cherche un fichier pour version preview
-
 		drive[0] = 'A' + DriveCDR;
 		strcpy(PathFla, drive);
-		strcat(PathFla, "//LBA//FLA//");
+		strcat(PathFla, "\\LBA\\FLA\\");
+		CDEnable = TRUE;
 	}
-	else
-		TheEnd(PROGRAM_OK, "No CD");
+	else 
+	{
+		strcpy(PathFla, "FLA\\"); // version cdrom sur hd (fla only)
+		CDEnable = FALSE;
+	}
+// 	else
+// 		TheEnd(PROGRAM_OK, "No CD");
 
-	if (ProgDrive[0] - 'A' == DriveCDR) // A=0 , B=1 etc.
-		TheEnd(PROGRAM_OK, "Type INSTALL");
+// 	// if (ProgDrive[0] - 'A' == DriveCDR) // A=0 , B=1 etc.
+// 	// 	TheEnd(PROGRAM_OK, "Type INSTALL");
 
-#else
-	strcpy(PathFla, "FLA//"); // version cdrom sur hd (fla only)
-#endif
+// #else
+	// strcpy(PathFla, "FLA//"); // version cdrom sur hd (fla only)
+// #endif
 
-#endif
+// #endif
 
 	// divers malloc
 
@@ -1522,11 +1511,10 @@ void main(int argc, UBYTE *argv[])
 	if (!BufSpeak)
 		TheEnd(NOT_ENOUGH_MEM, "BufSpeak (Dos Memory)");
 
-#ifdef CDROM
 	BufMemoSeek = SmartMalloc(2048L);
 	if (!BufMemoSeek)
 		TheEnd(NOT_ENOUGH_MEM, "BufMemoSeek");
-#endif
+
 	BufText = SmartMalloc(25000L);
 	if (!BufText)
 		TheEnd(NOT_ENOUGH_MEM, "BufText");
@@ -1571,12 +1559,15 @@ void main(int argc, UBYTE *argv[])
 
 	SpriteMem = (memory / 8);
 	SampleMem = (memory / 8) * 4;
+	FlaSampleMem = (memory / 8) * 4;
 	AnimMem = (memory / 8) * 2;
 
 	if (SpriteMem < 50000)
 		SpriteMem = 50000;
 	if (SampleMem < 200000)
 		SampleMem = 200000;
+	if (FlaSampleMem < 200000)
+		FlaSampleMem = 200000;
 	if (AnimMem < 100000)
 		AnimMem = 100000;
 
@@ -1584,6 +1575,8 @@ void main(int argc, UBYTE *argv[])
 		SpriteMem = 400000;
 	if (SampleMem > 4500000)
 		SampleMem = 4500000;
+	if (FlaSampleMem > 4500000)
+		FlaSampleMem = 4500000;
 	if (AnimMem > 300000)
 		AnimMem = 300000;
 
@@ -1614,6 +1607,16 @@ void main(int argc, UBYTE *argv[])
 			Message("HQR_Samples not enough memory", TRUE);
 			Wave_Driver_Enable = FALSE;
 			SamplesEnable = FALSE;
+		}
+
+		HQR_FLA_Samples = HQR_Init_Ressource(
+			PATH_RESSOURCE "FLA\\FLASAMP.HQR",
+			FlaSampleMem,
+			FlaSampleMem / 5000);
+
+		if (!HQR_FLA_Samples)
+		{
+			Message("HQR_FLA_Samples not enough memory", TRUE);
 		}
 	}
 

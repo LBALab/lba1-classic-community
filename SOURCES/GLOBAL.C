@@ -30,6 +30,7 @@ WORD Value;
 LONG SampleVolume, MusicVolume, CDVolume, LineVolume, MasterVolume;
 
 WORD SamplesEnable = FALSE;
+WORD CDEnable = FALSE;
 
 WORD FlagPalettePcx = FALSE;
 WORD FlagFade = FALSE;
@@ -56,6 +57,7 @@ WORD FlagWindowsFilenameSaving = 0;
 /*--------- ressources ---------------------------*/
 
 T_HQR_HEADER *HQR_Samples;
+T_HQR_HEADER *HQR_FLA_Samples;
 T_HQR_HEADER *HQR_Midi;
 T_HQR_HEADER *InventoryObj;
 

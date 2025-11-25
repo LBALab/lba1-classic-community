@@ -19,22 +19,15 @@
 #include "c_extern.h"
 #include "../LIB386/LIB_SYS/SYS_FILESYSTEM.H"
 
-#ifdef ONE_GAME_DIRECTORY
 #define PATH_TXT ""
 #define PATH_NAR ""
-#else
-#define PATH_TXT "f://projet//lba//text//"
-#define PATH_NAR "f://projet//lba//samples//dial//"
-#endif
 
-#ifdef CDROM
-#define PATH_NAR_CD "//LBA//VOX//"
-#define PATH_NAR_HD "VOX//"
+#define PATH_NAR_CD "\\LBA\\VOX\\"
+#define PATH_NAR_HD "VOX\\"
 #define MAX_FILE_VOICE 42 // SYS CRE GAM 0 1 2 3 4 5 6 7 8 9 10 * MaxLang
 #define EXT_NAR ".VOX"
 #define FROM_HD 0
 #define FROM_CD 1
-#endif
 
 #define NAME_HQR_TEXT "TEXT.HQR"
 #define MAX_TEXT_LANG 14 // Attention, pour 1 langue seulement!
@@ -91,9 +84,9 @@ char *TabLanguage[] = {
 
 char *ListLanguage[] = {"EN_", "FR_", "DE_", "SP_", "IT_"};
 
-char *ListFileText[] = {"sys",
-						"cre",
-						"gam",
+char *ListFileText[] = {"SYS",
+						"CRE",
+						"GAM",
 						"000",
 						"001",
 						"002",
@@ -134,7 +127,6 @@ UWORD *BufOrder = 0L;
 
 LONG FlagSpeak = FALSE; //	cf InitLanguage
 //------------------------------
-#ifdef CDROM
 WORD NumObjSpeak = -1;
 LONG FlagVoiceCD = FALSE; //	cf InitLanguage
 static LONG FlagKeepVoice = 0;
@@ -157,7 +149,6 @@ ULONG TotalSizeFileHD = 0;
 LONG LanguageCD = 0; // Français, a changer of course!
 LONG NbFileOnHD = 0; // No File for the moment
 LONG MaxVoice = 0;
-#endif
 //------------------------------
 
 static char *PtDial;
@@ -218,7 +209,6 @@ void InitLanguage()
 		}
 	}
 
-#ifdef CDROM
 	strcpy(string, Def_ReadString(PathConfigFile, "LanguageCD"));
 
 	FlagSpeak = FALSE;
@@ -247,7 +237,6 @@ void InitLanguage()
 		FlagDisplayText = 0;
 	else
 		FlagDisplayText = 1; // default
-#endif
 }
 
 /*-------------------------------------------------------------------------*/
@@ -273,7 +262,7 @@ LONG FindText(LONG text)
 	▀▀▀▀▀ ▀▀▀▀  ▀▀  ▀ ▀▀▀▀▀ ▀▀  ▀       ▀▀    ▀▀  ▀ ▀▀  ▀   ▀▀
 /*-------------------------------------------------------------------------*/
 #endif
-#ifdef CDROM
+
 /*-------------------------------------------------------------------------*/
 //	Pour prendre en compte les eventuels fichiers déjà sur HD
 	void InitVoiceFile()
@@ -503,16 +492,17 @@ LONG TryCopyFileCD_HD(char *filecd, char *filehd)
 /*-------------------------------------------------------------------------*/
 void CloseFdNar()
 {
-	if (FdNar) //	Fichier ouvert CD ou HD, on doit le fermer
-	{
-		Close(FdNar);
-		FdNar = 0L;
-	}
+	// if (FdNar) //	Fichier ouvert CD ou HD, on doit le fermer
+	// {
+	// 	Close(FdNar);
+	// 	FdNar = 0L;
+	// }
 }
 /*-------------------------------------------------------------------------*/
 void InitFileNar(char *file, LONG from)
 {
 	ULONG offset, wr;
+	char FileText[512];
 
 	CloseFdNar();
 
@@ -537,7 +527,6 @@ void InitFileNar(char *file, LONG from)
 								 // avec MaxText mais bon,
 								 // en chantier... {:) --D 	(un ouvrier, je sais, il est nul celui la, désolé...)
 	Seek(FdNar, 0L, SEEK_START);
-
 	wr = Read(FdNar, BufMemoSeek, offset);
 	if (wr != offset)
 	{
@@ -691,26 +680,26 @@ void SpeakFromCD(LONG file, LONG text)
 	if (DriveCDR < 0)
 		return;
 
-	strcpy(tmpname, PATH_TXT); // Pas FileText!
-	strcat(tmpname, ListLanguage[LanguageCD]);
-	strcat(tmpname, ListFileText[file]);
-	AddExt(tmpname, ".ord");
+	// strcpy(tmpname, PATH_TXT); // Pas FileText!
+	// strcat(tmpname, ListLanguage[LanguageCD]);
+	// strcat(tmpname, ListFileText[file]);
+	// AddExt(tmpname, ".ord");
 
-	//--------------------------------------
-	max = FileSize(tmpname) / 2;
-	Load(tmpname, BufSpeak); // Ne pas bousiller BufOrder!
+	// //--------------------------------------
+	// max = FileSize(tmpname) / 2;
+	// Load(tmpname, BufSpeak); // Ne pas bousiller BufOrder!
 
-	pt = (UWORD *)BufSpeak;
+	// pt = (UWORD *)BufSpeak;
 
-	for (num = 0; num < max; num++)
-	{
-		if (*pt++ == text)
-			break;
-	}
+	// for (num = 0; num < max; num++)
+	// {
+	// 	if (*pt++ == text)
+	// 		break;
+	// }
 
-	if (num == max)
-		return;
-	//--------------------------------------
+	// if (num == max)
+	// 	return;
+	// //--------------------------------------
 
 	tmpname[0] = DriveCDR + 'A';
 	tmpname[1] = ':';
@@ -787,7 +776,7 @@ void StopSpeak()
 		WaveStopOne(SPEAK_SAMPLE);
 }
 /*-------------------------------------------------------------------------*/
-#endif
+
 #ifdef TITRE
 /*-------------------------------------------------------------------------*/
 █▀▀▀▀ █▀▀▀▄ █▀▀▀█ █▀▀▀█ █▄ ▄█       █▀▀▀▀ ██▄ █ █▀▀▀▄
@@ -808,34 +797,34 @@ void InitDial(LONG file)
 		return;
 	LastFileInit = file;
 
-#ifdef CRYPTAGE
-	strcpy(FileText, PATH_TXT);
-	strcat(FileText, ListLanguage[Language]);
-	strcat(FileText, ListFileText[file]);
-	AddExt(FileText, ".ord");
+// #ifdef CRYPTAGE
+// 	strcpy(FileText, PATH_TXT);
+// 	strcat(FileText, ListLanguage[Language]);
+// 	strcat(FileText, ListFileText[file]);
+// 	AddExt(FileText, ".ord");
 
-	MaxText = FileSize(FileText) / 2; /* WORD        */
-	Load(FileText, BufOrder);
-	AddExt(FileText, ".dia");
-	Load(FileText, BufText);
-	//-------------------------- Decryptage
+// 	MaxText = FileSize(FileText) / 2; /* WORD        */
+// 	Load(FileText, BufOrder);
+// 	AddExt(FileText, ".dia");
+// 	Load(FileText, BufText);
+// 	//-------------------------- Decryptage
 
-	for (i = 0; i < MaxText; i++)
-	{
-		offset0 = *(UWORD *)(BufText + (i + 0) * 2);
-		offset1 = *(UWORD *)(BufText + (i + 1) * 2);
+// 	for (i = 0; i < MaxText; i++)
+// 	{
+// 		offset0 = *(UWORD *)(BufText + (i + 0) * 2);
+// 		offset1 = *(UWORD *)(BufText + (i + 1) * 2);
 
-		size = offset1 - offset0;
+// 		size = offset1 - offset0;
 
-		code = INIT_CODE;
+// 		code = INIT_CODE;
 
-		pt = BufText + offset0;
+// 		pt = BufText + offset0;
 
-		for (j = 0; j < size; j++)
-			*pt++ ^= (code++);
-	}
+// 		for (j = 0; j < size; j++)
+// 			*pt++ ^= (code++);
+// 	}
 
-#else
+// #else
 	strcpy(FileText, PATH_TXT);
 	strcat(FileText, NAME_HQR_TEXT);
 
@@ -846,12 +835,10 @@ void InitDial(LONG file)
 	Load_HQR(FileText, BufText,
 			 (Language * MAX_TEXT_LANG * 2) + (file * 2) + 1);
 
-#endif
+// #endif
 
-#ifdef CDROM
 	if (FlagSpeak)
 		InitSpeak(file);
-#endif
 }
 /*-------------------------------------------------------------------------*/
 /*-------------------------------------------------------------------------*/
@@ -1310,179 +1297,171 @@ void CloseDial()
 {
 	FlagRunningDial = FALSE;
 }
-#ifdef CDROM
+
 /*-------------------------------------------------------------------------*/
 //  			     D I A L    C D R O M
 /*-------------------------------------------------------------------------*/
 void Dial(LONG text)
 {
-	LONG ret = 0;
-	LONG flagabort = 0;
+	if (1) { //CDEnable
+		LONG ret = 0;
+		LONG flagabort = 0;
 
-	MemoClip();
-	UnSetClip();
+		MemoClip();
+		UnSetClip();
 
-	CopyScreen(Log, Screen);
+		CopyScreen(Log, Screen);
 
-	if (FlagSpeak)
-		ret = Speak(text);
+		if (FlagSpeak)
+			ret = Speak(text);
 
-	if ((!FlagDisplayText) // Pas de texte et Voix OK
-		AND(ret))
-	{
-		while ((TestSpeak())AND(Key != K_ESC))
-			;
+		if ((!FlagDisplayText) // Pas de texte et Voix OK
+			AND(ret))
+		{
+			while ((TestSpeak())AND(Key != K_ESC))
+				;
+			StopSpeak();
+			RestoreClip();
+			return;
+		}
+
+		OpenDial(text);
+
+		while (TRUE)
+		{
+			ret = NextDialCar();
+			TestSpeak();
+			if (ret == 2) /*      Attente de Touche       */
+			{
+				while ((Key)
+						OR(Fire)
+							OR(Joy))
+					TestSpeak(); // Tu relaches ?
+
+				while ((!Key)
+						AND(!Fire)
+							AND(!Joy))
+					TestSpeak(); // Tu appuies ?
+			}
+
+			if (Key == K_ESC) //	Player Abort...
+			{
+				flagabort = 1;
+				break;
+			}
+
+			if (((ret == 0) AND(!TestSpeak())) // Tout fini
+				OR(flagabort))
+				break; // Ou Abort by player
+		}
+
 		StopSpeak();
-		RestoreClip();
-		return;
-	}
-
-	OpenDial(text);
-
-	while (TRUE)
-	{
-		ret = NextDialCar();
-		TestSpeak();
-		if (ret == 2) /*      Attente de Touche       */
-		{
-			while ((Key)
-					   OR(Fire)
-						   OR(Joy))
-				TestSpeak(); // Tu relaches ?
-
-			while ((!Key)
-					   AND(!Fire)
-						   AND(!Joy))
-				TestSpeak(); // Tu appuies ?
-		}
-
-		if (Key == K_ESC) //	Player Abort...
-		{
-			flagabort = 1;
-			break;
-		}
-
-		if (((ret == 0) AND(!TestSpeak())) // Tout fini
-			OR(flagabort))
-			break; // Ou Abort by player
-	}
-
-	StopSpeak();
-	CloseDial();
-	if ((ret == 0) AND(!flagabort))
-	{
-		while (!((!Key)AND(!Fire) AND(!Joy)))
-			;
-
-		while ((!Key)AND(!Fire) AND(!Joy))
-			;
-	}
-	/*
-		if( FlagMessageShade )
-			while( Key == K_ESC ) ; // attente relachement que pour escape
-		// essai: ET que si il y a un cadre (ouf ouf)
-	*/
-	RestoreClip();
-}
-/*──────────────────────────────────────────────────────────────────────────*/
-void MyDial(WORD nummess) // attends une touche si autre page sinon continue
-{
-	WORD dialstat = 1;
-
-	if (FlagSpeak)
-		Speak(nummess);
-
-	OpenDial(nummess);
-
-	while (dialstat)
-	{
-		dialstat = NextDialCar();
-		TestSpeak();
-		if (dialstat == 2) // encore 1 page
-		{
-			while (Key OR Fire OR Joy)
-				TestSpeak();
-			while (!Key AND !Fire AND !Joy)
-				TestSpeak();
-		}
-	}
-
-	while (TestSpeak())
-		; // Wait until silence
-
-	StopSpeak(); //	Security
-	CloseDial();
-}
-#else
-/*-------------------------------------------------------------------------*/
-//			     D I A L  N O  C D
-/*-------------------------------------------------------------------------*/
-void Dial(LONG text)
-{
-	LONG ret;
-
-	MemoClip();
-	UnSetClip();
-
-	CopyScreen(Log, Screen);
-
-	OpenDial(text);
-
-	while (TRUE)
-	{
-		ret = NextDialCar();
-		if (ret == 2) /*      Attente de Touche       */
+		CloseDial();
+		if ((ret == 0) AND(!flagabort))
 		{
 			while (!((!Key)AND(!Fire) AND(!Joy)))
 				;
-			if (Key == K_ESC)
-				break;
+
 			while ((!Key)AND(!Fire) AND(!Joy))
 				;
 		}
+		/*
+			if( FlagMessageShade )
+				while( Key == K_ESC ) ; // attente relachement que pour escape
+			// essai: ET que si il y a un cadre (ouf ouf)
+		*/
+		RestoreClip();
+	} else {
+		LONG ret;
+		MemoClip();
+		UnSetClip();
 
-		if ((ret == 0) OR(Key == K_ESC))
-			break;
-	}
-	CloseDial();
-	if (ret == 0)
-	{
-		while (!((!Key)AND(!Fire) AND(!Joy)))
-			;
+		CopyScreen(Log, Screen);
 
-		while ((!Key)AND(!Fire) AND(!Joy))
-			;
-	}
-	/*
-		if( FlagMessageShade )
-			while( Key == K_ESC ) ; // attente relachement que pour escape
-		// essai: ET que si il y a un cadre (ouf ouf)
-	*/
-	RestoreClip();
-}
-/*──────────────────────────────────────────────────────────────────────────*/
+		OpenDial(text);
 
-void MyDial(WORD nummess) // attends une touche si autre page sinon continue
-{
-	WORD dialstat = 1;
-
-	OpenDial(nummess);
-
-	while (dialstat)
-	{
-		dialstat = NextDialCar();
-		if (dialstat == 2) // encore 1 page
+		while (TRUE)
 		{
-			while (Key OR Fire OR Joy)
+			ret = NextDialCar();
+			if (ret == 2) /*      Attente de Touche       */
+			{
+				while (!((!Key)AND(!Fire) AND(!Joy)))
+					;
+				if (Key == K_ESC)
+					break;
+				while ((!Key)AND(!Fire) AND(!Joy))
+					;
+			}
+
+			if ((ret == 0) OR(Key == K_ESC))
+				break;
+		}
+		CloseDial();
+		if (ret == 0)
+		{
+			while (!((!Key)AND(!Fire) AND(!Joy)))
 				;
-			while (!Key AND !Fire AND !Joy)
+
+			while ((!Key)AND(!Fire) AND(!Joy))
 				;
 		}
+		/*
+			if( FlagMessageShade )
+				while( Key == K_ESC ) ; // attente relachement que pour escape
+			// essai: ET que si il y a un cadre (ouf ouf)
+		*/
+		RestoreClip();
 	}
-
-	CloseDial();
 }
-#endif
+/*──────────────────────────────────────────────────────────────────────────*/
+void MyDial(WORD nummess) // attends une touche si autre page sinon continue
+{
+	if (1) { //CDEnable
+		WORD dialstat = 1;
+
+		if (FlagSpeak)
+			Speak(nummess);
+
+		OpenDial(nummess);
+
+		while (dialstat)
+		{
+			dialstat = NextDialCar();
+			TestSpeak();
+			if (dialstat == 2) // encore 1 page
+			{
+				while (Key OR Fire OR Joy)
+					TestSpeak();
+				while (!Key AND !Fire AND !Joy)
+					TestSpeak();
+			}
+		}
+
+		while (TestSpeak())
+			; // Wait until silence
+
+		StopSpeak(); //	Security
+		CloseDial();
+	} else {
+		WORD dialstat = 1;
+		OpenDial(nummess);
+
+		while (dialstat)
+		{
+			dialstat = NextDialCar();
+			if (dialstat == 2) // encore 1 page
+			{
+				while (Key OR Fire OR Joy)
+					;
+				while (!Key AND !Fire AND !Joy)
+					;
+			}
+		}
+
+		CloseDial();
+	}
+}
+
 /*-------------------------------------------------------------------------*/
 // attention size max ou tronquée à 255 car + 0
 char *GetMultiText(LONG text, char *dst)

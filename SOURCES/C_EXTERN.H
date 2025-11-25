@@ -30,6 +30,7 @@ LONG SceReadWord();
 WORD SearchLastZoneSce();
 
 ULONG HQ_MixSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WORD volright);
+ULONG HQ_MixFlaSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WORD volright);
 void HQ_StopOneSample(WORD num);
 
 void *LoadTestMalloc(char *filename);
@@ -71,6 +72,7 @@ extern WORD Value;
 extern LONG SampleVolume, MusicVolume, CDVolume, LineVolume, MasterVolume;
 extern WORD SamplesEnable;
 extern UBYTE *PtrSample[];
+extern WORD CDEnable;
 
 extern WORD QuickMessage;
 extern LONG FlecheForcee;
@@ -102,6 +104,7 @@ extern void PlayDiskFla(unsigned char *);
 /*-------- RESSOURCES ---------------------------------------------*/
 
 extern T_HQR_HEADER *HQR_Samples;
+extern T_HQR_HEADER *HQR_FLA_Samples;
 extern T_HQR_HEADER *HQR_Midi;
 extern T_HQR_HEADER *InventoryObj;
 
@@ -488,6 +491,7 @@ extern UBYTE *PtrXmi;
 extern WORD NumXmi;
 
 extern unsigned long HQ_MixSample(short, short, short, short, short);
+extern unsigned long HQ_MixFlaSample(short, short, short, short, short);
 extern void HQ_StopSample(void);
 extern void HQ_StopOneSample(short);
 extern short GiveBalance(short, short, long, unsigned long *, unsigned long *);
