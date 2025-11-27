@@ -252,9 +252,7 @@ void InitGame(int argc, UBYTE *argv[])
 
 void Introduction()
 {
-	if (CDEnable) {
-		StopMusicCD();
-	}
+	StopMusicCD();
 	// StopMusicMidi();
 
 	if ((NewCube == 0) AND(Chapitre == 0))
@@ -1473,13 +1471,6 @@ void main(int argc, UBYTE *argv[])
 #endif
 
 	// check cd rom
-
-// #ifdef DEMO
-// 	FlaFromCD = TRUE;	 // fla sur HD
-// 	strcpy(PathFla, ""); // version demo fla in current dir
-// #else
-
-// #ifdef CDROM
 	if (InitCDR("CD_LBA"))
 	{
 		UBYTE *drive = "D:";
@@ -1488,23 +1479,19 @@ void main(int argc, UBYTE *argv[])
 		strcpy(PathFla, drive);
 		strcat(PathFla, "\\LBA\\FLA\\");
 		CDEnable = TRUE;
+		FlaFromCD = TRUE;
 	}
 	else 
 	{
 		strcpy(PathFla, "FLA\\"); // version cdrom sur hd (fla only)
+		FlaFromCD = TRUE;
 		CDEnable = FALSE;
+		if (Exists("FLA_GIF.HQR")) { // floppy
+			FlaFromCD = FALSE;
+		}else if (Exists("DRAGON3.FLA")) { // demo
+			strcpy(PathFla, "");
+		}
 	}
-// 	else
-// 		TheEnd(PROGRAM_OK, "No CD");
-
-// 	// if (ProgDrive[0] - 'A' == DriveCDR) // A=0 , B=1 etc.
-// 	// 	TheEnd(PROGRAM_OK, "Type INSTALL");
-
-// #else
-	// strcpy(PathFla, "FLA//"); // version cdrom sur hd (fla only)
-// #endif
-
-// #endif
 
 	// divers malloc
 

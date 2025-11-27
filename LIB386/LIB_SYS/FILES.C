@@ -173,3 +173,16 @@ LONG CopyBak(UBYTE *name)
 }
 
 /*--------------------------------------------------------------------------*/
+
+LONG Exists(UBYTE *name)
+{
+	FILE *handle;
+
+	handle = OpenRead(name);
+	if (handle)
+	{
+		Close(handle);
+		return 1L;
+	}
+	return 0L;
+}

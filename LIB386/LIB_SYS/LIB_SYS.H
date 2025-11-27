@@ -202,6 +202,7 @@ void Close(FILE *handle);
 LONG Seek(FILE *handle, LONG position, LONG mode);
 LONG Delete(char *name);
 ULONG FileSize(char *name);
+LONG Exists(char *name);
 /*──────────────────────────────────────────────────────────────────────────*/
 /*				LOADSAVE.C				    */
 ULONG Load(char *name, void *buffer);
