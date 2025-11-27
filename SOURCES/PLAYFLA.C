@@ -373,15 +373,6 @@ WORD InitFla(char *name)
 
 	HandleFla = OpenRead(name);
 
-#ifdef DEBUG_TOOLS
-	if (!HandleFla)
-		return (FALSE); // protect CD ?
-#endif
-#ifdef DEMO
-	if (!HandleFla)
-		return (FALSE); // protect CD ?
-#endif
-
 	if (SamplesEnable)
 	{
 		UBYTE string[256];
@@ -480,21 +471,21 @@ void PlayAnimFla(char *name_anim)
 	WORD i;
 	ULONG cadence;
 	UBYTE sortie = FALSE;
-	UBYTE ficname[_MAX_PATH];
+	UBYTE filename[_MAX_PATH];
 
 	if (!FlaFromCD)
 	{
 		PlayDiskFla(name_anim);
 		return;
 	}
-
+	
 	StopMusicCD();
 
-	strcpy(ficname, PathFla);
-	strcat(ficname, name_anim);
-	AddExt(ficname, ".FLA");
+	strcpy(filename, PathFla);
+	strcat(filename, name_anim);
+	strcat(filename, ".FLA");
 
-	if (!InitFla(ficname))
+	if (!InitFla(filename))
 		return;
 
 	if (strcmp(HeaderFla.Version, VERSION) == 0)

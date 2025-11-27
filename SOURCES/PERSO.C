@@ -1359,7 +1359,7 @@ void TheEnd(WORD num, UBYTE *error)
 }
 
 
-#ifdef DEBUG_TOOLS
+// #ifdef DEBUG_TOOLS
 void Message(UBYTE *mess, WORD flag)
 {
 	WORD x;
@@ -1382,11 +1382,11 @@ void Message(UBYTE *mess, WORD flag)
 	}
 	RestoreClip();
 }
-#else
-void Message(UBYTE *mess, WORD flag)
-{
-}
-#endif
+// #else
+// void Message(UBYTE *mess, WORD flag)
+// {
+// }
+// #endif
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -1488,7 +1488,7 @@ void main(int argc, UBYTE *argv[])
 		CDEnable = FALSE;
 		if (Exists("FLA_GIF.HQR")) { // floppy
 			FlaFromCD = FALSE;
-		}else if (Exists("DRAGON3.FLA")) { // demo
+		} else if (Exists("DRAGON3.FLA")) { // demo
 			strcpy(PathFla, "");
 		}
 	}
