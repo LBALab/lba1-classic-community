@@ -10,7 +10,7 @@ extern LONG FlecheForcee;
 extern LONG FlagDisplayText;
 extern UBYTE *BufMemoSeek;
 
-ULONG SpriteMem, SampleMem, FlaSampleMem, AnimMem;
+ULONG SpriteMem, SampleMem, AnimMem;
 ULONG ValidPositionTimer;
 ULONG PersoInvulnerableTimer;
 
@@ -252,8 +252,10 @@ void InitGame(int argc, UBYTE *argv[])
 
 void Introduction()
 {
-	StopMusicCD();
-	StopMusicMidi();
+	if (CDEnable) {
+		StopMusicCD();
+	}
+	// StopMusicMidi();
 
 	if ((NewCube == 0) AND(Chapitre == 0))
 	{
@@ -1319,7 +1321,6 @@ void TheEnd(WORD num, UBYTE *error)
 	printf("* Min Dos Memory was %ld\n", MemoMinDosMemory);
 	printf("* HQR Sprite: %ld\n", SpriteMem);
 	printf("      Sample: %ld\n", SampleMem);
-	printf("      Sample: %ld\n", FlaSampleMem);
 	printf("        Anim: %ld\n", AnimMem);
 
 	printf("* Size HQM Memory was %ld\n", Size_HQM_Memory);
@@ -1360,7 +1361,7 @@ void TheEnd(WORD num, UBYTE *error)
 }
 
 
-// #ifdef DEBUG_TOOLS
+#ifdef DEBUG_TOOLS
 void Message(UBYTE *mess, WORD flag)
 {
 	WORD x;
@@ -1383,11 +1384,11 @@ void Message(UBYTE *mess, WORD flag)
 	}
 	RestoreClip();
 }
-// #else
-// void Message(UBYTE *mess, WORD flag)
-// {
-// }
-// #endif
+#else
+void Message(UBYTE *mess, WORD flag)
+{
+}
+#endif
 
 /*══════════════════════════════════════════════════════════════════════════*/
 /*══════════════════════════════════════════════════════════════════════════*/
@@ -1559,15 +1560,12 @@ void main(int argc, UBYTE *argv[])
 
 	SpriteMem = (memory / 8);
 	SampleMem = (memory / 8) * 4;
-	FlaSampleMem = (memory / 8) * 4;
 	AnimMem = (memory / 8) * 2;
 
 	if (SpriteMem < 50000)
 		SpriteMem = 50000;
 	if (SampleMem < 200000)
 		SampleMem = 200000;
-	if (FlaSampleMem < 200000)
-		FlaSampleMem = 200000;
 	if (AnimMem < 100000)
 		AnimMem = 100000;
 
@@ -1575,8 +1573,6 @@ void main(int argc, UBYTE *argv[])
 		SpriteMem = 400000;
 	if (SampleMem > 4500000)
 		SampleMem = 4500000;
-	if (FlaSampleMem > 4500000)
-		FlaSampleMem = 4500000;
 	if (AnimMem > 300000)
 		AnimMem = 300000;
 
@@ -1607,16 +1603,6 @@ void main(int argc, UBYTE *argv[])
 			Message("HQR_Samples not enough memory", TRUE);
 			Wave_Driver_Enable = FALSE;
 			SamplesEnable = FALSE;
-		}
-
-		HQR_FLA_Samples = HQR_Init_Ressource(
-			PATH_RESSOURCE "FLA\\FLASAMP.HQR",
-			FlaSampleMem,
-			FlaSampleMem / 5000);
-
-		if (!HQR_FLA_Samples)
-		{
-			Message("HQR_FLA_Samples not enough memory", TRUE);
 		}
 	}
 

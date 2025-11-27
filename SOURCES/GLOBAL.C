@@ -37,15 +37,6 @@ WORD FlagFade = FALSE;
 WORD Bulle = TRUE;
 WORD FlagBlackPal = FALSE;
 
-// #ifdef	CDROM
-// WORD	FlaFromCD = TRUE ;
-// #else
-// #ifdef	MAGOUILLE_FLA_HD
-// WORD	FlaFromCD = TRUE ;	// magouille fla sur HD
-// #else
-// WORD	FlaFromCD = FALSE ;
-// #endif
-// #endif
 WORD FlaFromCD = TRUE; // otherwise is floppy fla_gif
 
 UBYTE PathFla[_MAX_PATH];
@@ -57,7 +48,6 @@ WORD FlagWindowsFilenameSaving = 0;
 /*--------- ressources ---------------------------*/
 
 T_HQR_HEADER *HQR_Samples;
-T_HQR_HEADER *HQR_FLA_Samples;
 T_HQR_HEADER *HQR_Midi;
 T_HQR_HEADER *InventoryObj;
 

@@ -37,30 +37,6 @@ ULONG HQ_MixSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WOR
 	return retvalue;
 }
 
-ULONG HQ_MixFlaSample(WORD numsample, WORD decalage, WORD repeat, WORD volleft, WORD volright)
-{
-	UBYTE string[256];
-	ULONG retvalue;
-	UBYTE *ptr;
-
-	retvalue = -1;
-
-	if (!SamplesEnable)
-		return -1;
-
-	if (numsample == -1)
-		return -1; /* Loran ( Come from GereSceneMenu)*/
-
-	ptr = HQR_GetSample(HQR_FLA_Samples, numsample);
-	if (ptr)
-	{
-		retvalue =
-			WavePlay(numsample, decalage, repeat, 0, volleft, volright, ptr);
-	}
-
-	return retvalue;
-}
-
 /*══════════════════════════════════════════════════════════════════════════*/
 void HQ_StopSample()
 {
@@ -390,9 +366,9 @@ void FadeRedToPal(UBYTE *ptrpal)
 
 void StopMusicCD(void)
 {
-	if (!CDEnable || CurrentMusicCD == -1)
-		return;
-	StopCDR();
+	if (CDEnable) {
+		StopCDR();
+	}
 	CurrentMusicCD = -1;
 }
 
@@ -464,8 +440,6 @@ void PlayMidiFile(WORD num)
 
 LONG GetMusicCD()
 {
-	if (!CDEnable)
-		return -1;
 	if (TimerSystem > EndMusicCD)
 		CurrentMusicCD = -1;
 	return CurrentMusicCD;
@@ -481,13 +455,15 @@ void PlayCdTrack(WORD num)
 	FadeMusicMidi(1);
 	NumXmi = -1;
 
-	if (num != GetMusicCD())
-	{
-		StopMusicCD();
-		EndMusicCD = (GetLengthTrackCDR(num + 1) * 50) / 75 + 50;
-		PlayTrackCDR(num + 1);
-		EndMusicCD += TimerSystem;
-		CurrentMusicCD = num;
+	if (CDEnable) {
+		if (num != GetMusicCD())
+		{
+			StopMusicCD();
+			EndMusicCD = (GetLengthTrackCDR(num + 1) * 50) / 75 + 50;
+			PlayTrackCDR(num + 1);
+			EndMusicCD += TimerSystem;
+			CurrentMusicCD = num;
+		}
 	}
 
 	RestoreTimer();
@@ -510,14 +486,16 @@ void PlayAllMusic(WORD num)
 		}
 	}
 
-	//	if( (n=num+1) != GetMusicCDR() )
-	if (num != GetMusicCD())
-	{
-		StopMusicCD();
-		EndMusicCD = (GetLengthTrackCDR(num + 1) * 50) / 75 + 50;
-		PlayTrackCDR(num + 1);
-		EndMusicCD += TimerSystem;
-		CurrentMusicCD = num;
+	if (CDEnable) {
+		//	if( (n=num+1) != GetMusicCDR() )
+		if (num != GetMusicCD())
+		{
+			StopMusicCD();
+			EndMusicCD = (GetLengthTrackCDR(num + 1) * 50) / 75 + 50;
+			PlayTrackCDR(num + 1);
+			EndMusicCD += TimerSystem;
+			CurrentMusicCD = num;
+		}
 	}
 }
 

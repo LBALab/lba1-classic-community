@@ -195,9 +195,7 @@ void MenuInitGame(int argc, UBYTE *argv[], WORD showIntroduction)
 	int retMainLoop;
 
 	InitGame(argc, argv);
-
-	if (showIntroduction)
-		Introduction();
+	Introduction();
 
 	if (retMainLoop = MainLoop())
 	{

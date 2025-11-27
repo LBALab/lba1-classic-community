@@ -104,7 +104,6 @@ extern void PlayDiskFla(unsigned char *);
 /*-------- RESSOURCES ---------------------------------------------*/
 
 extern T_HQR_HEADER *HQR_Samples;
-extern T_HQR_HEADER *HQR_FLA_Samples;
 extern T_HQR_HEADER *HQR_Midi;
 extern T_HQR_HEADER *InventoryObj;
 
